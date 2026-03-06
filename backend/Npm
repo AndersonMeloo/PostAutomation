@@ -1,0 +1,11 @@
+# Sempre que houver (criação/alteração, campos, enums, relações)
+npx prisma migrate dev --name minha_migration
+
+# Garantir se tiver tudo ok no Prisma Client
+npx prisma generate
+
+NPM's usados
+npm install @nestjs/jwt passport passport-jwt
+npm install @nestjs/passport passport-google-oauth20
+npm install bcrypt
+npm install class-validator class-transformer

@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  name           String?
+  googleId       String?          @unique
+  password       String?
+  role           Role             @default(USER)
+
+  refreshToken   String?
+  createdAt      DateTime         @default(now())
+
+  socialAccounts SocialAccount[]
+  posts          Post[]
+}
+
+model Niche {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  active      Boolean  @default(true)
+
+  posts       Post[]
+}
+
+model SocialAccount {
+  id           String     @id @default(uuid())
+  platform     Platform
+  accessToken  String
+  refreshToken String?
+  tokenExpiry  DateTime?
+
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id          String           @id @default(uuid())
+  platform    Platform
+  title       String
+  description String?
+  videoUrl    String?
+  postedAt    DateTime?
+  status      PostStatus       @default(PENDING)
+
+  nichedId    String
+  niche       Niche           @relation(fields: [nichedId], references: [id])
+
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+
+  analytics   PostAnalytics[]
+}
+
+model PostAnalytics {
+  id          String    @id @default(uuid())
+  views       Int
+  likes       Int
+  comments    Int
+  collectedAt DateTime  @default(now())
+
+  postId      String
+  post        Post     @relation(fields: [postId], references: [id])
+}
+
+enum Platform {
+  YOUTUBE 
+  TIKTOK
+}
+
+enum PostStatus {
+  PENDING
+  POSTED
+  FAILED
+}
+
+enum Role {
+  ADMIN
+  USER
+}
