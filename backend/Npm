@@ -11,3 +11,12 @@ npm install bcrypt
 npm install class-validator class-transformer
 npm install class-validator@0.14.0
 npm install @nestjs/mapped-types
+
+# npx prisma migrate dev --name add_updated_at: Subir alguma mudança que foi feita no Prisma Schema
+
+/users/dto/create-user.dto.ts:
+name?, password? - Já que terá duas formas de login (Cadastro Normal) e (Cadastro via Google)
+
+prisma.schema: role ROLE: A permissão que o usuário terá dentro do sistema, podendo ser 'USER' ou 'ADMIN'
+
+HttpException + HttpStatus: Definir o Status Correto da Resposta e NestJS entende que é um ERRO HTTP
