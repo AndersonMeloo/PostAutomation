@@ -20,3 +20,10 @@ PATCH http://localhost:3000/users/ => "uuid"
 
 Deletar um Usuário:
 DELETE http://localhost:3000/users/ => "uuid"
+
+Login
+POST http://localhost:3000/auth/login
+{
+  "email": "teste@email.com",
+  "password": "123456"
+}
