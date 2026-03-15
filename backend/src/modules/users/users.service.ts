@@ -7,6 +7,7 @@ import { PrismaService } from 'src/database/prisma.service';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
+  // Criação do Usuário
   async create(createUserDto: CreateUserDto) {
     const user = await this.prisma.user.create({
       data: {
@@ -21,8 +22,25 @@ export class UsersService {
     return userWithoutPassword;
   }
 
+  // Buscando Usuário por E-mail
+  async findUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
+  // Buscando todos os E-mails
+  async findAllEmails() {
+    return this.prisma.user.findMany({
+      select: {
+        email: true,
+      },
+    });
+  }
+
+  // Buscando todos os Usuários
   findAll() {
-    return `This action returns all users`;
+    return this.prisma.user.findMany();
   }
 
   findOne(id: number) {
