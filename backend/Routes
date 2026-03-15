@@ -14,3 +14,9 @@ GET http://localhost:3000/users/email/anderson@email.com
 
 Busca Todos Usuários:
 GET http://localhost:3000/users
+
+Atualizar Dados do Usuário:
+PATCH http://localhost:3000/users/ => "uuid"
+
+Deletar um Usuário:
+DELETE http://localhost:3000/users/ => "uuid"
