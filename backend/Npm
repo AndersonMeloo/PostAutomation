@@ -11,6 +11,8 @@ npm install bcrypt
 npm install class-validator class-transformer
 npm install class-validator@0.14.0
 npm install @nestjs/mapped-types
+npm install @prisma/adapter-pg pg
+npm install @nestjs/config
 
 # npx prisma migrate dev --name add_updated_at: Subir alguma mudança que foi feita no Prisma Schema
 
