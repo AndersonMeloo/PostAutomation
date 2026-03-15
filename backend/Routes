@@ -1,0 +1,16 @@
+Criar usuário: 
+POST http://localhost:3000/users
+{
+  "email": "anderson@email.com",
+  "name": "Anderson",
+  "password": "123456"
+}
+
+Buscar Todos Usuários por E-mail:
+GET http://localhost:3000/users/emails
+
+Buscar Usuário por E-mail e Retornar todos os Dados Dele:
+GET http://localhost:3000/users/email/anderson@email.com
+
+Busca Todos Usuários:
+GET http://localhost:3000/users
