@@ -7,7 +7,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    // Importa o UsersModule usando forwardRef para resolver dependência circular,
+    // pois o UsersModule também importa o AuthModule
     forwardRef(() => UsersModule),
+
+    // Configura o JwtModule de forma assíncrona usando ConfigService para acessar a variável de ambiente JWT_SECRET
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
