@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -11,7 +11,10 @@ export class UsersService {
 
   // Criação do Usuário
   async create(createUserDto: CreateUserDto) {
-    const hashedPassword: string = await bcrypt.hash(createUserDto.password, 10);
+    if (!createUserDto.password) {
+      throw new Error('Password é obrigatório');
+    }
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
@@ -104,5 +107,38 @@ export class UsersService {
 
       throw err;
     }
+  }
+
+  // Atualiza refresh token do usuário
+  async updateRefreshToken(userId: string, token: string): Promise<User> {
+    const hashedToken: string = await bcrypt.hash(token, 10);
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: hashedToken },
+    });
+  }
+
+  // Verifica se refresh token corresponde ao usuário
+  async getUserIfRefreshTokenMatches(userId: string, token: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.refreshToken) return null;
+
+    const isMatch = await bcrypt.compare(token, user.refreshToken);
+
+    if (!isMatch) return null;
+
+    return user;
+  }
+
+  // Remove refresh token (logout)
+  async removeRefreshToken(userId: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: null },
+    });
   }
 }
