@@ -14,6 +14,8 @@ npm install @nestjs/mapped-types
 npm install @prisma/adapter-pg pg
 npm install @nestjs/config
 
+npm install -D @types/bcrypt
+
 # npx prisma migrate dev --name add_updated_at: Subir alguma mudança que foi feita no Prisma Schema
 
 /users/dto/create-user.dto.ts:

@@ -29,3 +29,7 @@ PATCH http://localhost:3000/users/ => "uuid"
 
 Deletar um Usuário:
 DELETE http://localhost:3000/users/ => "uuid"
+
+
+Testando Token de Refresh:
+POST http://localhost:3000/auth/refresh
