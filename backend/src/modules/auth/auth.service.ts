@@ -1,15 +1,22 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/common/types/jwt-payload.type';
+
+type GoogleOAuthProfile = {
+  id: string;
+  displayName?: string;
+  emails?: Array<{ value?: string }>;
+};
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async generateTokens(userId: string, email: string, role: string | null) {
     const payload = {
@@ -32,6 +39,26 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async validateGoogleUser(profile: GoogleOAuthProfile): Promise<User> {
+    const email = profile.emails?.[0]?.value;
+
+    if (!email) {
+      throw new UnauthorizedException(
+        'Nao foi possivel recuperar o email da conta Google',
+      );
+    }
+
+    return this.userService.findOrCreateGoogleUser({
+      email,
+      googleId: profile.id,
+      name: profile.displayName || null,
+    });
+  }
+
+  async loginWithGoogle(user: User) {
+    return this.generateTokens(user.id, user.email, user.role);
   }
 
   async login(email: string, password: string) {
