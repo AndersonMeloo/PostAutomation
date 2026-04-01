@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { NichesModule } from './modules/niches/niches.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     UsersModule,
     PostsModule,
+    NichesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
