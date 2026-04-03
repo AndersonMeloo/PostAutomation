@@ -7,18 +7,19 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly authService: AuthService,
-  ) {
-    const googleConfig = getGoogleOAuthConfig(configService);
+  private readonly authService: AuthService;
 
-    super({
+  constructor(configService: ConfigService, authService: AuthService) {
+    const googleConfig = getGoogleOAuthConfig(configService);
+    const strategyOptions = {
       clientID: googleConfig.clientID,
       clientSecret: googleConfig.clientSecret,
       callbackURL: googleConfig.callbackURL,
-      scope: ['email', 'profile'],
-    });
+    };
+
+    super(strategyOptions);
+
+    this.authService = authService;
   }
 
   async validate(
@@ -26,6 +27,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     _refreshToken: string,
     profile: Profile,
   ) {
-    return this.authService.validateGoogleUser(profile);
+    return this.authService.validateGoogleUser(
+      profile,
+      _accessToken,
+      _refreshToken,
+    );
   }
 }
