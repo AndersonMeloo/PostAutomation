@@ -6,6 +6,10 @@ import {
 import { PrismaService } from 'src/database/prisma.service';
 import { Post } from '@prisma/client';
 import { ImportYoutubePostDto } from './dto/import-youtube-post.dto';
+import { UploadVideoPostDto } from './dto/upload-video-post.dto';
+import { mkdir, writeFile } from 'fs/promises';
+import { resolve, extname } from 'path';
+import type { Multer } from 'multer';
 
 type UserWithNiches = {
   id: string;
@@ -395,5 +399,102 @@ export class PostsService {
     } catch {
       return null;
     }
+  }
+
+  async uploadVideoPost(file: Multer.File, data: UploadVideoPostDto) {
+    if (!data) {
+      throw new BadRequestException(
+        'Body ausente. Envie multipart/form-data com userId, nicheId, title e scheduledAt.',
+      );
+    }
+
+    if (!data.userId || !data.nicheId || !data.title || !data.scheduledAt) {
+      throw new BadRequestException(
+        'Campos obrigatorios ausentes: userId, nicheId, title e scheduledAt.',
+      );
+    }
+
+    const [user, niche, youtubeAccount] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: data.userId },
+        select: { id: true },
+      }),
+      this.prisma.niche.findUnique({
+        where: { id: data.nicheId },
+        select: { id: true, active: true },
+      }),
+      this.prisma.socialAccount.findFirst({
+        where: {
+          userId: data.userId,
+          platform: 'YOUTUBE',
+        },
+        select: { id: true },
+      }),
+    ]);
+
+    if (!user) {
+      throw new NotFoundException(`Usuario ${data.userId} nao encontrado`);
+    }
+
+    if (!niche || !niche.active) {
+      throw new BadRequestException('Nicho nao encontrado ou inativo');
+    }
+
+    if (!youtubeAccount) {
+      throw new BadRequestException(
+        'Conta YouTube nao conectada para este usuario',
+      );
+    }
+
+    if (!file) {
+      throw new BadRequestException('Arquivo de vídeo nao encontrado');
+    }
+
+    const validExtensions = ['.mp4', '.mov', '.webm', '.mkv'];
+    const fileExtension = extname(file.originalname!).toLowerCase();
+
+    if (!validExtensions.includes(fileExtension)) {
+      throw new BadRequestException(
+        `Extensão invalida. Aceitos: ${validExtensions.join(', ')}`,
+      );
+    }
+
+    const queueDir = 'uploads/queue';
+    await mkdir(queueDir, { recursive: true });
+
+    const scheduledAt = new Date(data.scheduledAt);
+
+    if (Number.isNaN(scheduledAt.getTime())) {
+      throw new BadRequestException('scheduledAt invalido');
+    }
+
+    // Salvar arquivo em uploads/queue com nome único
+    const fileName = `${Date.now()}_${data.userId.slice(0, 8)}${fileExtension}`;
+    const filePath = resolve(queueDir, fileName);
+
+    await writeFile(filePath, file.buffer!);
+
+    // Criar post PENDING
+    const post = await this.prisma.post.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        videoUrl: filePath,
+        platform: 'YOUTUBE',
+        status: 'PENDING',
+        scheduledAt,
+        niche: {
+          connect: { id: data.nicheId },
+        },
+        user: {
+          connect: { id: data.userId },
+        },
+      },
+    });
+
+    return {
+      ...post,
+      message: '✅ Vídeo enviado! Será publicado no horário agendado.',
+    };
   }
 }
