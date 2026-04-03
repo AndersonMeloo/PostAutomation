@@ -113,3 +113,73 @@ GET POSTS
 GET http://localhost:3000/posts
 GET http://localhost:3000/posts/overview
 GET http://localhost:3000/posts/overview?date=2026-04-02
+
+
+====================
+UPLOAD DE VÍDEO (AUTOMÁTICO)
+====================
+Enviar Vídeo para Publicação Automática:
+POST http://localhost:3000/posts/upload-video
+Content-Type: multipart/form-data
+
+Parâmetros:
+- video: [arquivo.mp4/.mov/.webm/.mkv] ← Arquivo do vídeo
+- userId: "SEU_USER_ID_UUID"
+- nicheId: "SEU_NICHE_ID_UUID"
+- title: "Título do Vídeo"
+- description: "Descrição opcional do vídeo"
+- scheduledAt: "2026-04-03T15:30:00Z"
+
+EXEMPLO com cURL:
+curl -X POST http://localhost:3000/posts/upload-video \
+  -F "video=@/caminho/para/video.mp4" \
+  -F "userId=550e8400-e29b-41d4-a716-446655440000" \
+  -F "nicheId=660e8400-e29b-41d4-a716-446655440000" \
+  -F "title=Meu Vídeo Incrível" \
+  -F "description=Uma descrição maneira do vídeo" \
+  -F "scheduledAt=2026-04-03T15:30:00Z"
+
+EXEMPLO com Postman:
+1. Método: POST
+2. URL: http://localhost:3000/posts/upload-video
+3. Tab "Body" → selecionar "form-data"
+4. Adicionar campos:
+   - Key: "video" | Type: "File" | Value: [selecionar arquivo]
+   - Key: "userId" | Type: "Text" | Value: "seu_user_id"
+   - Key: "nicheId" | Type: "Text" | Value: "seu_niche_id"
+   - Key: "title" | Type: "Text" | Value: "Título"
+   - Key: "description" | Type: "Text" | Value: "Descrição"
+   - Key: "scheduledAt" | Type: "Text" | Value: "2026-04-03T15:30:00Z"
+
+FLUXO AUTOMÁTICO:
+1. Você envia o vídeo via POST /posts/upload-video
+2. Sistema salva arquivo em: uploads/queue/
+3. Sistema cria post PENDING no banco de dados
+4. Scheduler detecta a cada 1 minuto
+5. Se scheduledAt <= agora:
+   - Move arquivo para uploads/processing/
+   - Faz upload REAL no YouTube
+   - Marca post como POSTED
+   - Move arquivo para uploads/published/
+   - Salva link do YouTube no banco
+
+Validações:
+✓ Arquivo deve ter extensão: .mp4, .mov, .webm ou .mkv
+✓ Tamanho máximo: depende do seu servidor
+✓ userId deve existir e ter conta YouTube conectada
+✓ nicheId deve existir e estar ativo (active: true)
+✓ scheduledAt deve ser data válida (ISO8601)
+
+Resposta (sucesso):
+{
+  "id": "uuid-do-post",
+  "title": "Meu Vídeo Incrível",
+  "description": "Uma descrição maneira",
+  "videoUrl": "uploads/queue/1712152200000_550e8400.mp4",
+  "platform": "YOUTUBE",
+  "status": "PENDING",
+  "scheduledAt": "2026-04-03T15:30:00.000Z",
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "nicheId": "660e8400-e29b-41d4-a716-446655440000",
+  "message": "✅ Vídeo enviado! Será publicado no horário agendado."
+}
