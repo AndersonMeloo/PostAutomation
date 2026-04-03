@@ -80,6 +80,51 @@ export class UsersService {
     });
   }
 
+  async getYoutubeConnectionStatus(userId: string) {
+    const account = await this.prisma.socialAccount.findFirst({
+      where: {
+        userId,
+        platform: Platform.YOUTUBE,
+      },
+      select: {
+        id: true,
+        platform: true,
+        tokenExpiry: true,
+      },
+    });
+
+    return {
+      connected: Boolean(account),
+      account,
+    };
+  }
+
+  async disconnectYoutube(userId: string) {
+    const account = await this.prisma.socialAccount.findFirst({
+      where: {
+        userId,
+        platform: Platform.YOUTUBE,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!account) {
+      return {
+        message: 'Conta YouTube ja estava desconectada',
+      };
+    }
+
+    await this.prisma.socialAccount.delete({
+      where: { id: account.id },
+    });
+
+    return {
+      message: 'Conta YouTube desconectada com sucesso',
+    };
+  }
+
   // Criação do Usuário
   async create(createUserDto: CreateUserDto) {
     if (!createUserDto.password) {
