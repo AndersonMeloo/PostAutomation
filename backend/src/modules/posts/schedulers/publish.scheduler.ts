@@ -3,8 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Platform, Post, SocialAccount } from '@prisma/client';
 import { createReadStream, existsSync } from 'fs';
+import { mkdir, readdir, rename } from 'fs/promises';
 import { google } from 'googleapis';
-import { extname, resolve } from 'path';
+import { basename, extname, resolve } from 'path';
 import { Readable } from 'stream';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -22,6 +23,8 @@ export class PublishScheduler {
     const now = new Date();
 
     try {
+      await this.attachQueueVideosToPendingPosts();
+
       const posts = await this.prisma.post.findMany({
         where: {
           status: 'PENDING',
@@ -37,6 +40,7 @@ export class PublishScheduler {
         );
 
         try {
+          const sourceVideoPath = post.videoUrl;
           const publishedVideoUrl = await this.publishToPlatform(post);
 
           await this.prisma.post.update({
@@ -47,6 +51,8 @@ export class PublishScheduler {
               videoUrl: publishedVideoUrl,
             },
           });
+
+          await this.archiveLocalVideoIfNeeded(sourceVideoPath);
         } catch (publishError) {
           console.error(
             `Falha ao publicar post ${post.id} | Plataforma: ${post.platform}`,
@@ -65,6 +71,78 @@ export class PublishScheduler {
       console.log('Publicação finalizada');
     } catch (error) {
       console.error('Erro na publicação:', error);
+    }
+  }
+
+  private async attachQueueVideosToPendingPosts(): Promise<void> {
+    const pendingPostsWithoutVideo = await this.prisma.post.findMany({
+      where: {
+        platform: Platform.YOUTUBE,
+        status: 'PENDING',
+        videoUrl: null,
+      },
+      orderBy: [
+        {
+          scheduledAt: 'asc',
+        },
+        {
+          id: 'asc',
+        },
+      ],
+      select: {
+        id: true,
+      },
+    });
+
+    if (pendingPostsWithoutVideo.length === 0) {
+      return;
+    }
+
+    const queueDir = this.getQueueDir();
+    const processingDir = this.getProcessingDir();
+
+    if (!existsSync(queueDir)) {
+      return;
+    }
+
+    await mkdir(processingDir, { recursive: true });
+
+    const queueFiles = await readdir(queueDir);
+    const videos = queueFiles
+      .filter((fileName) => this.isVideoFile(fileName))
+      .sort((a, b) => a.localeCompare(b));
+
+    const assignCount = Math.min(
+      pendingPostsWithoutVideo.length,
+      videos.length,
+    );
+
+    for (let index = 0; index < assignCount; index += 1) {
+      const post = pendingPostsWithoutVideo[index];
+      const videoName = videos[index];
+
+      if (!post || !videoName) {
+        continue;
+      }
+
+      const sourcePath = resolve(queueDir, videoName);
+      const extension = extname(videoName);
+      const targetPath = resolve(processingDir, `${post.id}${extension}`);
+
+      await rename(sourcePath, targetPath);
+
+      await this.prisma.post.update({
+        where: {
+          id: post.id,
+        },
+        data: {
+          videoUrl: targetPath,
+        },
+      });
+
+      console.log(
+        `📦 Video ${videoName} vinculado ao post ${post.id} para publicacao automatica`,
+      );
     }
   }
 
@@ -244,6 +322,26 @@ export class PublishScheduler {
     });
   }
 
+  private async archiveLocalVideoIfNeeded(
+    sourceVideoPath: string | null,
+  ): Promise<void> {
+    if (!sourceVideoPath || this.isHttpUrl(sourceVideoPath)) {
+      return;
+    }
+
+    const absolutePath = resolve(sourceVideoPath);
+
+    if (!existsSync(absolutePath)) {
+      return;
+    }
+
+    const publishedDir = this.getPublishedDir();
+    await mkdir(publishedDir, { recursive: true });
+
+    const archivedPath = resolve(publishedDir, basename(absolutePath));
+    await rename(absolutePath, archivedPath);
+  }
+
   private isYoutubeUrl(value: string): boolean {
     try {
       const parsed = new URL(value);
@@ -263,5 +361,31 @@ export class PublishScheduler {
     } catch {
       return false;
     }
+  }
+
+  private isVideoFile(fileName: string): boolean {
+    const extension = extname(fileName).toLowerCase();
+    return ['.mp4', '.mov', '.webm', '.mkv'].includes(extension);
+  }
+
+  private getQueueDir(): string {
+    return resolve(
+      this.configService.get<string>('LOCAL_VIDEO_QUEUE_DIR') ??
+        'uploads/queue',
+    );
+  }
+
+  private getProcessingDir(): string {
+    return resolve(
+      this.configService.get<string>('LOCAL_VIDEO_PROCESSING_DIR') ??
+        'uploads/processing',
+    );
+  }
+
+  private getPublishedDir(): string {
+    return resolve(
+      this.configService.get<string>('LOCAL_VIDEO_PUBLISHED_DIR') ??
+        'uploads/published',
+    );
   }
 }
