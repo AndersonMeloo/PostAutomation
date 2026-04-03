@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/common/guards/jwt-auth.guards';
+import { Platform } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
@@ -47,6 +48,27 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/youtube-connection')
+  getYoutubeConnection(@Param('id') id: string): Promise<{
+    connected: boolean;
+    account: {
+      id: string;
+      platform: Platform;
+      tokenExpiry: Date | null;
+    } | null;
+  }> {
+    return this.usersService.getYoutubeConnectionStatus(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id/youtube-connection')
+  disconnectYoutube(@Param('id') id: string): Promise<{
+    message: string;
+  }> {
+    return this.usersService.disconnectYoutube(id);
   }
 
   // Atualizar Dados do Usuário
