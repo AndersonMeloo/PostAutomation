@@ -9,7 +9,11 @@ import { ImportYoutubePostDto } from './dto/import-youtube-post.dto';
 import { UploadVideoPostDto } from './dto/upload-video-post.dto';
 import { mkdir, writeFile } from 'fs/promises';
 import { resolve, extname } from 'path';
-import type { Multer } from 'multer';
+
+type UploadVideoFile = {
+  originalname: string;
+  buffer: Buffer;
+};
 
 type UserWithNiches = {
   id: string;
@@ -49,6 +53,20 @@ type PostOverview = {
 @Injectable()
 export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private isUploadVideoFile(file: unknown): file is UploadVideoFile {
+    if (!file || typeof file !== 'object') {
+      return false;
+    }
+
+    const candidate = file as Record<string, unknown>;
+
+    return (
+      typeof candidate.originalname === 'string' &&
+      candidate.originalname.length > 0 &&
+      Buffer.isBuffer(candidate.buffer)
+    );
+  }
 
   async listPosts() {
     return this.prisma.post.findMany({
@@ -401,7 +419,7 @@ export class PostsService {
     }
   }
 
-  async uploadVideoPost(file: Multer.File, data: UploadVideoPostDto) {
+  async uploadVideoPost(file: unknown, data: UploadVideoPostDto) {
     if (!data) {
       throw new BadRequestException(
         'Body ausente. Envie multipart/form-data com userId, nicheId, title e scheduledAt.',
@@ -446,12 +464,12 @@ export class PostsService {
       );
     }
 
-    if (!file) {
-      throw new BadRequestException('Arquivo de vídeo nao encontrado');
+    if (!this.isUploadVideoFile(file)) {
+      throw new BadRequestException('Conteudo do arquivo de vídeo invalido');
     }
 
     const validExtensions = ['.mp4', '.mov', '.webm', '.mkv'];
-    const fileExtension = extname(file.originalname!).toLowerCase();
+    const fileExtension = extname(file.originalname).toLowerCase();
 
     if (!validExtensions.includes(fileExtension)) {
       throw new BadRequestException(
@@ -472,7 +490,7 @@ export class PostsService {
     const fileName = `${Date.now()}_${data.userId.slice(0, 8)}${fileExtension}`;
     const filePath = resolve(queueDir, fileName);
 
-    await writeFile(filePath, file.buffer!);
+    await writeFile(filePath, file.buffer);
 
     // Criar post PENDING
     const post = await this.prisma.post.create({
