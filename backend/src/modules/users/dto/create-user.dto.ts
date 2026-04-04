@@ -10,7 +10,7 @@ import {
 export class CreateUserDto {
   @IsNotEmpty({ message: `Preencha o campo` })
   @IsEmail({ message: `Endereço de e-mail inválido` })
-  email: string;
+  email!: string;
 
   @IsOptional()
   @IsString({ message: `Preencha o campo` })
