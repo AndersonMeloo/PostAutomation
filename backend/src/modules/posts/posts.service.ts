@@ -3,12 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/database/prisma.service';
 import { Post } from '@prisma/client';
 import { ImportYoutubePostDto } from './dto/import-youtube-post.dto';
 import { UploadVideoPostDto } from './dto/upload-video-post.dto';
-import { mkdir, writeFile } from 'fs/promises';
-import { resolve, extname } from 'path';
+import { mkdir, readdir, rename, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { basename, resolve, extname } from 'path';
 
 type UploadVideoFile = {
   originalname: string;
@@ -23,6 +25,12 @@ type UserWithNiches = {
     description: string | null;
     active: boolean;
   }[];
+};
+
+type ImportedInboxVideo = {
+  postId: string;
+  fileName: string;
+  scheduledAt: Date;
 };
 
 type PostOverview = {
@@ -52,7 +60,10 @@ type PostOverview = {
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   private isUploadVideoFile(file: unknown): file is UploadVideoFile {
     if (!file || typeof file !== 'object') {
@@ -66,6 +77,11 @@ export class PostsService {
       candidate.originalname.length > 0 &&
       Buffer.isBuffer(candidate.buffer)
     );
+  }
+
+  private isVideoFile(fileName: string): boolean {
+    const extension = extname(fileName).toLowerCase();
+    return ['.mp4', '.mov', '.webm', '.mkv'].includes(extension);
   }
 
   async listPosts(userId: string) {
@@ -388,6 +404,86 @@ export class PostsService {
     return posts;
   }
 
+  async importInboxVideosAsShorts(): Promise<ImportedInboxVideo[]> {
+    const inboxDir = this.getInboxDir();
+    const queueDir = this.getQueueDir();
+
+    if (!existsSync(inboxDir)) {
+      return [];
+    }
+
+    const [user, niche] = await Promise.all([
+      this.findDefaultAutoPostUser(),
+      this.findDefaultAutoPostNiche(),
+    ]);
+
+    if (!user || !niche) {
+      return [];
+    }
+
+    const inboxFiles = await readdir(inboxDir);
+    const videoFiles = inboxFiles
+      .filter((fileName) => this.isVideoFile(fileName))
+      .sort((a, b) => a.localeCompare(b));
+
+    if (!videoFiles.length) {
+      return [];
+    }
+
+    await mkdir(queueDir, { recursive: true });
+
+    const importedVideos: ImportedInboxVideo[] = [];
+
+    for (const fileName of videoFiles) {
+      const sourcePath = resolve(inboxDir, fileName);
+      const extension = extname(fileName).toLowerCase();
+      const baseName = basename(fileName, extension)
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const title = baseName || 'Short automatica';
+      const scheduledAt = new Date(Date.now() + 3 * 60 * 1000);
+
+      const post = await this.prisma.post.create({
+        data: {
+          title: title.length > 255 ? title.slice(0, 255) : title,
+          description: `#Shorts\n\n${title}`,
+          platform: 'YOUTUBE',
+          status: 'PENDING',
+          scheduledAt,
+          niche: {
+            connect: { id: niche.id },
+          },
+          user: {
+            connect: { id: user.id },
+          },
+        },
+      });
+
+      const targetPath = resolve(queueDir, `${post.id}${extension}`);
+      await rename(sourcePath, targetPath);
+
+      await this.prisma.post.update({
+        where: { id: post.id },
+        data: {
+          videoUrl: targetPath,
+        },
+      });
+
+      importedVideos.push({
+        postId: post.id,
+        fileName,
+        scheduledAt,
+      });
+
+      console.log(
+        `📥 Short importado automaticamente | arquivo: ${fileName} | post: ${post.id}`,
+      );
+    }
+
+    return importedVideos;
+  }
+
   private extractYouTubeVideoId(url: string): string | null {
     try {
       const parsed = new URL(url);
@@ -529,5 +625,67 @@ export class PostsService {
       ...post,
       message: '✅ Vídeo enviado! Será publicado no horário agendado.',
     };
+  }
+
+  private async findDefaultAutoPostUser(): Promise<{ id: string } | null> {
+    const preferredUserId =
+      this.configService.get<string>('AUTO_POST_USER_ID')?.trim() ?? '';
+
+    if (preferredUserId) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: preferredUserId },
+        select: { id: true },
+      });
+
+      if (user) {
+        return user;
+      }
+    }
+
+    return this.prisma.user.findFirst({
+      where: {
+        socialAccounts: {
+          some: {
+            platform: 'YOUTUBE',
+          },
+        },
+      },
+      select: { id: true },
+    });
+  }
+
+  private async findDefaultAutoPostNiche(): Promise<{ id: string } | null> {
+    const preferredNicheId =
+      this.configService.get<string>('AUTO_POST_NICHE_ID')?.trim() ?? '';
+
+    if (preferredNicheId) {
+      const niche = await this.prisma.niche.findUnique({
+        where: { id: preferredNicheId },
+        select: { id: true, active: true },
+      });
+
+      if (niche?.active) {
+        return { id: niche.id };
+      }
+    }
+
+    return this.prisma.niche.findFirst({
+      where: { active: true },
+      select: { id: true },
+    });
+  }
+
+  private getInboxDir(): string {
+    return resolve(
+      this.configService.get<string>('LOCAL_VIDEO_INBOX_DIR') ??
+        'uploads/inbox',
+    );
+  }
+
+  private getQueueDir(): string {
+    return resolve(
+      this.configService.get<string>('LOCAL_VIDEO_QUEUE_DIR') ??
+        'uploads/queue',
+    );
   }
 }
