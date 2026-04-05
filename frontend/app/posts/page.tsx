@@ -7,6 +7,12 @@ function formatDate(value: string | null) {
   return new Date(value).toLocaleString("pt-BR");
 }
 
+function isYouTubeLink(value: string | null) {
+  if (!value) return false;
+
+  return value.includes("youtube.com") || value.includes("youtu.be");
+}
+
 type PostsPageProps = {
   searchParams: Promise<{
     date?: string;
@@ -117,6 +123,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Postado em</th>
                 <th className="px-3 py-2">Agendado em</th>
+                <th className="px-3 py-2">Link</th>
                 <th className="px-3 py-2">Views</th>
                 <th className="px-3 py-2">Curtidas</th>
                 <th className="px-3 py-2">Comentarios</th>
@@ -130,6 +137,20 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                   <td className="px-3 py-2 text-slate-700">{post.status}</td>
                   <td className="px-3 py-2 text-slate-700">{formatDate(post.postedAt)}</td>
                   <td className="px-3 py-2 text-slate-700">{formatDate(post.scheduledAt)}</td>
+                  <td className="px-3 py-2 text-slate-700">
+                    {post.status === "POSTED" && isYouTubeLink(post.videoUrl) ? (
+                      <a
+                        href={post.videoUrl ?? "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sky-700 underline decoration-sky-300 underline-offset-2"
+                      >
+                        Ver no YouTube
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
                   <td className="px-3 py-2 text-slate-700">{post.latestAnalytics?.views ?? 0}</td>
                   <td className="px-3 py-2 text-slate-700">{post.latestAnalytics?.likes ?? 0}</td>
                   <td className="px-3 py-2 text-slate-700">
@@ -157,6 +178,16 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
               <p className="mt-1 text-xs text-slate-600">
                 Nicho: {post.niche?.name ?? "-"} | Views: {post.analytics[0]?.views ?? 0}
               </p>
+              {post.status === "POSTED" && isYouTubeLink(post.videoUrl) ? (
+                <a
+                  href={post.videoUrl ?? "#"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex text-xs font-medium text-sky-700 underline decoration-sky-300 underline-offset-2"
+                >
+                  Abrir vídeo no YouTube
+                </a>
+              ) : null}
             </li>
           ))}
         </ul>
