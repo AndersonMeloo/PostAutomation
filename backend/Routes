@@ -1,4 +1,4 @@
-Criar usuário: 
+﻿Criar usuário:
 POST http://localhost:3000/users
 {
   "email": "anderson@email.com",
@@ -30,6 +30,12 @@ PATCH http://localhost:3000/users/ => "uuid"
 Deletar um Usuário:
 DELETE http://localhost:3000/users/ => "uuid"
 
+Verificar conexão YouTube do usuário:
+GET http://localhost:3000/users/SEU_USER_ID_UUID/youtube-connection
+
+Desconectar conta YouTube do usuário:
+DELETE http://localhost:3000/users/SEU_USER_ID_UUID/youtube-connection
+
 
 Testando Token de Refresh:
 POST http://localhost:3000/auth/refresh
@@ -42,7 +48,7 @@ Iniciar Login com Google (navegador):
 GET http://localhost:3000/auth/google
 
 Callback Google (automatico):
-GET http://localhost:3000/auth/google/redirect
+GET http://localhost:3000/auth/google/callback
 
 Teste sem frontend (retorna tokens em JSON):
 GET http://localhost:3000/auth/google/test
@@ -77,6 +83,26 @@ DELETE http://localhost:3000/niches/SEU_NICHE_ID_UUID
 
 
 ====================
+MODOS DE PUBLICAÇÃO
+====================
+Modo 1 - Postagem por URL (já tem vídeo no YouTube):
+- Endpoint: POST http://localhost:3000/posts/import-youtube-url
+- Uso: cria post PENDING a partir de um link de vídeo do YouTube.
+
+Modo 2 - Upload por endpoint:
+- Endpoint: POST http://localhost:3000/posts/upload-video
+- Uso: envia arquivo de vídeo, cria post PENDING e publica no horário agendado.
+
+Modo 3 - Upload automático por pasta inbox:
+- Pasta: backend/uploads/inbox
+- Uso: basta colocar o arquivo de vídeo na pasta, o scheduler importa automaticamente.
+- Fluxo: inbox -> queue -> processing -> published -> link do YouTube salvo no post.
+
+Observação:
+- Todos os modos passam pelo mesmo pipeline de publicação e aparecem no GET /posts.
+
+
+====================
 POSTS (YOUTUBE)
 ====================
 Listar Posts (ultimos com analytics):
@@ -91,14 +117,13 @@ GET http://localhost:3000/posts/overview?date=2026-04-02
 Importar Post por URL do YouTube:
 POST http://localhost:3000/posts/import-youtube-url
 {
-  "userId": "SEU_USER_ID_UUID",
   "nicheId": "SEU_NICHE_ID_UUID",
   "youtubeUrl": "https://www.youtube.com/watch?v=eQfqebZNEY0",
   "scheduledAt": "2026-04-01T21:00:00.000Z"
 }
 
 Obs:
-- O user precisa ter conta YouTube conectada em SocialAccount.
+- O usuário autenticado (JWT) precisa ter conta YouTube conectada em SocialAccount.
 - O niche precisa estar ativo (active: true).
 - O post sera criado com status PENDING e publicado pelo scheduler.
 - O endpoint /posts retorna os posts com niche e ultimo snapshot de analytics.
@@ -124,7 +149,6 @@ Content-Type: multipart/form-data
 
 Parâmetros:
 - video: [arquivo.mp4/.mov/.webm/.mkv] ← Arquivo do vídeo
-- userId: "SEU_USER_ID_UUID"
 - nicheId: "SEU_NICHE_ID_UUID"
 - title: "Título do Vídeo"
 - description: "Descrição opcional do vídeo"
@@ -133,7 +157,6 @@ Parâmetros:
 EXEMPLO com cURL:
 curl -X POST http://localhost:3000/posts/upload-video \
   -F "video=@/caminho/para/video.mp4" \
-  -F "userId=550e8400-e29b-41d4-a716-446655440000" \
   -F "nicheId=660e8400-e29b-41d4-a716-446655440000" \
   -F "title=Meu Vídeo Incrível" \
   -F "description=Uma descrição maneira do vídeo" \
@@ -145,7 +168,6 @@ EXEMPLO com Postman:
 3. Tab "Body" → selecionar "form-data"
 4. Adicionar campos:
    - Key: "video" | Type: "File" | Value: [selecionar arquivo]
-   - Key: "userId" | Type: "Text" | Value: "seu_user_id"
    - Key: "nicheId" | Type: "Text" | Value: "seu_niche_id"
    - Key: "title" | Type: "Text" | Value: "Título"
    - Key: "description" | Type: "Text" | Value: "Descrição"
@@ -166,9 +188,13 @@ FLUXO AUTOMÁTICO:
 Validações:
 ✓ Arquivo deve ter extensão: .mp4, .mov, .webm ou .mkv
 ✓ Tamanho máximo: depende do seu servidor
-✓ userId deve existir e ter conta YouTube conectada
+✓ Usuário autenticado (JWT) deve existir e ter conta YouTube conectada
 ✓ nicheId deve existir e estar ativo (active: true)
 ✓ scheduledAt deve ser data válida (ISO8601)
+
+Obs de autenticação:
+- Nas rotas protegidas de posts, o userId é obtido do token JWT autenticado.
+- Mesmo que userId venha no body, o backend usa o usuário do token.
 
 Resposta (sucesso):
 {
