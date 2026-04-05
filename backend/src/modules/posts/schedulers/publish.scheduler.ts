@@ -54,6 +54,8 @@ export class PublishScheduler {
 
           await this.archiveLocalVideoIfNeeded(sourceVideoPath);
         } catch (publishError) {
+          const failureReason = this.getErrorMessage(publishError);
+
           console.error(
             `Falha ao publicar post ${post.id} | Plataforma: ${post.platform}`,
             publishError,
@@ -63,6 +65,10 @@ export class PublishScheduler {
             where: { id: post.id },
             data: {
               status: 'FAILED',
+              description: this.buildFailedDescription(
+                post.description,
+                failureReason,
+              ),
             },
           });
         }
@@ -235,11 +241,16 @@ export class PublishScheduler {
       .get<string>('YOUTUBE_DEFAULT_PRIVACY_STATUS')
       ?.toLowerCase();
 
-    if (rawValue === 'public' || rawValue === 'private') {
+    if (
+      rawValue === 'public' ||
+      rawValue === 'private' ||
+      rawValue === 'unlisted'
+    ) {
       return rawValue;
     }
 
-    return 'unlisted';
+    // Por padrao, publicar como publico quando a variavel nao estiver definida.
+    return 'public';
   }
 
   private async getMediaFromPost(post: Post): Promise<{
@@ -366,6 +377,27 @@ export class PublishScheduler {
   private isVideoFile(fileName: string): boolean {
     const extension = extname(fileName).toLowerCase();
     return ['.mp4', '.mov', '.webm', '.mkv'].includes(extension);
+  }
+
+  private getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    if (typeof error === 'string') {
+      return error;
+    }
+
+    return 'Erro desconhecido durante publicação';
+  }
+
+  private buildFailedDescription(
+    originalDescription: string | null,
+    reason: string,
+  ): string {
+    const base = originalDescription?.trim() || 'Post sem descricao';
+    const normalizedReason = reason.trim() || 'Erro desconhecido';
+    return `${base}\n\n[FAILED_REASON] ${normalizedReason}`;
   }
 
   private getQueueDir(): string {
