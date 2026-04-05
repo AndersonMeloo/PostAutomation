@@ -7,6 +7,18 @@
 - ✅ Um vídeo .mp4 (mínimo 1MB)
 - ✅ Conta Google com YouTube ativado
 
+## MODO AUTOMÁTICO
+
+Agora o backend também consegue importar vídeos sozinho a partir da pasta `uploads/inbox`.
+
+- Coloque o vídeo nessa pasta
+- O cron de posts transforma o arquivo em um post PENDING
+- O scheduler de publicação envia o vídeo para o YouTube no horário agendado
+- Se quiser fixar usuário/nicho padrão, use as variáveis opcionais:
+  - `AUTO_POST_USER_ID`
+  - `AUTO_POST_NICHE_ID`
+  - `LOCAL_VIDEO_INBOX_DIR`
+
 ---
 
 ## PASSO 1: CRIAR USUÁRIO
@@ -122,6 +134,10 @@ Authorization: Bearer SEU_ACCESS_TOKEN
 ---
 
 ## PASSO 5: FAZER UPLOAD DO VÍDEO (O IMPORTANTE!)
+
+Se quiser continuar com o fluxo manual, este passo ainda funciona.
+
+Se quiser o fluxo 100% automático, basta salvar o vídeo em `uploads/inbox` e deixar o backend rodando.
 
 **Endpoint:** POST http://localhost:3000/posts/upload-video
 
@@ -284,14 +300,5 @@ SELECT * FROM "SocialAccount" WHERE "userId" = 'seu_user_id';
 
 ---
 
-## 🚀 PRÓXIMOS PASSOS
-
-Quando tudo funcionar:
-1. Criar Frontend em Next.js
-2. Integrar com login do Google
-3. Interface para gerenciar posts
-4. Dashboard com analytics
-
----
 
 **Dúvidas? Consulte o arquivo `Routes` para mais exemplos!**
