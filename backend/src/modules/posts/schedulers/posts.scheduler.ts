@@ -8,7 +8,7 @@ export class PostsScheduler {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    console.log('Iniciando automação de posts...');
+    // console.log('Iniciando automação de posts...');
 
     try {
       const importedVideos =
@@ -32,7 +32,7 @@ export class PostsScheduler {
       //   }
       // }
 
-      console.log('Automação finalizada');
+      // console.log('Automação finalizada');
     } catch (error) {
       console.error('Erro na automação:', error);
     }
