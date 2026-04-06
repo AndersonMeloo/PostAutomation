@@ -1,4 +1,4 @@
-# SocialMediaAutoPublisher
+# Post Automation
 
 Sistema para automatizar a publicação de vídeos curtos no YouTube e acompanhar o que foi postado sem depender de processo manual o tempo todo.
 
@@ -32,7 +32,7 @@ O fluxo principal funciona assim:
 
 ## Tecnologias usadas
 
-- **Backend:** NestJS, Prisma, PostgreSQL, Google APIs, Schedule/Cron, Passport, JWT, Docker
+- **Backend:** NestJS, Prisma, PostgreSQL, Google APIs, Schedule/Cron, Passport, JWT e Docker
 - **Frontend:** Next.js, React, TypeScript, Tailwind CSS
 
 ## Como o projeto está organizado
