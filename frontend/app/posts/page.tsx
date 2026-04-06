@@ -32,7 +32,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
 
   try {
     if (!accessToken) {
-      errorMessage = "Sessao nao encontrada. Faca login novamente.";
+      errorMessage = "Sessão não encontrada. Faça login novamente.";
     } else {
       const [postsResult, overviewResult] = await Promise.all([
         getPosts(accessToken),
@@ -43,7 +43,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     }
   } catch {
     errorMessage =
-      "Nao foi possivel carregar dados do backend. Verifique se a API Nest esta rodando na URL configurada.";
+      "Não foi possivel carregar dados do backend. Verifique se a API Nest esta rodando na URL configurada.";
   }
 
   return (
@@ -119,24 +119,24 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
             <thead>
               <tr className="border-b bg-slate-50 text-left text-slate-600">
                 <th className="px-3 py-2">Titulo</th>
-                <th className="px-3 py-2">Plataforma</th>
+                <th className="hidden px-3 py-2 md:table-cell">Plataforma</th>
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Postado em</th>
-                <th className="px-3 py-2">Agendado em</th>
+                <th className="hidden px-3 py-2 lg:table-cell">Agendado em</th>
                 <th className="px-3 py-2">Link</th>
                 <th className="px-3 py-2">Views</th>
-                <th className="px-3 py-2">Curtidas</th>
-                <th className="px-3 py-2">Comentarios</th>
+                <th className="hidden px-3 py-2 md:table-cell">Curtidas</th>
+                <th className="hidden px-3 py-2 md:table-cell">Comentarios</th>
               </tr>
             </thead>
             <tbody>
               {(overview?.postedToday ?? []).map((post) => (
                 <tr key={post.id} className="border-b last:border-none">
                   <td className="px-3 py-2 font-medium text-slate-900">{post.title}</td>
-                  <td className="px-3 py-2 text-slate-700">{post.platform}</td>
+                  <td className="hidden px-3 py-2 text-slate-700 md:table-cell">{post.platform}</td>
                   <td className="px-3 py-2 text-slate-700">{post.status}</td>
                   <td className="px-3 py-2 text-slate-700">{formatDate(post.postedAt)}</td>
-                  <td className="px-3 py-2 text-slate-700">{formatDate(post.scheduledAt)}</td>
+                  <td className="hidden px-3 py-2 text-slate-700 lg:table-cell">{formatDate(post.scheduledAt)}</td>
                   <td className="px-3 py-2 text-slate-700">
                     {post.status === "POSTED" && isYouTubeLink(post.videoUrl) ? (
                       <a
@@ -152,8 +152,8 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                     )}
                   </td>
                   <td className="px-3 py-2 text-slate-700">{post.latestAnalytics?.views ?? 0}</td>
-                  <td className="px-3 py-2 text-slate-700">{post.latestAnalytics?.likes ?? 0}</td>
-                  <td className="px-3 py-2 text-slate-700">
+                  <td className="hidden px-3 py-2 text-slate-700 md:table-cell">{post.latestAnalytics?.likes ?? 0}</td>
+                  <td className="hidden px-3 py-2 text-slate-700 md:table-cell">
                     {post.latestAnalytics?.comments ?? 0}
                   </td>
                 </tr>
