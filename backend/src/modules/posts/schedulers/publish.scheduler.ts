@@ -18,7 +18,7 @@ export class PublishScheduler {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handlePublish() {
-    console.log('Verificando posts para publicar...');
+    // console.log('Verificando posts para publicar...');
 
     const now = new Date();
 
@@ -76,7 +76,7 @@ export class PublishScheduler {
 
       await this.syncYoutubeAnalyticsSnapshots();
 
-      console.log('Publicação finalizada');
+      // console.log('Publicação finalizada');
     } catch (error) {
       console.error('Erro na publicação:', error);
     }
