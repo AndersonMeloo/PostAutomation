@@ -40,6 +40,12 @@ type PostOverview = {
     likes: number;
     comments: number;
   };
+  totalsAllTime: {
+    views: number;
+    likes: number;
+    comments: number;
+  };
+  totalPostedVideos: number;
   totalViewsAllVideos: number;
   postedToday: {
     id: string;
@@ -178,6 +184,8 @@ export class PostsService {
             take: 1,
             select: {
               views: true,
+              likes: true,
+              comments: true,
             },
           },
         },
@@ -199,9 +207,21 @@ export class PostsService {
       0,
     );
 
+    const totalsAllTime = postedVideos.reduce(
+      (acc, item) => {
+        acc.views += item.analytics[0]?.views ?? 0;
+        acc.likes += item.analytics[0]?.likes ?? 0;
+        acc.comments += item.analytics[0]?.comments ?? 0;
+        return acc;
+      },
+      { views: 0, likes: 0, comments: 0 },
+    );
+
     return {
       date: startOfDay.toISOString().slice(0, 10),
       totalsForDay,
+      totalsAllTime,
+      totalPostedVideos: postedVideos.length,
       totalViewsAllVideos,
       postedToday: postedToday.map((post) => ({
         id: post.id,
