@@ -82,8 +82,8 @@ export default async function Home({ searchParams }: HomePageProps) {
   return (
     <section className="space-y-6">
       <header className="rounded-2xl border bg-panel-strong p-6 text-white">
-        <p className="text-xs uppercase tracking-[0.2em] text-cyan-200">Visão geral</p>
-        <h2 className="mt-2 text-3xl font-semibold">Painel das Rotas do Backend</h2>
+        <p className="text-xs uppercase tracking-[0.2em] text-cyan-200">views</p>
+        <h2 className="mt-2 text-3xl font-semibold">Visão geral</h2>
       </header>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
