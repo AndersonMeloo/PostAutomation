@@ -47,6 +47,12 @@ type PostOverview = {
   };
   totalPostedVideos: number;
   totalViewsAllVideos: number;
+  dailySeries: {
+    date: string;
+    views: number;
+    likes: number;
+    comments: number;
+  }[];
   postedToday: {
     id: string;
     title: string;
@@ -134,73 +140,214 @@ export class PostsService {
     const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
 
-    const endOfDay = new Date(targetDate);
-    endOfDay.setHours(23, 59, 59, 999);
+    const [postedVideosForDayTable, postedVideos, analyticsSnapshots] =
+      await Promise.all([
+        this.prisma.post.findMany({
+          where: {
+            userId,
+            status: 'POSTED',
+          },
+          orderBy: {
+            postedAt: 'desc',
+          },
+          select: {
+            id: true,
+            title: true,
+            videoUrl: true,
+            platform: true,
+            status: true,
+            postedAt: true,
+            scheduledAt: true,
+            analytics: {
+              orderBy: {
+                collectedAt: 'desc',
+              },
+              take: 1,
+              select: {
+                views: true,
+                likes: true,
+                comments: true,
+                collectedAt: true,
+              },
+            },
+          },
+        }),
+        this.prisma.post.findMany({
+          where: {
+            userId,
+            status: 'POSTED',
+          },
+          select: {
+            analytics: {
+              orderBy: {
+                collectedAt: 'desc',
+              },
+              take: 1,
+              select: {
+                views: true,
+                likes: true,
+                comments: true,
+              },
+            },
+          },
+        }),
+        this.prisma.postAnalytics.findMany({
+          where: {
+            post: {
+              userId,
+            },
+          },
+          select: {
+            postId: true,
+            views: true,
+            likes: true,
+            comments: true,
+            collectedAt: true,
+          },
+          orderBy: {
+            collectedAt: 'asc',
+          },
+        }),
+      ]);
 
-    const [postedToday, postedVideos] = await Promise.all([
-      this.prisma.post.findMany({
-        where: {
-          userId,
-          postedAt: {
-            gte: startOfDay,
-            lte: endOfDay,
-          },
-        },
-        orderBy: {
-          postedAt: 'desc',
-        },
-        select: {
-          id: true,
-          title: true,
-          videoUrl: true,
-          platform: true,
-          status: true,
-          postedAt: true,
-          scheduledAt: true,
-          analytics: {
-            orderBy: {
-              collectedAt: 'desc',
-            },
-            take: 1,
-            select: {
-              views: true,
-              likes: true,
-              comments: true,
-              collectedAt: true,
-            },
-          },
-        },
-      }),
-      this.prisma.post.findMany({
-        where: {
-          userId,
-          status: 'POSTED',
-        },
-        select: {
-          analytics: {
-            orderBy: {
-              collectedAt: 'desc',
-            },
-            take: 1,
-            select: {
-              views: true,
-              likes: true,
-              comments: true,
-            },
-          },
-        },
-      }),
-    ]);
+    const latestSnapshotByPostAndDay = new Map<
+      string,
+      {
+        date: string;
+        views: number;
+        likes: number;
+        comments: number;
+        collectedAt: Date;
+      }
+    >();
 
-    const totalsForDay = postedToday.reduce(
-      (acc, item) => {
-        acc.views += item.analytics[0]?.views ?? 0;
-        acc.likes += item.analytics[0]?.likes ?? 0;
-        acc.comments += item.analytics[0]?.comments ?? 0;
-        return acc;
-      },
-      { views: 0, likes: 0, comments: 0 },
-    );
+    for (const snapshot of analyticsSnapshots) {
+      const date = snapshot.collectedAt.toISOString().slice(0, 10);
+      const key = `${snapshot.postId}:${date}`;
+
+      latestSnapshotByPostAndDay.set(key, {
+        date,
+        views: snapshot.views,
+        likes: snapshot.likes,
+        comments: snapshot.comments,
+        collectedAt: snapshot.collectedAt,
+      });
+    }
+
+    const dailySnapshotsByPost = new Map<
+      string,
+      {
+        date: string;
+        views: number;
+        likes: number;
+        comments: number;
+        collectedAt: Date;
+      }[]
+    >();
+
+    for (const [key, snapshot] of latestSnapshotByPostAndDay.entries()) {
+      const separatorIndex = key.indexOf(':');
+      const postId = separatorIndex >= 0 ? key.slice(0, separatorIndex) : key;
+      const entries = dailySnapshotsByPost.get(postId) ?? [];
+
+      entries.push(snapshot);
+      dailySnapshotsByPost.set(postId, entries);
+    }
+
+    const dailyTotalsMap = new Map<
+      string,
+      {
+        views: number;
+        likes: number;
+        comments: number;
+      }
+    >();
+
+    const selectedDateKey = startOfDay.toISOString().slice(0, 10);
+    const selectedDayDeltaByPost = new Map<
+      string,
+      {
+        views: number;
+        likes: number;
+        comments: number;
+        collectedAt: Date;
+      }
+    >();
+
+    // O diário representa variacao do dia (delta), nao acumulado total.
+    for (const [postId, snapshots] of dailySnapshotsByPost.entries()) {
+      snapshots.sort((a, b) => a.date.localeCompare(b.date));
+
+      let previous = { views: 0, likes: 0, comments: 0 };
+
+      for (const snapshot of snapshots) {
+        const current = dailyTotalsMap.get(snapshot.date) ?? {
+          views: 0,
+          likes: 0,
+          comments: 0,
+        };
+
+        const viewsDelta = Math.max(snapshot.views - previous.views, 0);
+        const likesDelta = Math.max(snapshot.likes - previous.likes, 0);
+        const commentsDelta = Math.max(
+          snapshot.comments - previous.comments,
+          0,
+        );
+
+        dailyTotalsMap.set(snapshot.date, {
+          views: current.views + viewsDelta,
+          likes: current.likes + likesDelta,
+          comments: current.comments + commentsDelta,
+        });
+
+        if (snapshot.date === selectedDateKey) {
+          selectedDayDeltaByPost.set(postId, {
+            views: viewsDelta,
+            likes: likesDelta,
+            comments: commentsDelta,
+            collectedAt: snapshot.collectedAt,
+          });
+        }
+
+        previous = {
+          views: snapshot.views,
+          likes: snapshot.likes,
+          comments: snapshot.comments,
+        };
+      }
+    }
+
+    const dailySeries = Array.from(dailyTotalsMap.entries())
+      .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+      .map(([date, totals]) => ({
+        date,
+        views: totals.views,
+        likes: totals.likes,
+        comments: totals.comments,
+      }));
+
+    const totalsForDay = dailyTotalsMap.get(selectedDateKey) ?? {
+      views: 0,
+      likes: 0,
+      comments: 0,
+    };
+
+    const postedToday = postedVideosForDayTable
+      .filter((post) => selectedDayDeltaByPost.has(post.id))
+      .map((post) => ({
+        id: post.id,
+        title: post.title,
+        videoUrl: post.videoUrl,
+        platform: post.platform,
+        status: post.status,
+        postedAt: post.postedAt,
+        scheduledAt: post.scheduledAt,
+        latestAnalytics: selectedDayDeltaByPost.get(post.id) ?? null,
+      }))
+      .sort(
+        (a, b) =>
+          (b.latestAnalytics?.views ?? 0) - (a.latestAnalytics?.views ?? 0),
+      );
 
     const totalViewsAllVideos = postedVideos.reduce(
       (acc, item) => acc + (item.analytics[0]?.views ?? 0),
@@ -223,16 +370,8 @@ export class PostsService {
       totalsAllTime,
       totalPostedVideos: postedVideos.length,
       totalViewsAllVideos,
-      postedToday: postedToday.map((post) => ({
-        id: post.id,
-        title: post.title,
-        videoUrl: post.videoUrl,
-        platform: post.platform,
-        status: post.status,
-        postedAt: post.postedAt,
-        scheduledAt: post.scheduledAt,
-        latestAnalytics: post.analytics[0] ?? null,
-      })),
+      dailySeries,
+      postedToday,
     };
   }
 
