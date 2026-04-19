@@ -23,24 +23,7 @@ export default async function Home({ searchParams }: HomePageProps) {
     0,
   );
 
-  let overview:
-    | {
-      date: string;
-      totalsForDay: {
-        views: number;
-        likes: number;
-        comments: number;
-      };
-      totalsAllTime: {
-        views: number;
-        likes: number;
-        comments: number;
-      };
-      totalPostedVideos: number;
-      totalViewsAllVideos: number;
-      postedToday: { id: string }[];
-    }
-    | null = null;
+  let overview: Awaited<ReturnType<typeof getPostsOverview>> | null = null;
 
   try {
     if (accessToken) {
