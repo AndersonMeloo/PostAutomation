@@ -35,6 +35,12 @@ export type PostsOverview = {
   };
   totalPostedVideos: number;
   totalViewsAllVideos: number;
+  dailySeries: {
+    date: string;
+    views: number;
+    likes: number;
+    comments: number;
+  }[];
   postedToday: {
     id: string;
     title: string;
