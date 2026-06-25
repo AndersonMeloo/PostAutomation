@@ -288,7 +288,7 @@ SELECT * FROM "SocialAccount" WHERE "userId" = 'seu_user_id';
 
 ## 📋 CHECKLIST FINAL
 
-- [ ] Usuário criado
+- ✅ Usuário criado
 - [ ] Login feito (pegou accessToken)
 - [ ] Conta YouTube conectada (SocialAccount criado)
 - [ ] Niche criado
