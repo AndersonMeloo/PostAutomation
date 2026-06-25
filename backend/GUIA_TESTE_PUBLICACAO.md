@@ -289,14 +289,14 @@ SELECT * FROM "SocialAccount" WHERE "userId" = 'seu_user_id';
 ## 📋 CHECKLIST FINAL
 
 - ✅ Usuário criado
-- [ ] Login feito (pegou accessToken)
-- [ ] Conta YouTube conectada (SocialAccount criado)
-- [ ] Niche criado
-- [ ] Vídeo feito upload (status PENDING)
-- [ ] Aguardou scheduler (1 minuto)
-- [ ] Post está POSTED
-- [ ] Link do YouTube aparece no banco
-- [ ] Vídeo aparece no canal do YouTube
+- ✅ Login feito (pegou accessToken)
+- ✅ Conta YouTube conectada (SocialAccount criado)
+- ✅ Niche criado
+- ✅ Vídeo feito upload (status PENDING)
+- ✅ Aguardou scheduler (1 minuto)
+- ✅ Post está POSTED
+- ✅ Link do YouTube aparece no banco
+- ✅ Vídeo aparece no canal do YouTube
 
 ---
 
