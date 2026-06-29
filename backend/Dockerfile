@@ -4,10 +4,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --omit=dev
+RUN npm ci
 
 COPY dist ./dist
 COPY prisma ./prisma
+
+RUN npx prisma generate
 
 EXPOSE 3000
 
