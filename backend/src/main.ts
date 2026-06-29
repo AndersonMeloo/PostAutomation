@@ -6,6 +6,7 @@ async function bootstrap() {
 
   const allowedOrigins = [
     process.env.FRONTEND_URL,
+    'https://post-automation-psi.vercel.app',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',
