@@ -9,6 +9,13 @@
   --muted: #4f5d6b;
   --accent: #0ea5a3;
   --accent-soft: #b7f4ef;
+
+  --bg-middys-purple: #A887CE;
+  --bg-composers-magic: #7B6E7F;
+  --bg-mulberry-mix: #9C526D;
+  --bg-stone-violet: #4D3E50;
+  --bg-jaguar: #292631;
+  --bg-river: #171821;
 }
 
 @theme inline {
@@ -22,6 +29,13 @@
   --color-accent-soft: var(--accent-soft);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains-mono);
+
+  --color-middys-purple: var(--bg-middys-purple);
+  --color-composers-magic: var(--bg-composers-magic);
+  --color-mulberry-mix: var(--bg-mulberry-mix);
+  --color-stone-violet: var(--bg-stone-violet);
+  --color-jaguar: var(--bg-jaguar);
+  --color-river: var(--bg-river);
 }
 
 body {
