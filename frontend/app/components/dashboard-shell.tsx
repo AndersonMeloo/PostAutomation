@@ -9,14 +9,14 @@ import {
     disconnectYoutubeConnection,
     getYoutubeConnectionStatus,
 } from "../lib/api";
-import { BookOpen, FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck } from "lucide-react";
+import { FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
 
 const navItems = [
     { href: "/", label: "", icon: LayoutDashboard }, // Visão geral
     { href: "/auth", label: "", icon: ShieldCheck }, // Auth
-    { href: "/users", label: "", icon: FolderTree }, // Usuário
+    { href: "/users", label: "", icon: User }, // Usuário
     { href: "/niches", label: "", icon: Shapes }, // Nichos
-    { href: "/posts", label: "", icon: BookOpen }, // Postagens
+    { href: "/posts", label: "", icon: FolderTree }, // Postagens
 ];
 
 type DashboardShellProps = {
