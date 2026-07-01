@@ -52,3 +52,118 @@ body {
 * {
   border-color: var(--line);
 }
+
+.card-gradient {
+  background: linear-gradient(135deg,
+      #8F72D0 0%,
+      #A887CE 35%,
+      #C78FBC 70%,
+      #D6A2C5 100%);
+}
+
+.card-gradient-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-gradient-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg,
+      rgba(255, 255, 255, 0.28),
+      rgba(255, 255, 255, 0.08) 45%,
+      transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-gradient-overlay>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* .dashboard-card {
+  background: #2b2734;
+  border: 1px solid rgba(255, 255, 255, .05);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .04),
+    0 12px 24px rgba(0, 0, 0, .35);
+}
+
+.dashboard-card-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(156, 82, 109, .30),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at right,
+      rgba(168, 135, 206, .15),
+      transparent 65%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.05),
+      transparent 45%
+    );
+
+  pointer-events: none;
+} */
+
+.bg-dashboard {
+  position: relative;
+  overflow: hidden;
+  /* evita que os brilhos vazem para outros elementos */
+  isolation: isolate;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(130, 110, 255, 0.10), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(255, 120, 180, 0.08), transparent 32%),
+    radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.03), transparent 45%),
+    linear-gradient(135deg,
+      #222333 0%,
+      #272638 42%,
+      #30253A 72%,
+      #39253E 100%);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.bg-dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.02) 18%,
+      transparent 45%);
+
+  opacity: .9;
+}
+
+.bg-dashboard::after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  top: -120px;
+  right: -80px;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+
+  background: rgba(156, 120, 255, 0.12);
+}   
