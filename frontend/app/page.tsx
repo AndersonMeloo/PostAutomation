@@ -64,45 +64,45 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl border bg-panel-strong p-6 text-white">
+      <header className="rounded-2xl bg-dashboard p-6 text-white">
         <p className="text-xs uppercase tracking-[0.2em] text-cyan-200">views</p>
         <h2 className="mt-2 text-3xl font-semibold">Visão geral</h2>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Modulos mapeados</p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 text-white">
+        <article className="rounded-xl p-4 bg-dashboard">
+          <p className="text-sm">Modulos mapeados</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">{backendModules.length}</p>
         </article>
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Views no dia</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Views no dia</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalsForDay.views ?? 0}
           </p>
         </article>
-        <article className="rounded-xl border bg-accent-soft p-4">
-          <p className="text-sm text-slate-700">Views totais dos videos</p>
+        <article className="rounded-xl border-none p-4 bg-dashboard">
+          <p className="text-sm">Views totais dos videos</p>
           <p className="mt-2 text-lg font-semibold text-slate-900">
             {overview?.totalViewsAllVideos ?? 0}
           </p>
         </article>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Curtidas no dia</p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 text-white">
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Curtidas no dia</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalsForDay.likes ?? 0}
           </p>
         </article>
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Comentarios no dia</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Comentarios no dia</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalsForDay.comments ?? 0}
           </p>
         </article>
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Videos postados hoje</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Videos postados hoje</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.postedToday.length ?? 0}
           </p>
@@ -110,20 +110,20 @@ export default async function Home({ searchParams }: HomePageProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Curtidas totais</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Curtidas totais</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalsAllTime.likes ?? 0}
           </p>
         </article>
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Comentarios totais</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Comentarios totais</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalsAllTime.comments ?? 0}
           </p>
         </article>
-        <article className="rounded-xl border bg-white p-4">
-          <p className="text-sm text-slate-500">Videos postados no total</p>
+        <article className="rounded-xl border-none bg-dashboard p-4">
+          <p className="text-sm">Videos postados no total</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900">
             {overview?.totalPostedVideos ?? 0}
           </p>
@@ -135,19 +135,19 @@ export default async function Home({ searchParams }: HomePageProps) {
           <Link
             key={moduleItem.slug}
             href={`/${moduleItem.slug}`}
-            className="rounded-2xl border bg-white p-4 transition hover:-translate-y-0.5 hover:border-cyan-300"
+            className="rounded-2xl bg-dashboard p-4 transition hover:-translate-y-0.5 text-white"
           >
-            <p className="text-xs uppercase tracking-[0.16em] text-slate-500">{moduleItem.basePath}</p>
-            <h3 className="mt-2 text-xl font-semibold text-slate-900">{moduleItem.title}</h3>
+            <p className="text-xs uppercase tracking-[0.16em]">{moduleItem.basePath}</p>
+            <h3 className="mt-2 text-xl font-semibold">{moduleItem.title}</h3>
             <p className="mt-2 text-sm text-slate-600">{moduleItem.description}</p>
-            <p className="mt-3 text-sm font-medium text-cyan-700">
+            <p className="mt-3 text-sm font-medium">
               {moduleItem.endpoints.length} endpoint(s)
             </p>
           </Link>
         ))}
       </div>
 
-      <section className="rounded-xl border bg-white p-4">
+      <section className="rounded-xl bg-dashboard p-4">
         <h3 className="text-lg font-semibold text-slate-900">Resumo da integracao</h3>
         <p className="mt-2 text-sm text-slate-600">
           {overview
@@ -156,7 +156,7 @@ export default async function Home({ searchParams }: HomePageProps) {
         </p>
       </section>
 
-      <section className="rounded-xl border bg-white p-4">
+      <section className="rounded-xl bg-dashboard p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-lg font-semibold text-slate-900">
             {chartMode === "total" ? "Grafico total" : "Grafico diario"}
