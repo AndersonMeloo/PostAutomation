@@ -14,7 +14,7 @@ import { FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "
 const navItems = [
     { href: "/", label: "", icon: LayoutDashboard }, // Visão geral
     { href: "/auth", label: "", icon: ShieldCheck }, // Auth
-    { href: "/users", label: "", icon: User }, // Usuário
+    // { href: "/users", label: "", icon: User },
     { href: "/niches", label: "", icon: Shapes }, // Nichos
     { href: "/posts", label: "", icon: FolderTree }, // Postagens
 ];
@@ -96,8 +96,8 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
     return (
         <div className="min-h-screen w-full p-2 md:p-3 bg-river">
-            <div className="grid min-h-[calc(100vh-1rem)] w-full grid-cols-1 gap-3 md:grid-cols-[260px_1fr]">
-                <aside className="rounded-3xl p-4 shadow-sm md:p-6 bg-river">
+            <div className="grid min-h-[calc(100vh-1rem)] w-full grid-cols-1 gap-3 md:grid-cols-[140px_1fr]">
+                <aside className="rounded-3xl bg-river p-4 shadow-sm md:p-6 md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col">
                     <div className="mb-6 rounded-2xl bg-panel-strong p-4 text-white">
                         <p className="text-xs uppercase tracking-[0.2em] text-cyan-100">
                             {/* SocialMediaAutoPublisher */}
@@ -124,36 +124,47 @@ export function DashboardShell({ children }: DashboardShellProps) {
                         })}
                     </nav>
 
-                    {youtubeConnected ? (
-                        <button
-                            type="button"
-                            onClick={() => void handleDisconnectYouTube()}
-                            disabled={youtubeActionLoading}
-                            className="mt-3 w-full rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 cursor-pointer"
-                        >
-                            {youtubeActionLoading
-                                ? "Desconectando..."
-                                : "Desconectar conta YouTube"}
-                        </button>
-                    ) : (
-                        <button
-                            type="button"
-                            onClick={handleConnectYouTube}
-                            disabled={youtubeLoading}
-                            className="mt-3 w-full rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-60 cursor-pointer"
-                        >
-                            {youtubeLoading ? "Verificando conexao..." : "Conectar YouTube"}
-                        </button>
-                    )}
+                    <div className="mt-auto space-y-3">
+                        {youtubeConnected ? (
+                            <button
+                                type="button"
+                                onClick={() => void handleDisconnectYouTube()}
+                                disabled={youtubeActionLoading}
+                                className="w-full rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100 disabled:opacity-60 cursor-pointer"
+                            >
+                                {youtubeActionLoading
+                                    ? "Desconectando..."
+                                    : "Desconectar conta YouTube"}
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={handleConnectYouTube}
+                                disabled={youtubeLoading}
+                                className="w-full rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-60 cursor-pointer"
+                            >
+                                {youtubeLoading
+                                    ? "Verificando conexão..."
+                                    : "Conectar YouTube"}
+                            </button>
+                        )}
 
-                    <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="mt-3 w-full rounded-xl borde px-3 py-2 text-sm font-semibold text-white hover:text-[#9C526D] transition cursor-pointer"
-                    >
-                        {/* Sair */}
-                        <LogOut />
-                    </button>
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="flex w-full items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold text-white transition hover:text-[#9C526D] cursor-pointer"
+                        >
+                            <LogOut />
+                        </button>
+
+                        <Link
+                            href="/users"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-white transition hover:text-[#9C526D]"
+                        >
+                            <User size={22} />
+                            Perfil
+                        </Link>
+                    </div>
                 </aside>
 
                 <main className="rounded-3xl bg-river p-4 shadow-sm md:p-8">
