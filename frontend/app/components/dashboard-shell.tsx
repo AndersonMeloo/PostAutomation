@@ -105,7 +105,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
                     ? "grid-cols-1 md:grid-cols-[72px_1fr]"
                     : "grid-cols-1 md:grid-cols-[220px_1fr]"
                 }`}>
-                <aside className={`relative rounded-3xl bg-river shadow-sm md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col transition-all duration-300
+                <aside className={`relative rounded-3xl bg-river shadow-sm md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col transition-all duration-300 shadow-custom py-6
                     ${collapsed
                         ? "w-18 p-2"
                         : "w-55 p-4"
@@ -114,13 +114,9 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                     <button
                         onClick={() => setCollapsed(!collapsed)}
-                        className="absolute -right-3 top-8 z-50 flex h-7 w-7 items-center justify-center rounded-full bg-panel-strong shadow-lg border border-white/10 hover:scale-105 transition cursor-pointer"
+                        className="absolute -right-5 -top-2 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-r from-violet-400 to-pink-400 text-white border border-white/10 shadow-lg shadow-violet-500/25 hover:scale-105 hover:shadow-violet-500/40 transition-all cursor-pointer"
                     >
-                        {collapsed ? (
-                            <ChevronRight size={18} />
-                        ) : (
-                            <ChevronLeft size={18} />
-                        )}
+                        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
                     </button>
 
                     {/* <div className="mb-6 rounded-2xl bg-panel-strong p-4 text-white">
