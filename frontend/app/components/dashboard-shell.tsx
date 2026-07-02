@@ -9,14 +9,15 @@ import {
     disconnectYoutubeConnection,
     getYoutubeConnectionStatus,
 } from "../lib/api";
-import { FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
+import { ChartNoAxesCombined, FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
 
 const navItems = [
-    { href: "/", label: "", icon: LayoutDashboard }, // Visão geral
-    { href: "/auth", label: "", icon: ShieldCheck }, // Auth
+    { href: "/", label: "Ínicio", icon: LayoutDashboard }, 
+    { href: "/auth", label: "Rotas", icon: ShieldCheck }, 
     // { href: "/users", label: "", icon: User },
-    { href: "/niches", label: "", icon: Shapes }, // Nichos
-    { href: "/posts", label: "", icon: FolderTree }, // Postagens
+    { href: "/niches", label: "Nichos", icon: Shapes }, 
+    { href: "/posts", label: "Postagens", icon: FolderTree },
+    { href: "#", label: "Métricas", icon: ChartNoAxesCombined },
 ];
 
 type DashboardShellProps = {
@@ -97,28 +98,52 @@ export function DashboardShell({ children }: DashboardShellProps) {
     return (
         <div className="min-h-screen w-full p-2 md:p-3 bg-river">
             <div className="grid min-h-[calc(100vh-1rem)] w-full grid-cols-1 gap-3 md:grid-cols-[140px_1fr]">
-                <aside className="rounded-3xl bg-river p-4 shadow-sm md:p-6 md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col">
-                    <div className="mb-6 rounded-2xl bg-panel-strong p-4 text-white">
+                <aside className="rounded-3xl bg-river p-4 shadow-sm md:p-1 md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col">
+
+                    {/* <div className="mb-6 rounded-2xl bg-panel-strong p-4 text-white">
                         <p className="text-xs uppercase tracking-[0.2em] text-cyan-100">
-                            {/* SocialMediaAutoPublisher */}
+                            SocialMediaAutoPublisher
                         </p>
                         <h1 className="mt-2 text-lg font-semibold leading-tight text-center">
                             PostAutomation
                         </h1>
-                    </div>
+                    </div> */}
 
                     <nav className="grid grid-cols-2 gap-2 md:grid-cols-1">
                         {navItems.map((item) => {
+
                             const Icon = item.icon;
+                            const isActive = pathname === item.href;
 
                             return (
+
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className="group flex items-center gap-2 rounded-xl border-none px-3 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5"
+                                    className={`group flex items-center gap-2 rounded-xl border-none px-3 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5
+                                        ${isActive
+                                            ? "card-gradient card-gradient-overlay"
+                                            : "text-white hover:text-[#9C5260]"
+                                        }`}
                                 >
-                                    {Icon && <Icon size={22} className="group-hover:text-[#9C526D]" />}
-                                    {item.label}
+                                    {Icon &&
+                                        <Icon
+                                            size={22}
+                                            className={`transition-colors ${isActive
+                                                ? "text-white"
+                                                : "group-hover:text-[#9C526D]"
+                                                }`}
+                                        />
+                                    }
+
+                                    <span
+                                        className={`transition-colors ${isActive
+                                            ? "text-white"
+                                            : "group-hover:text-[#9C5260]"
+                                            }`}
+                                    >
+                                        {item.label}
+                                    </span>
                                 </Link>
                             );
                         })}
