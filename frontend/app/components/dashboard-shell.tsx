@@ -12,10 +12,10 @@ import {
 import { ChartNoAxesCombined, FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
 
 const navItems = [
-    { href: "/", label: "Ínicio", icon: LayoutDashboard }, 
-    { href: "/auth", label: "Rotas", icon: ShieldCheck }, 
+    { href: "/", label: "Ínicio", icon: LayoutDashboard },
+    { href: "/auth", label: "Rotas", icon: ShieldCheck },
     // { href: "/users", label: "", icon: User },
-    { href: "/niches", label: "Nichos", icon: Shapes }, 
+    { href: "/niches", label: "Nichos", icon: Shapes },
     { href: "/posts", label: "Postagens", icon: FolderTree },
     { href: "#", label: "Métricas", icon: ChartNoAxesCombined },
 ];
@@ -31,6 +31,8 @@ export function DashboardShell({ children }: DashboardShellProps) {
     const [youtubeConnected, setYoutubeConnected] = useState(false);
     const [youtubeLoading, setYoutubeLoading] = useState(true);
     const [youtubeActionLoading, setYoutubeActionLoading] = useState(false);
+
+    const isProfileActive = pathname.startsWith("/users");
 
     useEffect(() => {
         async function loadYoutubeStatus() {
@@ -184,10 +186,26 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                         <Link
                             href="/users"
-                            className="flex items-center gap-3 rounded-xl px-3 py-2 text-white transition hover:text-[#9C526D]"
+                            className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-white transition hover:-translate-y-0.5 ${isProfileActive
+                                ? "card-gradient card-gradient-overlay"
+                                : "text-white hover:text-[#9C5260]"
+                                }`}
                         >
-                            <User size={22} />
-                            Perfil
+                            <User
+                                size={22}
+                                className={`transition-colors ${isProfileActive
+                                    ? "text-white"
+                                    : "group-hover:text-[#9C526D]"
+                                    }`}
+                            />
+
+                            <span className={`transition-colors ${isProfileActive
+                                ? "text-white"
+                                : "group-hover:text-[#9C5260]"
+                                }`}
+                            >
+                                Perfil
+                            </span>
                         </Link>
                     </div>
                 </aside>
