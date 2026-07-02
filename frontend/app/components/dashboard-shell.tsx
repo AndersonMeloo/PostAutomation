@@ -9,7 +9,7 @@ import {
     disconnectYoutubeConnection,
     getYoutubeConnectionStatus,
 } from "../lib/api";
-import { ChartNoAxesCombined, FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
+import { ChartNoAxesCombined, ChevronLeft, ChevronRight, FolderTree, LayoutDashboard, LogOut, Shapes, ShieldCheck, User } from "lucide-react";
 
 const navItems = [
     { href: "/", label: "Ínicio", icon: LayoutDashboard },
@@ -33,6 +33,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
     const [youtubeActionLoading, setYoutubeActionLoading] = useState(false);
 
     const isProfileActive = pathname.startsWith("/users");
+    const [collapsed, setCollapsed] = useState(false);
 
     useEffect(() => {
         async function loadYoutubeStatus() {
@@ -99,8 +100,28 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
     return (
         <div className="min-h-screen w-full p-2 md:p-3 bg-river">
-            <div className="grid min-h-[calc(100vh-1rem)] w-full grid-cols-1 gap-3 md:grid-cols-[140px_1fr]">
-                <aside className="rounded-3xl bg-river p-4 shadow-sm md:p-1 md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col">
+            <div className={`grid min-h-[calc(100vh-1rem)] w-full gap-3 transition-all duration-300 
+                ${collapsed
+                    ? "grid-cols-1 md:grid-cols-[72px_1fr]"
+                    : "grid-cols-1 md:grid-cols-[220px_1fr]"
+                }`}>
+                <aside className={`relative rounded-3xl bg-river shadow-sm md:sticky md:top-6 md:h-[calc(100vh-3rem)] flex flex-col transition-all duration-300
+                    ${collapsed
+                        ? "w-18 p-2"
+                        : "w-55 p-4"
+                    }`}
+                >
+
+                    <button
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="absolute -right-3 top-8 z-50 flex h-7 w-7 items-center justify-center rounded-full bg-panel-strong shadow-lg border border-white/10 hover:scale-105 transition cursor-pointer"
+                    >
+                        {collapsed ? (
+                            <ChevronRight size={18} />
+                        ) : (
+                            <ChevronLeft size={18} />
+                        )}
+                    </button>
 
                     {/* <div className="mb-6 rounded-2xl bg-panel-strong p-4 text-white">
                         <p className="text-xs uppercase tracking-[0.2em] text-cyan-100">
@@ -122,10 +143,15 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`group flex items-center gap-2 rounded-xl border-none px-3 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5
-                                        ${isActive
+                                    className={`group flex items-center rounded-xl border-none px-3 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5
+                                        ${collapsed
+                                            ? "justify-center"
+                                            : "gap-2"
+                                        }
+                                            ${isActive
                                             ? "card-gradient card-gradient-overlay"
                                             : "text-white hover:text-[#9C5260]"
+                                        }
                                         }`}
                                 >
                                     {Icon &&
@@ -138,14 +164,16 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                         />
                                     }
 
-                                    <span
-                                        className={`transition-colors ${isActive
-                                            ? "text-white"
-                                            : "group-hover:text-[#9C5260]"
-                                            }`}
-                                    >
-                                        {item.label}
-                                    </span>
+                                    {!collapsed && (
+                                        <span
+                                            className={`transition-colors ${isActive
+                                                ? "text-white"
+                                                : "group-hover:text-[#9C5260]"
+                                                }`}
+                                        >
+                                            {item.label}
+                                        </span>
+                                    )}
                                 </Link>
                             );
                         })}
@@ -199,13 +227,15 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                     }`}
                             />
 
-                            <span className={`transition-colors ${isProfileActive
-                                ? "text-white"
-                                : "group-hover:text-[#9C5260]"
-                                }`}
-                            >
-                                Perfil
-                            </span>
+                            {!collapsed && (
+                                <span className={`transition-colors ${isProfileActive
+                                    ? "text-white"
+                                    : "group-hover:text-[#9C5260]"
+                                    }`}
+                                >
+                                    Perfil
+                                </span>
+                            )}
                         </Link>
                     </div>
                 </aside>
