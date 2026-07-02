@@ -161,4 +161,8 @@ body {
   filter: blur(70px);
   pointer-events: none;
   background: rgba(156, 120, 255, 0.12);
-}   
+}
+
+.shadow-custom {
+  box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.4);
+}
