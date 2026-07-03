@@ -141,7 +141,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                 const isActive = pathname === item.href;
 
                                 return (
-                                    <Tooltip.Root key={item.href}>
+                                    <Tooltip.Root key={`${item.href}-${collapsed}`}>
                                         <Tooltip.Trigger asChild>
                                             <Link
                                                 href={item.href}
