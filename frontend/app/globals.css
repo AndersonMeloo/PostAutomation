@@ -83,7 +83,7 @@ body {
   z-index: 1;
 }
 
-/* .dashboard-card {
+.dashboard-card {
   background: #2b2734;
   border: 1px solid rgba(255, 255, 255, .05);
   border-radius: 18px;
@@ -115,7 +115,7 @@ body {
     );
 
   pointer-events: none;
-} */
+}
 
 .bg-dashboard {
   position: relative;
@@ -165,4 +165,10 @@ body {
 
 .shadow-custom {
   box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.4);
+}
+
+.bg-circle {
+  background: linear-gradient(to right,
+      rgb(167, 139, 250),
+      rgb(244, 114, 182));
 }
