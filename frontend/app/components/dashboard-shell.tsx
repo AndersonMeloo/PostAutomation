@@ -146,11 +146,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                             <Link
                                                 href={item.href}
                                                 className={`group flex items-center w-full rounded-xl border-none px-3 py-2 text-sm font-medium text-white transition hover:-translate-y-0.5
-                ${collapsed
+                                                ${collapsed
                                                         ? "justify-center"
                                                         : "gap-2"
                                                     }
-                ${isActive
+                                                ${isActive
                                                         ? "card-gradient card-gradient-overlay"
                                                         : "text-white hover:text-[#9C5260]"
                                                     }`}
@@ -220,13 +220,6 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                 </button>
                             )}
 
-                            <button
-                                type="button"
-                                onClick={handleLogout}
-                                className="flex w-full items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold text-white transition hover:text-[#9C526D] cursor-pointer"
-                            >
-                                <LogOut />
-                            </button>
                             <Tooltip.Root>
                                 <Tooltip.Trigger asChild>
                                     <Link
@@ -267,6 +260,41 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                             sideOffset={-12}
                                             className="rounded-md dashboard-card px-3 py-1.5 text-sm text-white shadow-lg animate-in fade-in-0 zoom-in-95 data-[side=right]:slide-in-from-left-2"                                        >
                                             Perfil
+                                            <Tooltip.Arrow className="fill-zinc-900" />
+                                        </Tooltip.Content>
+                                    </Tooltip.Portal>
+                                )}
+                            </Tooltip.Root>
+
+                            <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                    <button
+                                        type="button"
+                                        onClick={handleLogout}
+                                        className={`group flex w-full items-center rounded-xl px-3 py-2 transition hover:-translate-y-0.5 cursor-pointer ${collapsed ? "justify-center" : "gap-3"
+                                            } text-white hover:text-[#9C5260]`}
+                                    >
+                                        <LogOut
+                                            size={22}
+                                            className="transition-colors group-hover:text-[#9C526D]"
+                                        />
+
+                                        {!collapsed && (
+                                            <span className="transition-colors group-hover:text-[#9C5260]">
+                                                Sair
+                                            </span>
+                                        )}
+                                    </button>
+                                </Tooltip.Trigger>
+
+                                {collapsed && (
+                                    <Tooltip.Portal>
+                                        <Tooltip.Content
+                                            side="right"
+                                            sideOffset={-12}
+                                            className="rounded-md dashboard-card px-3 py-1.5 text-sm text-white shadow-lg animate-in fade-in-0 zoom-in-95 data-[side=right]:slide-in-from-left-2"
+                                        >
+                                            Sair
                                             <Tooltip.Arrow className="fill-zinc-900" />
                                         </Tooltip.Content>
                                     </Tooltip.Portal>
