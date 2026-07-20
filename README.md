@@ -1,5 +1,7 @@
 # Post Automation
 
+> **⚠️ Aviso:** A demonstração online pode estar temporariamente indisponível devido ao limite de computação do banco de dados Neon (plano gratuito). O projeto continua funcionando normalmente em ambiente local.
+
 Sistema para automatizar a publicação de vídeos curtos no YouTube e acompanhar o que foi postado sem depender de processo manual o tempo todo.
 
 A ideia aqui é simples: você sobe o vídeo, o backend cuida da fila, publica no momento certo e o frontend mostra o que já foi publicado, com status e métricas básicas. O projeto também organiza usuários, nichos e a conexão com a conta Google/YouTube.
