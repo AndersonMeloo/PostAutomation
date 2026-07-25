@@ -27,15 +27,21 @@ export default function GoogleCallbackClient({
   }, [accessToken, refreshToken, router]);
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl items-center justify-center p-4">
-      <section className="w-full rounded-3xl border bg-white p-6 shadow-sm">
-        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-          YouTube OAuth
-        </p>
-        <h1 className="mt-3 text-2xl font-semibold text-slate-900">
-          Finalizando conexao
-        </h1>
-        <p className="mt-2 text-sm text-slate-600">
+    <main className="flex min-h-screen w-full items-center justify-center px-4 py-10">
+      <section className="dashboard-card w-full max-w-3xl overflow-hidden p-6 md:p-8">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#7c9cff,#57d7ff)] text-white shadow-lg shadow-cyan-500/20">
+            <span className="text-sm font-semibold">YT</span>
+          </div>
+          <div>
+            <p className="premium-kicker text-xs">YouTube OAuth</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-4xl">
+              Finalizando conexão
+            </h1>
+          </div>
+        </div>
+
+        <p className="mt-4 text-sm leading-6 text-slate-300 md:text-base">
           {hasTokens
             ? "Conta conectada com sucesso. Redirecionando..."
             : "Nao foi possivel concluir o login do Google. Redirecionando..."}
