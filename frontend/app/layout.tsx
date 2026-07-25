@@ -14,8 +14,8 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Social Media Auto Publisher",
-  description: "Dashboard de rotas e modulos do backend",
+  title: "Social Media Auto Publisher | Console",
+  description: "Console premium para automação de mídias sociais e monitoramento do backend",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body className="h-full bg-background text-foreground">
         <DashboardShell>{children}</DashboardShell>
       </body>
     </html>

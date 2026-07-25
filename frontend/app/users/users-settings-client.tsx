@@ -124,38 +124,41 @@ export function UsersSettingsClient() {
   }
 
   return (
-    <section className="space-y-5">
-      <header className="rounded-2xl border bg-slate-50 p-5">
-        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Users</p>
-        <h2 className="mt-2 text-2xl font-semibold text-slate-900">
-          Perfil, Configurações e Conta
-        </h2>
-        <p className="mt-2 text-sm text-slate-600">
-          Tela conectada ao backend para buscar, editar e deletar usuario.
-        </p>
+    <section className="space-y-5 animate-fade-up">
+      <header className="dashboard-card relative overflow-hidden p-6 md:p-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,156,255,0.14),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(103,232,249,0.08),transparent_26%)]" />
+        <div className="relative">
+          <p className="premium-kicker text-xs">Users</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-4xl">
+            Perfil, configurações e conta
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">
+            Tela conectada ao backend para buscar, editar e deletar usuário.
+          </p>
+        </div>
       </header>
 
-      <form onSubmit={onLoadProfile} className="rounded-xl border bg-white p-4">
-        <h3 className="text-base font-semibold text-slate-900">Autenticação da tela</h3>
-        <p className="mt-1 text-sm text-slate-600">
+      <form onSubmit={onLoadProfile} className="dashboard-card p-5 md:p-6">
+        <h3 className="text-base font-semibold text-white">Autenticação da tela</h3>
+        <p className="mt-1 text-sm text-slate-300">
           Token e userId são preenchidos automaticamente após login.
         </p>
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <label className="grid gap-1 text-sm text-slate-700">
+          <label className="grid gap-1 text-sm text-slate-300">
             JWT Token
             <input
               value={token}
               onChange={(event) => setToken(event.target.value)}
-              className="rounded-lg border bg-slate-50 px-3 py-2"
+              className="premium-input"
               placeholder="Bearer token sem o prefixo"
             />
           </label>
-          <label className="grid gap-1 text-sm text-slate-700">
+          <label className="grid gap-1 text-sm text-slate-300">
             User ID
             <input
               value={userId}
               onChange={(event) => setUserId(event.target.value)}
-              className="rounded-lg border bg-slate-50 px-3 py-2"
+              className="premium-input"
               placeholder="UUID do usuario"
             />
           </label>
@@ -164,39 +167,39 @@ export function UsersSettingsClient() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-4 rounded-lg border bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 cursor-pointer"
+          className="premium-button mt-4 px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Carregando..." : "Carregar perfil"}
         </button>
       </form>
 
-      <form onSubmit={onSaveProfile} className="rounded-xl border bg-white p-4">
-        <h3 className="text-base font-semibold text-slate-900">Editar dados do perfil</h3>
+      <form onSubmit={onSaveProfile} className="dashboard-card p-5 md:p-6">
+        <h3 className="text-base font-semibold text-white">Editar dados do perfil</h3>
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <label className="grid gap-1 text-sm text-slate-700">
+          <label className="grid gap-1 text-sm text-slate-300">
             Nome
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="rounded-lg border bg-slate-50 px-3 py-2"
+              className="premium-input"
               placeholder="Nome do usuario"
             />
           </label>
-          <label className="grid gap-1 text-sm text-slate-700">
+          <label className="grid gap-1 text-sm text-slate-300">
             E-mail
             <input
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="rounded-lg border bg-slate-50 px-3 py-2"
+              className="premium-input"
               placeholder="email@dominio.com"
             />
           </label>
-          <label className="grid gap-1 text-sm text-slate-700">
+          <label className="grid gap-1 text-sm text-slate-300">
             Nova senha
             <input
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="rounded-lg border bg-slate-50 px-3 py-2"
+              className="premium-input"
               type="password"
               placeholder="Opcional"
             />
@@ -207,7 +210,7 @@ export function UsersSettingsClient() {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg border bg-cyan-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60 cursor-pointer"
+            className="premium-button px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
           >
             Salvar alterações
           </button>
@@ -215,22 +218,22 @@ export function UsersSettingsClient() {
             type="button"
             onClick={onDeleteProfile}
             disabled={loading}
-            className="rounded-lg border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 disabled:opacity-60 cursor-pointer"
+            className="rounded-full border border-rose-400/20 bg-rose-500/10 px-4 py-2.5 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/15 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Deletar conta
           </button>
         </div>
       </form>
 
-      <section className="rounded-xl border bg-white p-4">
-        <h3 className="text-base font-semibold text-slate-900">Dados atuais</h3>
-        <pre className="mt-3 overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs text-slate-100">
+      <section className="dashboard-card p-5 md:p-6">
+        <h3 className="text-base font-semibold text-white">Dados atuais</h3>
+        <pre className="mt-3 overflow-x-auto rounded-2xl border border-white/8 bg-black/40 p-4 text-xs text-slate-200">
           {JSON.stringify(profile, null, 2)}
         </pre>
       </section>
 
       {feedback ? (
-        <p className="rounded-lg border bg-slate-50 px-3 py-2 text-sm text-slate-700">
+        <p className="rounded-2xl border border-white/8 bg-white/5 px-4 py-3 text-sm text-slate-200 backdrop-blur-xl">
           {feedback}
         </p>
       ) : null}
