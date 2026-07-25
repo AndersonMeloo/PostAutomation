@@ -83,70 +83,75 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
   }
 
   return (
-    <section className="rounded-xl border bg-white p-4">
-      <h3 className="text-lg font-semibold text-slate-900">Upload de video</h3>
-      <p className="mt-1 text-sm text-slate-600">
-        Envie o arquivo e defina titulo, descricao e horario diretamente por aqui.
-      </p>
+    <section className="dashboard-card p-5 md:p-6">
+      <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="premium-kicker text-xs">Upload</p>
+          <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">Enviar e agendar vídeo</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            Envie o arquivo e defina título, descrição e horário diretamente por aqui.
+          </p>
+        </div>
+      </div>
 
       {activeNiches.length === 0 ? (
-        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
+        <p className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-3 text-sm text-amber-200">
           Nenhum nicho ativo encontrado. Ative ou crie um nicho antes de enviar videos.
         </p>
       ) : null}
 
       {message ? (
-        <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+        <p className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
           {message}
         </p>
       ) : null}
 
       {error ? (
-        <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+        <p className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-sm text-rose-200">
           {error}
         </p>
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-4 grid gap-3">
-        <label className="grid gap-1 text-sm text-slate-700">
+        <label className="grid gap-1 text-sm text-slate-300">
           Arquivo de video
           <input
             type="file"
             accept="video/mp4,video/quicktime,video/webm,video/x-matroska,.mp4,.mov,.webm,.mkv"
             onChange={(event) => setVideoFile(event.target.files?.[0] ?? null)}
-            className="rounded-lg border bg-white px-3 py-2"
+            className="premium-input px-0 py-2 file:mr-4 file:rounded-full file:border-0 file:bg-white/8 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-white/12"
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-700">
+        <label className="grid gap-1 text-sm text-slate-300">
           Titulo
           <input
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             maxLength={255}
-            className="rounded-lg border bg-white px-3 py-2"
+            className="premium-input"
             placeholder="Ex.: 3 dicas para Shorts no Canva"
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-700">
+        <label className="grid gap-1 text-sm text-slate-300">
           Descricao
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             maxLength={500}
-            className="min-h-24 rounded-lg border bg-white px-3 py-2"
+            className="premium-input min-h-24"
             placeholder="Ex.: Tutorial rapido de edicao vertical para YouTube Shorts."
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-700">
+        <label className="grid gap-1 text-sm text-slate-300">
           Nicho
           <select
             value={nicheId}
             onChange={(event) => setNicheId(event.target.value)}
-            className="rounded-lg border bg-white px-3 py-2"
+            className="premium-input"
           >
             {activeNiches.map((niche) => (
               <option key={niche.id} value={niche.id}>
@@ -156,20 +161,20 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
           </select>
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-700">
+        <label className="grid gap-1 text-sm text-slate-300">
           Agendar para
           <input
             type="datetime-local"
             value={scheduledAt}
             onChange={(event) => setScheduledAt(event.target.value)}
-            className="rounded-lg border bg-white px-3 py-2"
+            className="premium-input"
           />
         </label>
 
         <button
           type="submit"
           disabled={!canSubmit || activeNiches.length === 0}
-          className="mt-1 rounded-lg border bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="premium-button mt-1 px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Enviando..." : "Enviar e agendar video"}
         </button>
