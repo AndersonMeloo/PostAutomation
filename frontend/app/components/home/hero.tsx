@@ -21,11 +21,9 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden px-4 pb-28 pt-20 sm:px-6 sm:pt-28">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/4 top-10 h-64 w-64 rounded-full bg-indigo-200/40 blur-3xl" />
-        <div className="absolute right-1/4 top-24 h-56 w-56 rounded-full bg-cyan-200/40 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-amber-100/50 blur-3xl" />
-        <div className="absolute right-[10%] bottom-10 h-52 w-52 rounded-full bg-rose-200/30 blur-3xl" />
-        <div className="absolute left-[8%] bottom-24 h-48 w-48 rounded-full bg-emerald-200/30 blur-3xl" />
+        <div className="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-blue-200/35 blur-3xl" />
+        <div className="absolute right-1/5 top-16 h-64 w-64 rounded-full bg-teal-200/35 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-emerald-100/40 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-3xl text-center">
@@ -33,8 +31,9 @@ export function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500"
+          className="home-glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600"
         >
+          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
           {t.hero.kicker}
         </motion.p>
 
@@ -42,7 +41,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.05 }}
-          className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl md:text-6xl"
+          className="mt-6 text-5xl font-semibold tracking-tighter text-slate-900 sm:text-6xl md:text-7xl"
         >
           {t.hero.titleLine1}
           <br />
@@ -66,14 +65,14 @@ export function Hero() {
         >
           <Link
             href="/cadastro"
-            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-slate-800"
+            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(15,23,42,0.5)] transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_12px_32px_-8px_rgba(15,23,42,0.55)]"
           >
             {t.hero.primaryCta}
             <ArrowRight size={16} />
           </Link>
           <a
             href="#como-funciona"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+            className="home-glass inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-0.5"
           >
             {t.hero.secondaryCta}
           </a>
@@ -83,7 +82,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-5 flex items-center justify-center gap-2 text-xs font-medium text-slate-500"
+          className="home-glass mx-auto mt-6 flex w-fit items-center justify-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500"
         >
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -95,6 +94,15 @@ export function Hero() {
 
       {/* Badges flutuantes - só no desktop, para manter o hero limpo no mobile */}
       <div className="relative mx-auto mt-16 hidden h-64 max-w-5xl md:block">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="pointer-events-none absolute inset-0 flex -translate-y-14 items-center justify-center px-10 text-center text-2xl font-medium text-slate-300 md:text-3xl"
+        >
+          {t.hero.badgesCenterLabel}
+        </motion.p>
+
         {t.hero.badges.map((badge, index) => {
           const style = FEATURE_STYLES[badge.id];
           const Icon = style.icon;

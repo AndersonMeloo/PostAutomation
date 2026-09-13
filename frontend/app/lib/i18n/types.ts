@@ -19,6 +19,7 @@ export type Dictionary = {
     primaryCta: string;
     secondaryCta: string;
     comingSoon: string;
+    badgesCenterLabel: string;
     badges: {
       id: "youtube" | "instagram" | "tiktok" | "scheduling" | "metrics" | "aiClip";
       label: string;
@@ -35,7 +36,20 @@ export type Dictionary = {
     title: string;
     subtitle: string;
     centerLabel: string;
-    items: { id: "publish" | "metrics" | "aiClip"; title: string; subtitle: string; time: string }[];
+    inputLabel: string;
+    resultLabel: string;
+    inputs: {
+      id: "youtube" | "shorts" | "longform" | "instagram" | "tiktok" | "upload" | "schedule";
+      label: string;
+      comingSoon?: boolean;
+    }[];
+    stages: { id: "scheduling" | "publishing" | "metrics" | "aiClip"; label: string }[];
+    items: {
+      id: "publish" | "metrics" | "aiClip" | "schedule" | "thumbnail";
+      title: string;
+      subtitle: string;
+      time: string;
+    }[];
   };
   howItWorks: {
     kicker: string;
@@ -53,11 +67,52 @@ export type Dictionary = {
       bullets: string[];
     }[];
   };
+  benefits: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    chart: {
+      caption: string;
+      segments: { label: string; percent: number }[];
+    };
+    anonymity: {
+      caption: string;
+    };
+    proof: {
+      caption: string;
+      statValue: string;
+      statLabel: string;
+    };
+    monetization: {
+      caption: string;
+      channelLabel: string;
+      subscribers: string;
+      trend: string;
+      eligibleLabel: string;
+    };
+  };
   metrics: {
     kicker: string;
     title: string;
     subtitle: string;
     stats: { label: string; value: string }[];
+  };
+  pricing: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    popularBadge: string;
+    ctaPrefix: string;
+    includesLabel: string;
+    detailsSoon: string;
+    period: string;
+    plans: {
+      id: string;
+      name: string;
+      price: string;
+      description: string;
+      popular: boolean;
+    }[];
   };
   cta: {
     title: string;
@@ -79,5 +134,17 @@ export type Dictionary = {
   footer: {
     tagline: string;
     rights: string;
+    backToTop: string;
+    columns: {
+      product: string;
+      company: string;
+      account: string;
+    };
+    links: {
+      home: string;
+      pricing: string;
+      about: string;
+      blog: string;
+    };
   };
 };

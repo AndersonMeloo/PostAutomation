@@ -9,28 +9,37 @@ const STEP_DURATION = 4500;
 
 const STEP_STYLES = [
   {
-    border: "border-violet-300",
-    shadow: "shadow-[0_20px_45px_-20px_rgba(124,58,237,0.35)]",
+    idleBg: "bg-linear-to-br from-violet-50 via-white to-white",
+    activeBg: "bg-linear-to-br from-violet-100 via-violet-50 to-white",
+    ring: "ring-2 ring-violet-300",
+    shadow: "shadow-[0_24px_55px_-20px_rgba(124,58,237,0.4)]",
     number: "text-violet-600",
-    iconBg: "bg-violet-100",
-    iconColor: "text-violet-600",
+    iconBg: "bg-violet-500",
+    iconColor: "text-white",
     bar: "bg-violet-500",
+    track: "bg-violet-100",
   },
   {
-    border: "border-blue-300",
-    shadow: "shadow-[0_20px_45px_-20px_rgba(37,99,235,0.35)]",
+    idleBg: "bg-linear-to-br from-blue-50 via-white to-white",
+    activeBg: "bg-linear-to-br from-blue-100 via-blue-50 to-white",
+    ring: "ring-2 ring-blue-300",
+    shadow: "shadow-[0_24px_55px_-20px_rgba(37,99,235,0.4)]",
     number: "text-blue-600",
-    iconBg: "bg-blue-100",
-    iconColor: "text-blue-600",
+    iconBg: "bg-blue-500",
+    iconColor: "text-white",
     bar: "bg-blue-500",
+    track: "bg-blue-100",
   },
   {
-    border: "border-emerald-300",
-    shadow: "shadow-[0_20px_45px_-20px_rgba(5,150,105,0.35)]",
+    idleBg: "bg-linear-to-br from-emerald-50 via-white to-white",
+    activeBg: "bg-linear-to-br from-emerald-100 via-emerald-50 to-white",
+    ring: "ring-2 ring-emerald-300",
+    shadow: "shadow-[0_24px_55px_-20px_rgba(5,150,105,0.4)]",
     number: "text-emerald-600",
-    iconBg: "bg-emerald-100",
-    iconColor: "text-emerald-600",
+    iconBg: "bg-emerald-500",
+    iconColor: "text-white",
     bar: "bg-emerald-500",
+    track: "bg-emerald-100",
   },
 ];
 
@@ -51,7 +60,7 @@ export function HowItWorks() {
   }, [steps.length]);
 
   return (
-    <section id="como-funciona" className="bg-slate-50/60 px-4 py-24 sm:px-6">
+    <section id="como-funciona" className="px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
           {t.howItWorks.kicker}
@@ -60,40 +69,36 @@ export function HowItWorks() {
           {t.howItWorks.title}
         </h2>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        <div className="mt-10 grid items-stretch gap-5 md:grid-cols-3">
           {steps.map((step, index) => {
             const Icon = STEP_ICONS[index % STEP_ICONS.length];
             const style = STEP_STYLES[index % STEP_STYLES.length];
             const isActive = index === activeStep;
 
             return (
-              <button
+              <div
                 key={step.number}
-                type="button"
-                onClick={() => setActiveStep(index)}
-                className={`rounded-3xl border bg-white p-6 text-left transition-all duration-300 ${
-                  isActive ? `${style.border} ${style.shadow}` : "border-slate-100 shadow-sm hover:border-slate-200"
+                className={`flex h-full min-h-80 flex-col justify-between rounded-3xl border border-white/70 p-7 text-left shadow-[0_1px_1px_rgba(15,23,42,0.03),0_16px_40px_-16px_rgba(15,23,42,0.14),0_40px_80px_-32px_rgba(15,23,42,0.12)] transition-all duration-300 ${
+                  isActive ? `${style.activeBg} ${style.ring} ${style.shadow} scale-[1.02]` : style.idleBg
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`text-sm font-bold ${isActive ? style.number : "text-slate-300"}`}
-                  >
-                    {step.number}
-                  </span>
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-full ${
-                      isActive ? `${style.iconBg} ${style.iconColor}` : "bg-slate-50 text-slate-400"
-                    }`}
-                  >
-                    <Icon size={18} />
-                  </span>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className={`text-sm font-bold ${style.number}`}>{step.number}</span>
+                    <span
+                      className={`flex h-10 w-10 items-center justify-center rounded-full ${style.iconBg} ${style.iconColor} transition-transform duration-300 ${
+                        isActive ? "scale-110" : ""
+                      }`}
+                    >
+                      <Icon size={18} />
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 text-xl font-semibold text-slate-900">{step.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{step.description}</p>
                 </div>
 
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
-
-                <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className={`mt-6 h-1.5 w-full overflow-hidden rounded-full ${style.track}`}>
                   <div
                     className={`h-full rounded-full transition-all ${style.bar} ${
                       isActive ? "w-full" : "w-0"
@@ -101,7 +106,7 @@ export function HowItWorks() {
                     style={{ transitionDuration: isActive ? `${STEP_DURATION}ms` : "300ms" }}
                   />
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

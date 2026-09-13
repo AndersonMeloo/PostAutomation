@@ -21,9 +21,9 @@ const dictionaries: Record<Locale, Dictionary> = {
   "en-US": enUS,
 };
 
-export const supportedLocales: { value: Locale; label: string }[] = [
-  { value: "pt-BR", label: "PT-BR" },
-  { value: "en-US", label: "EN-US" },
+export const supportedLocales: { value: Locale; label: string; flag: string }[] = [
+  { value: "pt-BR", label: "PT-BR", flag: "🇧🇷" },
+  { value: "en-US", label: "EN-US", flag: "🇺🇸" },
 ];
 
 function isLocale(value: string | null): value is Locale {
