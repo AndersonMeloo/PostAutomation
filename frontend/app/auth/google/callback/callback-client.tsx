@@ -19,7 +19,7 @@ export default function GoogleCallbackClient({
   useEffect(() => {
     if (accessToken && refreshToken) {
       saveSession(accessToken, refreshToken);
-      router.replace("/");
+      router.replace("/dashboard");
       return;
     }
 

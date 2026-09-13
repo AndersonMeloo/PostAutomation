@@ -26,7 +26,7 @@ import {
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 const navItems = [
-    { href: "/", label: "Início", icon: LayoutDashboard },
+    { href: "/dashboard", label: "Início", icon: LayoutDashboard },
     { href: "/auth", label: "Rotas", icon: ShieldCheck },
     { href: "/niches", label: "Nichos", icon: Shapes },
     { href: "/posts", label: "Postagens", icon: FolderTree },
@@ -40,7 +40,10 @@ type DashboardShellProps = {
 export function DashboardShell({ children }: DashboardShellProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/cadastro");
+    // A Home pública ("/") e as telas de login/cadastro têm layout próprio,
+    // sem a sidebar do dashboard.
+    const isAuthPage =
+        pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/cadastro");
     const [youtubeConnected, setYoutubeConnected] = useState(false);
     const [youtubeLoading, setYoutubeLoading] = useState(true);
     const [youtubeActionLoading, setYoutubeActionLoading] = useState(false);

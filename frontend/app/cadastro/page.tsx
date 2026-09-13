@@ -28,7 +28,7 @@ export default function CadastroPage() {
 
       const tokens = await loginUser({ email, password });
       saveSession(tokens.accessToken, tokens.refreshToken);
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Falha ao criar cadastro.",
