@@ -15,10 +15,10 @@ export function FinalCta() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto max-w-3xl overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-violet-50 via-white to-emerald-50 px-6 py-16 text-center shadow-[0_30px_80px_-40px_rgba(15,23,42,0.3)] sm:px-12"
+        className="home-glass-strong relative mx-auto max-w-3xl overflow-hidden rounded-4xl bg-linear-to-br from-blue-50/80 via-white/70 to-teal-50/80 px-6 py-16 text-center sm:px-12"
       >
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-emerald-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-violet-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-blue-200/40 blur-3xl" />
         <h2 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           {t.cta.title}
         </h2>

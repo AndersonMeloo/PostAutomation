@@ -18,6 +18,7 @@ export const enUS: Dictionary = {
     primaryCta: "Start for free",
     secondaryCta: "See how it works",
     comingSoon: "Coming soon",
+    badgesCenterLabel: "Your channel, on autopilot",
     badges: [
       { id: "youtube", label: "YouTube", comingSoon: false },
       { id: "instagram", label: "Instagram", comingSoon: true },
@@ -41,6 +42,23 @@ export const enUS: Dictionary = {
     title: "Your operation, in real time",
     subtitle: "Track every publish and metric update as it happens.",
     centerLabel: "PostAutomation",
+    inputLabel: "Input",
+    resultLabel: "Result",
+    inputs: [
+      { id: "youtube", label: "YouTube" },
+      { id: "shorts", label: "Short" },
+      { id: "longform", label: "Long-form" },
+      { id: "upload", label: "New upload" },
+      { id: "schedule", label: "Scheduling" },
+      { id: "instagram", label: "Instagram", comingSoon: true },
+      { id: "tiktok", label: "TikTok", comingSoon: true },
+    ],
+    stages: [
+      { id: "scheduling", label: "Scheduling" },
+      { id: "publishing", label: "Publishing" },
+      { id: "metrics", label: "Analyzing metrics" },
+      { id: "aiClip", label: "AI clipping" },
+    ],
     items: [
       {
         id: "publish",
@@ -55,10 +73,22 @@ export const enUS: Dictionary = {
         time: "2min",
       },
       {
+        id: "schedule",
+        title: "New schedule created",
+        subtitle: "Publish set for tomorrow",
+        time: "8min",
+      },
+      {
+        id: "thumbnail",
+        title: "Thumbnail updated",
+        subtitle: "New cover selected for the video",
+        time: "14min",
+      },
+      {
         id: "aiClip",
         title: "AI clip generated",
         subtitle: "Coming soon",
-        time: "5min",
+        time: "20min",
       },
     ],
   },
@@ -116,6 +146,35 @@ export const enUS: Dictionary = {
       },
     ],
   },
+  benefits: {
+    kicker: "Benefits",
+    title: "Grow on YouTube without showing your face",
+    subtitle:
+      "Record, edit and publish Shorts anytime — while your channel grows and moves toward monetization on autopilot.",
+    chart: {
+      caption: "Create a faceless channel and post #shorts",
+      segments: [
+        { label: "Shorts", percent: 45 },
+        { label: "Long-form", percent: 30 },
+        { label: "Editing", percent: 25 },
+      ],
+    },
+    anonymity: {
+      caption: "Earn without showing your face",
+    },
+    proof: {
+      caption: "Edit your videos and publish whenever you want",
+      statValue: "+80K",
+      statLabel: "views on a single #shorts",
+    },
+    monetization: {
+      caption: "Monetize your channel",
+      channelLabel: "Your channel",
+      subscribers: "1,284 subscribers",
+      trend: "+312 this month",
+      eligibleLabel: "Eligible for monetization",
+    },
+  },
   metrics: {
     kicker: "Metrics",
     title: "Decisions guided by data, not guesswork",
@@ -126,6 +185,39 @@ export const enUS: Dictionary = {
       { label: "Likes", value: "3,902" },
       { label: "Comments", value: "614" },
       { label: "Subscribers gained", value: "287" },
+    ],
+  },
+  pricing: {
+    kicker: "Pricing",
+    title: "Plans for every stage of your channel",
+    subtitle: "Start small and grow as your content production scales.",
+    popularBadge: "Most popular",
+    ctaPrefix: "Subscribe to",
+    includesLabel: "This plan includes:",
+    detailsSoon: "Full details coming soon",
+    period: "/mo",
+    plans: [
+      {
+        id: "basic",
+        name: "Basic",
+        price: "R$ 33,99",
+        description: "For creators just getting started with automation.",
+        popular: false,
+      },
+      {
+        id: "plus",
+        name: "Plus",
+        price: "R$ 49.99",
+        description: "For creators publishing more frequently.",
+        popular: true,
+      },
+      {
+        id: "pro",
+        name: "Pro",
+        price: "R$ 79,99",
+        description: "For creators scaling production without limits.",
+        popular: false,
+      },
     ],
   },
   cta: {
@@ -140,6 +232,11 @@ export const enUS: Dictionary = {
       {
         label: "Getting started",
         items: [
+          {
+            question: "Who is PostAutomation for?",
+            answer:
+              "Streamers, faceless channels, content creators, YouTubers, bloggers, and any creator who wants to publish videos automatically without needing to be online all the time.",
+          },
           {
             question: "How long does it take to set up?",
             answer: "Just a few minutes: create your account, connect your YouTube channel and schedule your first publish.",
@@ -172,5 +269,17 @@ export const enUS: Dictionary = {
   footer: {
     tagline: "Video publishing automation and analytics for creators.",
     rights: "All rights reserved.",
+    backToTop: "Back to top",
+    columns: {
+      product: "Product",
+      company: "Company",
+      account: "Account",
+    },
+    links: {
+      home: "Home",
+      pricing: "Pricing",
+      about: "About us",
+      blog: "Blog",
+    },
   },
 };

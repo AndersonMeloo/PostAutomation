@@ -13,7 +13,7 @@ export function PlatformStrip() {
   const t = useTranslations();
 
   return (
-    <section id="plataformas" className="bg-linear-to-b from-white via-slate-50/60 to-white px-4 py-14 sm:px-6">
+    <section id="plataformas" className="px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-4xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
           {t.platforms.kicker}
@@ -29,7 +29,7 @@ export function PlatformStrip() {
             const isSoon = platform.status === "soon";
 
             return (
-              <div key={platform.name} className="flex items-center gap-2">
+              <div key={platform.name} className="home-card-hover flex items-center gap-2 rounded-full">
                 <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${style.iconBg} shadow-md`}>
                   <Icon className={`h-5 w-5 ${style.iconColor}`} />
                 </span>

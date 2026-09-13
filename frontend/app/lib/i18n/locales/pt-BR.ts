@@ -7,7 +7,7 @@ export const ptBR: Dictionary = {
     navPlatforms: "Plataformas",
     navFaq: "FAQ",
     login: "Entrar",
-    signup: "Criar conta grátis",
+    signup: "Criar conta",
   },
   hero: {
     kicker: "Automação de vídeos multi-plataforma",
@@ -15,9 +15,10 @@ export const ptBR: Dictionary = {
     titleAccent: "Analise melhor.",
     subtitle:
       "Agende, publique e acompanhe o desempenho dos seus vídeos em um só lugar — com métricas detalhadas para Shorts e vídeos longos.",
-    primaryCta: "Começar grátis",
+    primaryCta: "Criar conta",
     secondaryCta: "Ver como funciona",
     comingSoon: "Em breve",
+    badgesCenterLabel: "Seu canal, no piloto automático",
     badges: [
       { id: "youtube", label: "YouTube", comingSoon: false },
       { id: "instagram", label: "Instagram", comingSoon: true },
@@ -42,6 +43,23 @@ export const ptBR: Dictionary = {
     subtitle:
       "Acompanhe cada publicação e atualização de métrica assim que ela acontece.",
     centerLabel: "PostAutomation",
+    inputLabel: "Entrada",
+    resultLabel: "Resultado",
+    inputs: [
+      { id: "youtube", label: "YouTube" },
+      { id: "shorts", label: "Short" },
+      { id: "longform", label: "Vídeo longo" },
+      { id: "upload", label: "Novo envio" },
+      { id: "schedule", label: "Agendamento" },
+      { id: "instagram", label: "Instagram", comingSoon: true },
+      { id: "tiktok", label: "TikTok", comingSoon: true },
+    ],
+    stages: [
+      { id: "scheduling", label: "Agendando" },
+      { id: "publishing", label: "Publicando" },
+      { id: "metrics", label: "Analisando métricas" },
+      { id: "aiClip", label: "Cortando com IA" },
+    ],
     items: [
       {
         id: "publish",
@@ -56,10 +74,22 @@ export const ptBR: Dictionary = {
         time: "2min",
       },
       {
+        id: "schedule",
+        title: "Novo agendamento criado",
+        subtitle: "Publicação marcada para amanhã",
+        time: "8min",
+      },
+      {
+        id: "thumbnail",
+        title: "Miniatura atualizada",
+        subtitle: "Nova capa selecionada para o vídeo",
+        time: "14min",
+      },
+      {
         id: "aiClip",
         title: "Corte com IA gerado",
         subtitle: "Em breve",
-        time: "5min",
+        time: "20min",
       },
     ],
   },
@@ -122,6 +152,35 @@ export const ptBR: Dictionary = {
       },
     ],
   },
+  benefits: {
+    kicker: "Benefícios",
+    title: "Cresça no YouTube sem mostrar o rosto",
+    subtitle:
+      "Grave, edite e publique Shorts em qualquer horário — enquanto sua conta cresce e caminha para a monetização no piloto automático.",
+    chart: {
+      caption: "Crie canal dark e faça postagens de #shorts",
+      segments: [
+        { label: "Shorts", percent: 45 },
+        { label: "Vídeo longo", percent: 30 },
+        { label: "Edição", percent: 25 },
+      ],
+    },
+    anonymity: {
+      caption: "Ganhe sem mostrar o rosto",
+    },
+    proof: {
+      caption: "Edite seus vídeos e publique a hora que quiser",
+      statValue: "+80K",
+      statLabel: "visualizações em um único #shorts",
+    },
+    monetization: {
+      caption: "Monetize seu canal",
+      channelLabel: "Seu canal",
+      subscribers: "1.284 inscritos",
+      trend: "+312 este mês",
+      eligibleLabel: "Elegível para monetização",
+    },
+  },
   metrics: {
     kicker: "Métricas",
     title: "Decisões guiadas por dados, não por achismo",
@@ -134,10 +193,43 @@ export const ptBR: Dictionary = {
       { label: "Inscritos ganhos", value: "287" },
     ],
   },
+  pricing: {
+    kicker: "Preços",
+    title: "Planos para cada fase do seu canal",
+    subtitle: "Comece pequeno e evolua conforme sua produção de conteúdo cresce.",
+    popularBadge: "Mais popular",
+    ctaPrefix: "Assinar",
+    includesLabel: "Este plano inclui:",
+    detailsSoon: "Detalhamento completo em breve",
+    period: "/mês",
+    plans: [
+      {
+        id: "basico",
+        name: "Básico",
+        price: "R$ 33,99",
+        description: "Para quem está começando a automatizar sua publicação.",
+        popular: false,
+      },
+      {
+        id: "plus",
+        name: "Plus",
+        price: "R$ 49,99",
+        description: "Para criadores publicando com mais frequência.",
+        popular: true,
+      },
+      {
+        id: "pro",
+        name: "Pro",
+        price: "R$ 79,99",
+        description: "Para quem quer escalar a produção sem limites.",
+        popular: false,
+      },
+    ],
+  },
   cta: {
     title: "Comece a automatizar seus vídeos hoje",
     subtitle: "Crie sua conta gratuitamente e conecte seu canal do YouTube em minutos.",
-    button: "Criar conta grátis",
+    button: "Criar conta",
   },
   faq: {
     kicker: "Dúvidas",
@@ -146,6 +238,11 @@ export const ptBR: Dictionary = {
       {
         label: "Primeiros passos",
         items: [
+          {
+            question: "Para quem é o PostAutomation?",
+            answer:
+              "Para streamers, canais dark, criadores de conteúdo, YouTubers, blogueiros e qualquer criador que queira publicar vídeos de forma automática, sem precisar estar online o tempo todo.",
+          },
           {
             question: "Quanto tempo leva para configurar?",
             answer:
@@ -180,5 +277,17 @@ export const ptBR: Dictionary = {
   footer: {
     tagline: "Automação de publicação e análise de vídeos para criadores.",
     rights: "Todos os direitos reservados.",
+    backToTop: "Voltar ao topo",
+    columns: {
+      product: "Produto",
+      company: "Empresa",
+      account: "Conta",
+    },
+    links: {
+      home: "Início",
+      pricing: "Preços",
+      about: "Sobre nós",
+      blog: "Blog",
+    },
   },
 };

@@ -3,13 +3,18 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "../../lib/i18n/locale-context";
 
-const STAT_COLORS = ["text-red-600", "text-rose-600", "text-blue-600", "text-emerald-600"];
+const STAT_GRADIENTS = [
+  "bg-linear-to-br from-cyan-400 to-teal-600",
+  "bg-linear-to-br from-violet-500 to-purple-700",
+  "bg-linear-to-br from-fuchsia-500 to-pink-600",
+  "bg-linear-to-br from-blue-500 to-indigo-700",
+];
 
 export function MetricsPreview() {
   const t = useTranslations();
 
   return (
-    <section className="bg-linear-to-b from-white via-indigo-50/40 to-white px-4 py-24 sm:px-6">
+    <section className="px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
@@ -21,24 +26,24 @@ export function MetricsPreview() {
           <p className="mt-4 text-base leading-7 text-slate-600">{t.metrics.subtitle}</p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="mt-14 grid grid-cols-2 gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.25)] sm:grid-cols-4 sm:p-10"
-        >
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {t.metrics.stats.map((stat, index) => (
-            <div key={stat.label} className="text-center">
-              <p className={`text-2xl font-semibold sm:text-3xl ${STAT_COLORS[index % STAT_COLORS.length]}`}>
-                {stat.value}
-              </p>
-              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400 sm:text-sm">
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className={`home-card-hover relative overflow-hidden rounded-3xl p-6 ${STAT_GRADIENTS[index % STAT_GRADIENTS.length]}`}
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-size-[14px_14px] opacity-15" />
+              <p className="relative text-3xl font-bold text-white sm:text-4xl">{stat.value}</p>
+              <p className="relative mt-3 text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-sm">
                 {stat.label}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

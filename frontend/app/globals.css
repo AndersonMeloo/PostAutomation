@@ -395,3 +395,111 @@ body {
 * {
   -ms-overflow-style: none;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Home pública - sistema visual claro/premium (grid pontilhado, cards     */
+/* "glass" e sombras em camadas). Namespaced com home- para não colidir    */
+/* com as classes premium-* usadas pelo dashboard.                        */
+/* ---------------------------------------------------------------------- */
+
+.home-canvas {
+  position: relative;
+  background-color: #fdfdfc;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.07) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+.home-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 900px 600px at 12% 0%, rgba(99, 102, 241, 0.07), transparent 60%),
+    radial-gradient(ellipse 800px 500px at 88% 15%, rgba(45, 212, 191, 0.08), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 50% 100%, rgba(59, 130, 246, 0.06), transparent 60%);
+}
+
+.home-canvas > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-canvas > .fixed {
+  position: fixed;
+}
+
+@media (max-width: 767px) {
+  .home-canvas > .sticky {
+    position: sticky;
+  }
+}
+
+.home-canvas > .z-50 {
+  z-index: 50;
+}
+
+.home-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 1px 1px rgba(15, 23, 42, 0.02),
+    0 12px 32px -12px rgba(15, 23, 42, 0.12),
+    0 32px 64px -24px rgba(15, 23, 42, 0.1);
+}
+
+.home-glass-strong {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow:
+    0 1px 1px rgba(15, 23, 42, 0.03),
+    0 16px 40px -16px rgba(15, 23, 42, 0.14),
+    0 40px 80px -32px rgba(15, 23, 42, 0.12);
+}
+
+.home-card-hover {
+  transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.home-card-hover:hover {
+  transform: translateY(-3px);
+}
+
+@keyframes home-shimmer-sweep {
+  0% {
+    transform: translate(-35%, -20%) rotate(8deg);
+  }
+  100% {
+    transform: translate(135%, 20%) rotate(8deg);
+  }
+}
+
+.home-shimmer {
+  position: absolute;
+  inset: -20% -10%;
+  z-index: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 70%
+  );
+  animation: home-shimmer-sweep 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-shimmer {
+    animation: none;
+    display: none;
+  }
+}
