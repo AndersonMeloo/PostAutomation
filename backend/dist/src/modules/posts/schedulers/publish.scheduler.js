@@ -66,11 +66,13 @@ let PublishScheduler = class PublishScheduler {
                     });
                 }
             }
-            await this.syncYoutubeAnalyticsSnapshots();
         }
         catch (error) {
             console.error('Erro na publicação:', error);
         }
+    }
+    async handleYoutubeAnalytics() {
+        await this.syncYoutubeAnalyticsSnapshots();
     }
     async syncYoutubeAnalyticsSnapshots() {
         const postedYoutubePosts = await this.prisma.post.findMany({
@@ -456,11 +458,17 @@ let PublishScheduler = class PublishScheduler {
 };
 exports.PublishScheduler = PublishScheduler;
 __decorate([
-    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    (0, schedule_1.Cron)('* * * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PublishScheduler.prototype, "handlePublish", null);
+__decorate([
+    (0, schedule_1.Cron)('*/30 * * * *'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PublishScheduler.prototype, "handleYoutubeAnalytics", null);
 exports.PublishScheduler = PublishScheduler = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,

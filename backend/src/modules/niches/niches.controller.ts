@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/common/guards/jwt-auth.guards';
 import { NichesService } from './niches.service';
 import { CreateNichDto } from './dto/create-nich.dto';
 import { UpdateNichDto } from './dto/update-nich.dto';
 
+@UseGuards(AuthGuard)
 @Controller('niches')
 export class NichesController {
   constructor(private readonly nichesService: NichesService) {}

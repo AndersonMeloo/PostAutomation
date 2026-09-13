@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
+// CronExpression is not used in this code snippet, so it has been removed to avoid unused import warnings.
+import { Cron } from '@nestjs/schedule';
 import { Platform, Post, SocialAccount } from '@prisma/client';
 import { createReadStream, existsSync } from 'fs';
 import { mkdir, readdir, rename } from 'fs/promises';
@@ -16,7 +17,10 @@ export class PublishScheduler {
     private readonly configService: ConfigService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // A cada minuto, verifica se há posts pendentes para publicar
+  // @Cron(CronExpression.EVERY_MINUTE)
+
+  @Cron('* * * * *')
   async handlePublish() {
     // console.log('Verificando posts para publicar...');
 
@@ -74,12 +78,20 @@ export class PublishScheduler {
         }
       }
 
-      await this.syncYoutubeAnalyticsSnapshots();
+      // await this.syncYoutubeAnalyticsSnapshots();
 
       // console.log('Publicação finalizada');
     } catch (error) {
       console.error('Erro na publicação:', error);
     }
+  }
+
+  // A cada 15 minutos busca métricas do YouTube
+  // @Cron('*/15 * * * *')
+
+  @Cron('*/30 * * * *')
+  async handleYoutubeAnalytics() {
+    await this.syncYoutubeAnalyticsSnapshots();
   }
 
   private async syncYoutubeAnalyticsSnapshots(): Promise<void> {

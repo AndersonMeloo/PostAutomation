@@ -124,8 +124,12 @@ export async function getPosts(token: string) {
   });
 }
 
-export async function getNiches() {
-  return request<NicheItem[]>('/niches');
+export async function getNiches(token: string) {
+  return request<NicheItem[]>('/niches', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }
 
 export async function uploadVideoPost(
@@ -194,6 +198,14 @@ export async function updateUserById(
 export async function deleteUserById(userId: string, token: string) {
   return request<{ message: string }>(`/users/${userId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getYoutubeConnectUrl(token: string) {
+  return request<{ url: string }>("/auth/youtube/connect", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

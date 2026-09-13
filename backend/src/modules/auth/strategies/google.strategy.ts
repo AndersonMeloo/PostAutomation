@@ -22,15 +22,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     this.authService = authService;
   }
 
-  async validate(
-    _accessToken: string,
-    _refreshToken: string,
-    profile: Profile,
-  ) {
-    return this.authService.validateGoogleUser(
-      profile,
-      _accessToken,
-      _refreshToken,
-    );
+  async validate(_accessToken: string, _refreshToken: string, profile: Profile) {
+    return this.authService.validateGoogleUser(profile);
   }
 }

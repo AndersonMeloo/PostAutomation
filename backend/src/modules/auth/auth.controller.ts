@@ -13,12 +13,18 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
+import { AuthGuard } from 'src/common/guards/jwt-auth.guards';
+import { JwtPayload } from 'src/common/types/jwt-payload.type';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-auth.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 type GoogleAuthRequest = {
   user: User;
+};
+
+type AuthenticatedRequest = {
+  user: JwtPayload;
 };
 
 type RedirectResponse = {
@@ -73,6 +79,40 @@ export class AuthController {
     redirectUrl.searchParams.set('accessToken', tokens.accessToken);
     redirectUrl.searchParams.set('refreshToken', tokens.refreshToken);
     redirectUrl.searchParams.set('provider', 'google');
+
+    res.redirect(redirectUrl.toString());
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('youtube/connect')
+  getYoutubeConnectUrl(@Req() req: AuthenticatedRequest) {
+    return { url: this.authService.getYoutubeConnectUrl(req.user.sub) };
+  }
+
+  @Get('youtube/callback')
+  async youtubeConnectCallback(
+    @Query('code') code: string,
+    @Query('state') state: string,
+    @Query('error') error: string | undefined,
+    @Res() res: RedirectResponse,
+  ) {
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
+    const redirectPath =
+      this.configService.get<string>('FRONTEND_YOUTUBE_REDIRECT_PATH') ||
+      '/integrations/youtube/callback';
+    const redirectUrl = new URL(redirectPath, frontendUrl);
+
+    try {
+      if (error) {
+        throw new Error(error);
+      }
+
+      await this.authService.connectYoutubeAccount(code, state);
+      redirectUrl.searchParams.set('status', 'success');
+    } catch {
+      redirectUrl.searchParams.set('status', 'error');
+    }
 
     res.redirect(redirectUrl.toString());
   }

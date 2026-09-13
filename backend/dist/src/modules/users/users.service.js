@@ -92,6 +92,7 @@ let UsersService = class UsersService {
                     accessToken: data.accessToken,
                     refreshToken: data.refreshToken ?? existingAccount.refreshToken ?? null,
                     tokenExpiry: data.tokenExpiry ?? existingAccount.tokenExpiry,
+                    providerAccountId: data.providerAccountId ?? existingAccount.providerAccountId,
                 },
             });
         }
@@ -102,6 +103,7 @@ let UsersService = class UsersService {
                 accessToken: data.accessToken,
                 refreshToken: data.refreshToken ?? null,
                 tokenExpiry: data.tokenExpiry ?? null,
+                providerAccountId: data.providerAccountId ?? null,
             },
         });
     }
