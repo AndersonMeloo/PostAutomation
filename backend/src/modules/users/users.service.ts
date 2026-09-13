@@ -49,6 +49,7 @@ export class UsersService {
     accessToken: string;
     refreshToken?: string | null;
     tokenExpiry?: Date | null;
+    providerAccountId?: string | null;
   }): Promise<SocialAccount> {
     const existingAccount = await this.prisma.socialAccount.findFirst({
       where: {
@@ -65,6 +66,8 @@ export class UsersService {
           refreshToken:
             data.refreshToken ?? existingAccount.refreshToken ?? null,
           tokenExpiry: data.tokenExpiry ?? existingAccount.tokenExpiry,
+          providerAccountId:
+            data.providerAccountId ?? existingAccount.providerAccountId,
         },
       });
     }
@@ -76,6 +79,7 @@ export class UsersService {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken ?? null,
         tokenExpiry: data.tokenExpiry ?? null,
+        providerAccountId: data.providerAccountId ?? null,
       },
     });
   }
