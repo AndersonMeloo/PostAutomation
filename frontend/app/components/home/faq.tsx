@@ -33,7 +33,7 @@ export function Faq() {
                       <button
                         type="button"
                         onClick={() => setOpenQuestion(isOpen ? null : item.question)}
-                        className="flex w-full items-center justify-between gap-4 py-4 text-left"
+                        className="flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left"
                       >
                         <span className="text-sm font-medium text-slate-900 sm:text-base">
                           {item.question}
