@@ -9,6 +9,10 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: process.env['DATABASE_URL'],
+    // O pooler em modo transaction (DATABASE_URL, porta 6543) e usado pela
+    // aplicacao em runtime (src/database/prisma.service.ts), mas nao suporta
+    // bem comandos de CLI (migrate/db pull travam). Para essas ferramentas,
+    // usamos a conexao direta/session-mode (DIRECT_URL, porta 5432).
+    url: process.env['DIRECT_URL'] ?? process.env['DATABASE_URL'],
   },
 });
