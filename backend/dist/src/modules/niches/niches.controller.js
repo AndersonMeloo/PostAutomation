@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NichesController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guards_1 = require("../../common/guards/jwt-auth.guards");
 const niches_service_1 = require("./niches.service");
 const create_nich_dto_1 = require("./dto/create-nich.dto");
 const update_nich_dto_1 = require("./dto/update-nich.dto");
@@ -75,6 +76,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], NichesController.prototype, "remove", null);
 exports.NichesController = NichesController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
     (0, common_1.Controller)('niches'),
     __metadata("design:paramtypes", [niches_service_1.NichesService])
 ], NichesController);

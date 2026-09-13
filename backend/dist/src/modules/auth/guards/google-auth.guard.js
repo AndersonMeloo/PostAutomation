@@ -12,15 +12,7 @@ const passport_1 = require("@nestjs/passport");
 let GoogleAuthGuard = class GoogleAuthGuard extends (0, passport_1.AuthGuard)('google') {
     getAuthenticateOptions() {
         return {
-            scope: [
-                'email',
-                'profile',
-                'https://www.googleapis.com/auth/youtube.upload',
-                'https://www.googleapis.com/auth/youtube.readonly',
-            ],
-            accessType: 'offline',
-            prompt: 'consent',
-            includeGrantedScopes: true,
+            scope: ['email', 'profile'],
         };
     }
 };

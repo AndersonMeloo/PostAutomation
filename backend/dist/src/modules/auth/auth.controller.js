@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const jwt_auth_guards_1 = require("../../common/guards/jwt-auth.guards");
 const auth_service_1 = require("./auth.service");
 const login_auth_dto_1 = require("./dto/login-auth.dto");
 const google_auth_guard_1 = require("./guards/google-auth.guard");
@@ -48,6 +49,26 @@ let AuthController = class AuthController {
         redirectUrl.searchParams.set('accessToken', tokens.accessToken);
         redirectUrl.searchParams.set('refreshToken', tokens.refreshToken);
         redirectUrl.searchParams.set('provider', 'google');
+        res.redirect(redirectUrl.toString());
+    }
+    getYoutubeConnectUrl(req) {
+        return { url: this.authService.getYoutubeConnectUrl(req.user.sub) };
+    }
+    async youtubeConnectCallback(code, state, error, res) {
+        const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+        const redirectPath = this.configService.get('FRONTEND_YOUTUBE_REDIRECT_PATH') ||
+            '/integrations/youtube/callback';
+        const redirectUrl = new URL(redirectPath, frontendUrl);
+        try {
+            if (error) {
+                throw new Error(error);
+            }
+            await this.authService.connectYoutubeAccount(code, state);
+            redirectUrl.searchParams.set('status', 'success');
+        }
+        catch {
+            redirectUrl.searchParams.set('status', 'error');
+        }
         res.redirect(redirectUrl.toString());
     }
     async login(loginDto) {
@@ -85,6 +106,24 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuthRedirect", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
+    (0, common_1.Get)('youtube/connect'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "getYoutubeConnectUrl", null);
+__decorate([
+    (0, common_1.Get)('youtube/callback'),
+    __param(0, (0, common_1.Query)('code')),
+    __param(1, (0, common_1.Query)('state')),
+    __param(2, (0, common_1.Query)('error')),
+    __param(3, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "youtubeConnectCallback", null);
 __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('login'),

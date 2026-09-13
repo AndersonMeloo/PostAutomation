@@ -5,6 +5,7 @@ export declare class PublishScheduler {
     private readonly configService;
     constructor(prisma: PrismaService, configService: ConfigService);
     handlePublish(): Promise<void>;
+    handleYoutubeAnalytics(): Promise<void>;
     private syncYoutubeAnalyticsSnapshots;
     private fetchYoutubeVideoStatistics;
     private buildYoutubeClient;

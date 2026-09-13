@@ -44,16 +44,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const client_1 = require("@prisma/client");
-const users_service_1 = require("../users/users.service");
-const bcrypt = __importStar(require("bcrypt"));
+const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
+const client_1 = require("@prisma/client");
+const googleapis_1 = require("googleapis");
+const bcrypt = __importStar(require("bcrypt"));
+const users_service_1 = require("../users/users.service");
+const YOUTUBE_CONNECT_SCOPES = [
+    'openid',
+    'email',
+    'profile',
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube.readonly',
+];
 let AuthService = class AuthService {
     userService;
     jwtService;
-    constructor(userService, jwtService) {
+    configService;
+    constructor(userService, jwtService, configService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.configService = configService;
     }
     async generateTokens(userId, email, role) {
         const payload = {
@@ -73,26 +84,79 @@ let AuthService = class AuthService {
             refreshToken,
         };
     }
-    async validateGoogleUser(profile, accessToken, refreshToken) {
+    async validateGoogleUser(profile) {
         const email = profile.emails?.[0]?.value;
         if (!email) {
             throw new common_1.UnauthorizedException('Nao foi possivel recuperar o email da conta Google');
         }
-        const user = await this.userService.findOrCreateGoogleUser({
+        return this.userService.findOrCreateGoogleUser({
             email,
             googleId: profile.id,
             name: profile.displayName || null,
         });
-        await this.userService.upsertSocialAccount({
-            userId: user.id,
-            platform: client_1.Platform.YOUTUBE,
-            accessToken,
-            refreshToken,
-        });
-        return user;
     }
     async loginWithGoogle(user) {
         return this.generateTokens(user.id, user.email, user.role);
+    }
+    getYoutubeConnectUrl(userId) {
+        const oauth2Client = this.buildGoogleOAuthClient(this.getYoutubeCallbackUrl());
+        const state = this.jwtService.sign({ sub: userId, purpose: 'youtube-connect' }, { expiresIn: '10m' });
+        return oauth2Client.generateAuthUrl({
+            access_type: 'offline',
+            prompt: 'consent',
+            include_granted_scopes: true,
+            scope: YOUTUBE_CONNECT_SCOPES,
+            state,
+        });
+    }
+    async connectYoutubeAccount(code, state) {
+        let userId;
+        try {
+            const payload = this.jwtService.verify(state);
+            if (payload.purpose !== 'youtube-connect') {
+                throw new Error('Purpose invalido');
+            }
+            userId = payload.sub;
+        }
+        catch {
+            throw new common_1.UnauthorizedException('Nao foi possivel validar a solicitacao de conexao com o YouTube');
+        }
+        const oauth2Client = this.buildGoogleOAuthClient(this.getYoutubeCallbackUrl());
+        const { tokens } = await oauth2Client.getToken(code);
+        if (!tokens.id_token || !tokens.access_token) {
+            throw new common_1.UnauthorizedException('Nao foi possivel identificar a conta Google conectada');
+        }
+        const ticket = await oauth2Client.verifyIdToken({
+            idToken: tokens.id_token,
+            audience: this.configService.get('GOOGLE_CLIENT_ID'),
+        });
+        const googleAccountId = ticket.getPayload()?.sub;
+        if (!googleAccountId) {
+            throw new common_1.UnauthorizedException('Conta Google sem identificador valido');
+        }
+        await this.userService.upsertSocialAccount({
+            userId,
+            platform: client_1.Platform.YOUTUBE,
+            providerAccountId: googleAccountId,
+            accessToken: tokens.access_token,
+            refreshToken: tokens.refresh_token,
+            tokenExpiry: tokens.expiry_date ? new Date(tokens.expiry_date) : null,
+        });
+    }
+    buildGoogleOAuthClient(redirectUri) {
+        const clientID = this.configService.get('GOOGLE_CLIENT_ID');
+        const clientSecret = this.configService.get('GOOGLE_CLIENT_SECRET');
+        if (!clientID || !clientSecret) {
+            throw new Error('GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET nao configurados');
+        }
+        return new googleapis_1.google.auth.OAuth2(clientID, clientSecret, redirectUri);
+    }
+    getYoutubeCallbackUrl() {
+        const callbackUrl = this.configService.get('GOOGLE_YOUTUBE_CALLBACK_URL');
+        if (!callbackUrl) {
+            throw new Error('GOOGLE_YOUTUBE_CALLBACK_URL nao configurada');
+        }
+        return callbackUrl;
     }
     async login(email, password) {
         const user = await this.userService.findUserByEmail(email);
@@ -124,6 +188,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        config_1.ConfigService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
