@@ -39,7 +39,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       const [postsResult, overviewResult, nichesResult] = await Promise.all([
         getPosts(accessToken),
         getPostsOverview(accessToken, selectedDate),
-        getNiches(),
+        getNiches(accessToken),
       ]);
       posts = postsResult;
       overview = overviewResult;

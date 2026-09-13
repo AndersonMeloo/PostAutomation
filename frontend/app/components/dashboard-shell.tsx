@@ -5,9 +5,9 @@ import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { clearSession, getSession } from "../lib/auth-client";
 import {
-    API_BASE_URL,
     disconnectYoutubeConnection,
     getYoutubeConnectionStatus,
+    getYoutubeConnectUrl,
 } from "../lib/api";
 import {
     ChartNoAxesCombined,
@@ -89,8 +89,21 @@ export function DashboardShell({ children }: DashboardShellProps) {
         router.push("/login");
     }
 
-    function handleConnectYouTube() {
-        window.location.assign(`${API_BASE_URL}/auth/google`);
+    async function handleConnectYouTube() {
+        const session = getSession();
+
+        if (!session.accessToken) {
+            router.push("/login");
+            return;
+        }
+
+        setYoutubeActionLoading(true);
+        try {
+            const { url } = await getYoutubeConnectUrl(session.accessToken);
+            window.location.assign(url);
+        } finally {
+            setYoutubeActionLoading(false);
+        }
     }
 
     async function handleDisconnectYouTube() {
@@ -219,8 +232,8 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                     ) : (
                                         <button
                                             type="button"
-                                            onClick={handleConnectYouTube}
-                                            disabled={youtubeLoading}
+                                            onClick={() => void handleConnectYouTube()}
+                                            disabled={youtubeLoading || youtubeActionLoading}
                                             className="premium-button w-full px-3 py-2 text-sm transition-all duration-500 ease-in-out disabled:cursor-not-allowed disabled:opacity-70"
                                         >
                                             <PlayCircle size={16} />
@@ -228,7 +241,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                                 className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out ${collapsed ? "max-w-0 opacity-0 translate-x-2" : "max-w-[180px] opacity-100 translate-x-0"
                                                     }`}
                                             >
-                                                {youtubeLoading ? "Verificando conexão..." : "Conectar YouTube"}
+                                                {youtubeActionLoading
+                                                    ? "Redirecionando..."
+                                                    : youtubeLoading
+                                                        ? "Verificando conexão..."
+                                                        : "Conectar YouTube"}
                                             </span>
                                         </button>
                                     )}
@@ -420,13 +437,17 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                         ) : (
                                             <button
                                                 type="button"
-                                                onClick={handleConnectYouTube}
-                                                disabled={youtubeLoading}
+                                                onClick={() => void handleConnectYouTube()}
+                                                disabled={youtubeLoading || youtubeActionLoading}
                                                 className="premium-button w-full px-3 py-2 text-sm transition-all duration-500 ease-in-out disabled:cursor-not-allowed disabled:opacity-70"
                                             >
                                                 <PlayCircle size={16} />
                                                 <span>
-                                                    {youtubeLoading ? "Verificando conexão..." : "Conectar YouTube"}
+                                                    {youtubeActionLoading
+                                                        ? "Redirecionando..."
+                                                        : youtubeLoading
+                                                            ? "Verificando conexão..."
+                                                            : "Conectar YouTube"}
                                                 </span>
                                             </button>
                                         )}
@@ -448,10 +469,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                                     <button
                                         type="button"
-                                        onClick={handleConnectYouTube}
-                                        className="premium-buttonYoutube px-4 py-2.5 text-sm"
+                                        onClick={() => void handleConnectYouTube()}
+                                        disabled={youtubeActionLoading}
+                                        className="premium-buttonYoutube px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-70"
                                     >
-                                        Conectar YouTube agora
+                                        {youtubeActionLoading ? "Redirecionando..." : "Conectar YouTube agora"}
                                     </button>
                                 </div>
                             </section>
