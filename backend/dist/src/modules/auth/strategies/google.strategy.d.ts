@@ -8,11 +8,11 @@ export declare class GoogleStrategy extends GoogleStrategy_base {
     private readonly authService;
     constructor(configService: ConfigService, authService: AuthService);
     validate(_accessToken: string, _refreshToken: string, profile: Profile): Promise<{
+        id: string;
         email: string;
         name: string | null;
-        password: string | null;
-        id: string;
         googleId: string | null;
+        password: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;

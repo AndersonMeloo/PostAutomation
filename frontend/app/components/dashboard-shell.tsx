@@ -40,10 +40,13 @@ type DashboardShellProps = {
 export function DashboardShell({ children }: DashboardShellProps) {
     const pathname = usePathname();
     const router = useRouter();
-    // A Home pública ("/") e as telas de login/cadastro têm layout próprio,
-    // sem a sidebar do dashboard.
+    // A Home pública ("/"), login/cadastro e o callback do login com Google têm
+    // layout próprio, sem a sidebar do dashboard.
     const isAuthPage =
-        pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/cadastro");
+        pathname === "/" ||
+        pathname.startsWith("/login") ||
+        pathname.startsWith("/cadastro") ||
+        pathname.startsWith("/auth/google/callback");
     const [youtubeConnected, setYoutubeConnected] = useState(false);
     const [youtubeLoading, setYoutubeLoading] = useState(true);
     const [youtubeActionLoading, setYoutubeActionLoading] = useState(false);

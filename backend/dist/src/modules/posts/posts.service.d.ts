@@ -61,54 +61,54 @@ export declare class PostsService {
     private isVideoFile;
     listPosts(userId: string): Promise<({
         niche: {
-            name: string;
             id: string;
+            name: string;
         };
         analytics: {
-            comments: number;
             id: string;
-            collectedAt: Date;
             views: number;
             likes: number;
+            comments: number;
+            collectedAt: Date;
             postId: string;
         }[];
     } & {
         id: string;
+        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
+        title: string;
+        videoUrl: string | null;
+        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
-        title: string;
-        description: string | null;
-        videoUrl: string | null;
-        postedAt: Date | null;
     })[]>;
     getPostsOverviewByDate(userId: string, inputDate?: string): Promise<PostOverview>;
     createPostFromYoutubeUrl(data: ImportYoutubePostDto): Promise<{
         id: string;
+        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
+        title: string;
+        videoUrl: string | null;
+        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
-        title: string;
-        description: string | null;
-        videoUrl: string | null;
-        postedAt: Date | null;
     }>;
     getUsersWithNiches(): Promise<UserWithNiches[]>;
     createAutoPosts(userId: string, nicheId: string): Promise<{
         id: string;
+        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
+        title: string;
+        videoUrl: string | null;
+        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
-        title: string;
-        description: string | null;
-        videoUrl: string | null;
-        postedAt: Date | null;
     }[]>;
     importInboxVideosAsShorts(): Promise<ImportedInboxVideo[]>;
     private getInboxScheduledAt;
@@ -117,15 +117,15 @@ export declare class PostsService {
     uploadVideoPost(file: unknown, data: UploadVideoPostDto): Promise<{
         message: string;
         id: string;
+        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
+        title: string;
+        videoUrl: string | null;
+        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
-        title: string;
-        description: string | null;
-        videoUrl: string | null;
-        postedAt: Date | null;
     }>;
     private findDefaultAutoPostUser;
     private findDefaultAutoPostNiche;

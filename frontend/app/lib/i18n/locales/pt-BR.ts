@@ -1,6 +1,41 @@
 import type { Dictionary } from "../types";
 
 export const ptBR: Dictionary = {
+  auth: {
+    backToHome: "Voltar para a Home",
+    shared: {
+      googleCta: "Continuar com Google",
+      dividerLabel: "ou continue com e-mail",
+      emailLabel: "E-mail",
+      emailPlaceholder: "seu@email.com",
+      passwordLabel: "Senha",
+      passwordPlaceholder: "Sua senha",
+    },
+    login: {
+      kicker: "Bem-vindo de volta",
+      title: "Entre na sua conta",
+      subtitle: "Continue automatizando a publicação dos seus vídeos.",
+      submitCta: "Entrar",
+      submitLoadingCta: "Entrando...",
+      switchPrompt: "Não tem conta?",
+      switchCta: "Criar conta grátis",
+      invalidCredentials: "E-mail ou senha incorretos.",
+      genericError: "Falha ao realizar login. Tente novamente.",
+    },
+    signup: {
+      kicker: "Primeiros passos",
+      title: "Crie sua conta grátis",
+      subtitle: "Configure sua automação em poucos minutos.",
+      nameLabel: "Nome",
+      namePlaceholder: "Seu nome",
+      submitCta: "Criar conta",
+      submitLoadingCta: "Criando conta...",
+      switchPrompt: "Já tem conta?",
+      switchCta: "Entrar",
+      emailTaken: "Este e-mail já está cadastrado.",
+      genericError: "Falha ao criar cadastro. Tente novamente.",
+    },
+  },
   header: {
     navFeatures: "Recursos",
     navHowItWorks: "Como funciona",
