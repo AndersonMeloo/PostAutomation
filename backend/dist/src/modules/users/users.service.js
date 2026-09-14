@@ -151,13 +151,23 @@ let UsersService = class UsersService {
             throw new Error('Password é obrigatório');
         }
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-        const user = await this.prisma.user.create({
-            data: {
-                email: createUserDto.email,
-                name: createUserDto.name,
-                password: hashedPassword,
-            },
-        });
+        let user;
+        try {
+            user = await this.prisma.user.create({
+                data: {
+                    email: createUserDto.email,
+                    name: createUserDto.name,
+                    password: hashedPassword,
+                },
+            });
+        }
+        catch (error) {
+            if (error instanceof client_1.Prisma.PrismaClientKnownRequestError &&
+                error.code === 'P2002') {
+                throw new common_1.ConflictException('Este e-mail já está cadastrado');
+            }
+            throw error;
+        }
         const userWithoutPassword = Object.fromEntries(Object.entries(user).filter(([key]) => key !== 'password'));
         return userWithoutPassword;
     }

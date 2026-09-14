@@ -32,7 +32,7 @@ let PostsScheduler = class PostsScheduler {
 };
 exports.PostsScheduler = PostsScheduler;
 __decorate([
-    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_MINUTE),
+    (0, schedule_1.Cron)('*/15 * * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

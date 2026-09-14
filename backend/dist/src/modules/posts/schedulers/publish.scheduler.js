@@ -458,13 +458,13 @@ let PublishScheduler = class PublishScheduler {
 };
 exports.PublishScheduler = PublishScheduler;
 __decorate([
-    (0, schedule_1.Cron)('* * * * *'),
+    (0, schedule_1.Cron)('*/10 * * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PublishScheduler.prototype, "handlePublish", null);
 __decorate([
-    (0, schedule_1.Cron)('*/30 * * * *'),
+    (0, schedule_1.Cron)('0 */3 * * *'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
