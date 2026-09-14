@@ -1,6 +1,41 @@
 import type { Dictionary } from "../types";
 
 export const enUS: Dictionary = {
+  auth: {
+    backToHome: "Back to Home",
+    shared: {
+      googleCta: "Continue with Google",
+      dividerLabel: "or continue with email",
+      emailLabel: "Email",
+      emailPlaceholder: "you@email.com",
+      passwordLabel: "Password",
+      passwordPlaceholder: "Your password",
+    },
+    login: {
+      kicker: "Welcome back",
+      title: "Log in to your account",
+      subtitle: "Keep automating your video publishing.",
+      submitCta: "Log in",
+      submitLoadingCta: "Logging in...",
+      switchPrompt: "Don't have an account?",
+      switchCta: "Create a free account",
+      invalidCredentials: "Incorrect email or password.",
+      genericError: "Failed to log in. Please try again.",
+    },
+    signup: {
+      kicker: "Getting started",
+      title: "Create your free account",
+      subtitle: "Set up your automation in just a few minutes.",
+      nameLabel: "Name",
+      namePlaceholder: "Your name",
+      submitCta: "Create account",
+      submitLoadingCta: "Creating account...",
+      switchPrompt: "Already have an account?",
+      switchCta: "Log in",
+      emailTaken: "This email is already registered.",
+      genericError: "Failed to create account. Please try again.",
+    },
+  },
   header: {
     navFeatures: "Features",
     navHowItWorks: "How it works",

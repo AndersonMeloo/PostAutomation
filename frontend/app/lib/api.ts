@@ -1,5 +1,4 @@
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
   process.env.NEXT_PUBLIC_API_URL ?? "https://postautomation-production-d200.up.railway.app";
 
 export type PostListItem = {
@@ -89,6 +88,16 @@ export type NicheItem = {
   active: boolean;
 };
 
+export class ApiError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     cache: "no-store",
@@ -100,8 +109,24 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Falha em ${path}`);
+    let message = `Falha em ${path}`;
+
+    // Só confia no corpo da resposta se for JSON (respostas HTML de erro,
+    // como uma página 404 do próprio frontend, nunca viram a mensagem exibida).
+    if (response.headers.get("content-type")?.includes("application/json")) {
+      try {
+        const data = (await response.json()) as { message?: string | string[] };
+        if (Array.isArray(data.message)) {
+          message = data.message.join(", ");
+        } else if (typeof data.message === "string") {
+          message = data.message;
+        }
+      } catch {
+        // corpo não era um JSON válido - mantém a mensagem genérica
+      }
+    }
+
+    throw new ApiError(response.status, message);
   }
 
   return (await response.json()) as T;
@@ -227,6 +252,10 @@ export async function disconnectYoutubeConnection(userId: string, token: string)
       Authorization: `Bearer ${token}`,
     },
   });
+}
+
+export function getGoogleLoginUrl() {
+  return `${API_BASE_URL}/auth/google`;
 }
 
 export async function loginUser(payload: { email: string; password: string }) {

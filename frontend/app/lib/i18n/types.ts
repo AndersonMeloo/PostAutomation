@@ -3,6 +3,41 @@ export type Locale = "pt-BR" | "en-US";
 export type PlatformStatus = "live" | "soon";
 
 export type Dictionary = {
+  auth: {
+    backToHome: string;
+    shared: {
+      googleCta: string;
+      dividerLabel: string;
+      emailLabel: string;
+      emailPlaceholder: string;
+      passwordLabel: string;
+      passwordPlaceholder: string;
+    };
+    login: {
+      kicker: string;
+      title: string;
+      subtitle: string;
+      submitCta: string;
+      submitLoadingCta: string;
+      switchPrompt: string;
+      switchCta: string;
+      invalidCredentials: string;
+      genericError: string;
+    };
+    signup: {
+      kicker: string;
+      title: string;
+      subtitle: string;
+      nameLabel: string;
+      namePlaceholder: string;
+      submitCta: string;
+      submitLoadingCta: string;
+      switchPrompt: string;
+      switchCta: string;
+      emailTaken: string;
+      genericError: string;
+    };
+  };
   header: {
     navFeatures: string;
     navHowItWorks: string;

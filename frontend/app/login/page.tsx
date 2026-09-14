@@ -1,15 +1,27 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "../lib/api";
+import { Eye, EyeOff } from "lucide-react";
+import { ApiError, loginUser } from "../lib/api";
 import { saveSession } from "../lib/auth-client";
+import { LocaleProvider, useTranslations } from "../lib/i18n/locale-context";
+import { AuthShell } from "../components/auth/auth-shell";
 
 export default function LoginPage() {
+  return (
+    <LocaleProvider>
+      <LoginForm />
+    </LocaleProvider>
+  );
+}
+
+function LoginForm() {
+  const t = useTranslations();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -23,74 +35,74 @@ export default function LoginPage() {
       saveSession(tokens.accessToken, tokens.refreshToken);
       router.push("/dashboard");
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Falha ao realizar login.",
-      );
+      if (error instanceof ApiError && error.status === 401) {
+        setErrorMessage(t.auth.login.invalidCredentials);
+      } else {
+        setErrorMessage(t.auth.login.genericError);
+      }
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center p-4">
-      <section className="grid w-full max-w-4xl gap-4 rounded-3xl border bg-white p-4 shadow-sm md:grid-cols-2 md:p-8">
-        <article className="rounded-2xl bg-panel-strong p-6 text-white">
-          <p className="text-xs uppercase tracking-[0.2em] text-cyan-200">SocialMediaAutoPublisher</p>
-          <h1 className="mt-3 text-3xl font-semibold leading-tight">Entre na sua dashboard</h1>
-          <p className="mt-3 text-sm text-cyan-100">
-            Login necessario para acessar visao geral, posts, usuarios e configuracoes.
-          </p>
-        </article>
+    <AuthShell
+      kicker={t.auth.login.kicker}
+      title={t.auth.login.title}
+      subtitle={t.auth.login.subtitle}
+      switchPrompt={t.auth.login.switchPrompt}
+      switchCta={t.auth.login.switchCta}
+      switchHref="/cadastro"
+    >
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+          {t.auth.shared.emailLabel}
+          <input
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            type="email"
+            required
+            className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-400"
+            placeholder={t.auth.shared.emailPlaceholder}
+          />
+        </label>
 
-        <form onSubmit={onSubmit} className="rounded-2xl border bg-slate-50 p-5">
-          <h2 className="text-xl font-semibold text-slate-900">Login</h2>
-
-          <label className="mt-4 grid gap-1 text-sm text-slate-700">
-            E-mail
-            <input
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              type="email"
-              required
-              className="rounded-lg border bg-white px-3 py-2"
-              placeholder="email@dominio.com"
-            />
-          </label>
-
-          <label className="mt-3 grid gap-1 text-sm text-slate-700">
-            Senha
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+          {t.auth.shared.passwordLabel}
+          <div className="relative">
             <input
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
-              className="rounded-lg border bg-white px-3 py-2"
-              placeholder="Sua senha"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-400"
+              placeholder={t.auth.shared.passwordPlaceholder}
             />
-          </label>
+            <button
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-slate-600"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </label>
 
-          {errorMessage ? (
-            <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-              {errorMessage}
-            </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-4 w-full rounded-lg border bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
-          >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-
-          <p className="mt-3 text-sm text-slate-600">
-            Nao tem conta?{" "}
-            <Link href="/cadastro" className="font-semibold text-cyan-700">
-              Criar cadastro
-            </Link>
+        {errorMessage ? (
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700">
+            {errorMessage}
           </p>
-        </form>
-      </section>
-    </main>
+        ) : null}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-1 flex items-center justify-center rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {loading ? t.auth.login.submitLoadingCta : t.auth.login.submitCta}
+        </button>
+      </form>
+    </AuthShell>
   );
 }

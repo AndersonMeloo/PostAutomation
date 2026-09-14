@@ -431,6 +431,10 @@ body {
   position: fixed;
 }
 
+.home-canvas > .absolute {
+  position: absolute;
+}
+
 @media (max-width: 767px) {
   .home-canvas > .sticky {
     position: sticky;
