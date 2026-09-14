@@ -17,10 +17,10 @@ export class PublishScheduler {
     private readonly configService: ConfigService,
   ) {}
 
-  // A cada minuto, verifica se há posts pendentes para publicar
-  // @Cron(CronExpression.EVERY_MINUTE)
-
-  @Cron('* * * * *')
+  // Reduzido de "a cada minuto" para "a cada 10 minutos" para economizar
+  // créditos do Railway enquanto o SaaS está em desenvolvimento/teste.
+  // Antes de lançar de verdade, considere voltar para um intervalo menor.
+  @Cron('*/10 * * * *')
   async handlePublish() {
     // console.log('Verificando posts para publicar...');
 
@@ -86,10 +86,11 @@ export class PublishScheduler {
     }
   }
 
-  // A cada 15 minutos busca métricas do YouTube
-  // @Cron('*/15 * * * *')
-
-  @Cron('*/30 * * * *')
+  // Reduzido de "a cada 30 minutos" para "a cada 3 horas" para economizar
+  // créditos do Railway (e cota da API do YouTube) enquanto o SaaS está em
+  // desenvolvimento/teste. Antes de lançar de verdade, considere voltar
+  // para um intervalo menor.
+  @Cron('0 */3 * * *')
   async handleYoutubeAnalytics() {
     await this.syncYoutubeAnalyticsSnapshots();
   }

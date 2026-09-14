@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { PostsService } from '../posts.service';
 
 @Injectable()
 export class PostsScheduler {
   constructor(private readonly postsService: PostsService) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // Reduzido de "a cada minuto" para "a cada 15 minutos" para economizar
+  // créditos do Railway enquanto o SaaS está em desenvolvimento/teste.
+  // Antes de lançar de verdade, considere voltar para um intervalo menor.
+  @Cron('*/15 * * * *')
   async handleCron() {
     // console.log('Iniciando automação de posts...');
 
