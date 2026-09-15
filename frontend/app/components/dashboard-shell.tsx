@@ -14,6 +14,7 @@ import {
     ChartNoAxesCombined,
     ChevronsLeft,
     ChevronsRight,
+    Clapperboard,
     FolderTree,
     LayoutDashboard,
     LogOut,
@@ -33,6 +34,7 @@ const navItems = [
     { href: "/auth", label: "Rotas", icon: ShieldCheck },
     { href: "/niches", label: "Nichos", icon: Shapes },
     { href: "/posts", label: "Postagens", icon: FolderTree },
+    { href: "/videos", label: "Vídeos", icon: Clapperboard },
     { href: "/metrics", label: "Métricas", icon: ChartNoAxesCombined },
 ];
 
@@ -165,6 +167,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                                 const link = (
                                     <Link
+                                        key={item.href}
                                         href={item.href}
                                         className={`group flex w-full items-center rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-500 ease-in-out hover:-translate-y-0.5 gap-2 ${collapsed ? "justify-center gap-0" : "gap-3"
                                             } ${isActive

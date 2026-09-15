@@ -51,9 +51,18 @@ model Post {
   videoUrl    String?
   postedAt    DateTime?
   status      PostStatus       @default(PENDING)
-  scheduledAt DateTime? 
-  nicheId    String
-  niche       Niche           @relation(fields: [nicheId], references: [id])
+  scheduledAt DateTime?
+  createdAt   DateTime         @default(now())
+
+  // Nicho só é obrigatório a partir da finalização do rascunho (DRAFT -> PENDING).
+  nicheId    String?
+  niche       Niche?          @relation(fields: [nicheId], references: [id])
+
+  // Preenchidos pelo editor de vídeo enquanto o post está em DRAFT.
+  format        VideoFormat?
+  thumbnailUrl  String?
+  trimStart     Float?
+  trimEnd       Float?
 
   userId      String
   user        User            @relation(fields: [userId], references: [id])
@@ -80,9 +89,15 @@ enum Platform {
 }
 
 enum PostStatus {
+  DRAFT
   PENDING
   POSTED
   FAILED
+}
+
+enum VideoFormat {
+  SHORT
+  STANDARD
 }
 
 enum Role {

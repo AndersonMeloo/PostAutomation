@@ -30,22 +30,22 @@ export declare class UsersService {
         message: string;
     }>;
     create(createUserDto: CreateUserDto): Promise<Omit<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }, "password">>;
     findUserByEmail(email: string): Promise<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
@@ -55,29 +55,29 @@ export declare class UsersService {
         email: string;
     }[]>;
     findAll(): Prisma.PrismaPromise<{
-        id: string;
         email: string;
         name: string | null;
+        id: string;
         role: import("@prisma/client").$Enums.Role;
         createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
@@ -88,22 +88,22 @@ export declare class UsersService {
     }>;
     updateRefreshToken(userId: string, token: string): Promise<User>;
     getUserIfRefreshTokenMatches(userId: string, token: string): Promise<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     } | null>;
     removeRefreshToken(userId: string): Promise<{
-        id: string;
         email: string;
         name: string | null;
-        googleId: string | null;
         password: string | null;
+        id: string;
+        googleId: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;

@@ -217,6 +217,148 @@ export async function uploadVideoPost(
   return response.json();
 }
 
+export type VideoFormat = "SHORT" | "STANDARD";
+
+export type DraftPost = {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  videoUrl: string | null;
+  thumbnailUrl: string | null;
+  format: VideoFormat | null;
+  trimStart: number | null;
+  trimEnd: number | null;
+  nicheId: string | null;
+  scheduledAt: string | null;
+  createdAt: string;
+};
+
+export async function getDrafts(token: string) {
+  return request<DraftPost[]>("/posts/drafts", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getDraft(token: string, postId: string) {
+  return request<DraftPost>(`/posts/${postId}/draft`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function createDraft(
+  token: string,
+  payload: { video: File; title?: string },
+) {
+  const formData = new FormData();
+  formData.append("video", payload.video);
+  if (payload.title?.trim()) {
+    formData.append("title", payload.title.trim());
+  }
+
+  const response = await fetch(`${API_BASE_URL}/posts/draft`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "Falha ao criar rascunho");
+  }
+
+  return (await response.json()) as DraftPost;
+}
+
+export async function editDraft(
+  token: string,
+  postId: string,
+  payload: {
+    title?: string;
+    description?: string;
+    format?: VideoFormat;
+    trimStart?: number;
+    trimEnd?: number;
+  },
+) {
+  return request<DraftPost>(`/posts/${postId}/edit`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function uploadDraftThumbnail(
+  token: string,
+  postId: string,
+  thumbnail: File | Blob,
+) {
+  const formData = new FormData();
+  formData.append("thumbnail", thumbnail, "thumbnail.jpg");
+
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/thumbnail`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, "Falha ao enviar thumbnail");
+  }
+
+  return (await response.json()) as DraftPost;
+}
+
+export async function finalizeDraft(
+  token: string,
+  postId: string,
+  payload: {
+    nicheId: string;
+    scheduledAt: string;
+    title?: string;
+    description?: string;
+  },
+) {
+  return request<DraftPost>(`/posts/${postId}/finalize`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchDraftAssetBlobUrl(
+  token: string,
+  postId: string,
+  kind: "video" | "thumbnail",
+): Promise<string | null> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/draft/${kind}`, {
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+}
+
 export async function getUserById(userId: string, token: string) {
   return request<UserProfile>(`/users/${userId}`, {
     headers: {
