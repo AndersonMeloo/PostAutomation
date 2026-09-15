@@ -141,6 +141,29 @@ export async function getPostsOverview(token: string, date?: string) {
   });
 }
 
+export type PostAnalyticsHistory = {
+  post: {
+    id: string;
+    title: string;
+    platform: string;
+    status: string;
+  };
+  history: {
+    views: number;
+    likes: number;
+    comments: number;
+    collectedAt: string;
+  }[];
+};
+
+export async function getPostAnalytics(token: string, postId: string) {
+  return request<PostAnalyticsHistory>(`/posts/${postId}/analytics`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 export async function getPosts(token: string) {
   return request<PostListItem[]>("/posts", {
     headers: {

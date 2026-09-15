@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Permite `light:text-...` para casos pontuais (ex: badges semânticos de
+   sucesso/erro/aviso) onde o mesmo tom de cor não funciona nos dois temas. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 :root {
   --background: #09090b;
   --foreground: #f5f7fb;
@@ -16,6 +20,54 @@
   --bg-stone-violet: #34313f;
   --bg-jaguar: #111113;
   --bg-river: #09090b;
+
+  /* Tokens de tema do Dashboard (dark = padrão atual, preservado 1:1).
+     Namespaced separado do sistema .home-* da Home pública, que é claro
+     por construção e não participa desse toggle. */
+  --surface-glass: rgba(255, 255, 255, 0.04);
+  --surface-glass-hover: rgba(255, 255, 255, 0.07);
+  --surface-glass-strong: rgba(255, 255, 255, 0.08);
+  --surface-card: linear-gradient(180deg, rgba(20, 20, 24, 0.94), rgba(12, 12, 16, 0.94));
+  --surface-panel: linear-gradient(180deg, rgba(18, 18, 22, 0.96), rgba(14, 14, 18, 0.96));
+  --surface-panel-soft: linear-gradient(180deg, rgba(22, 22, 28, 0.9), rgba(15, 15, 20, 0.9));
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --border-soft-hover: rgba(255, 255, 255, 0.12);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 24px 70px rgba(0, 0, 0, 0.42);
+  --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.26);
+  --text-label: rgba(229, 231, 235, 0.88);
+  --text-kicker: rgba(163, 163, 179, 0.88);
+  --page-bg-image:
+    radial-gradient(circle at 10% 12%, rgba(124, 156, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 90% 8%, rgba(103, 232, 249, 0.12), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.1), transparent 30%),
+    linear-gradient(180deg, #09090b 0%, #0d0d11 100%);
+}
+
+:root[data-theme="light"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --panel: #ffffff;
+  --panel-strong: #f1f5f9;
+  --line: rgba(15, 23, 42, 0.08);
+  --muted: #64748b;
+
+  --surface-glass: rgba(15, 23, 42, 0.035);
+  --surface-glass-hover: rgba(15, 23, 42, 0.06);
+  --surface-glass-strong: rgba(15, 23, 42, 0.07);
+  --surface-card: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.92));
+  --surface-panel: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.94));
+  --surface-panel-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(248, 250, 252, 0.85));
+  --border-soft: rgba(15, 23, 42, 0.08);
+  --border-soft-hover: rgba(15, 23, 42, 0.14);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 24px 60px -20px rgba(15, 23, 42, 0.16);
+  --shadow-soft: 0 18px 40px -20px rgba(15, 23, 42, 0.12);
+  --text-label: rgba(15, 23, 42, 0.85);
+  --text-kicker: rgba(71, 85, 105, 0.9);
+  --page-bg-image:
+    radial-gradient(circle at 10% 12%, rgba(99, 102, 241, 0.08), transparent 28%),
+    radial-gradient(circle at 90% 8%, rgba(45, 212, 191, 0.08), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.06), transparent 30%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
 }
 
 @theme inline {
@@ -49,15 +101,12 @@ body {
   font-family: var(--font-space-grotesk), "Segoe UI", sans-serif;
   min-height: 100%;
   overflow-x: hidden;
-  background-image:
-    radial-gradient(circle at 10% 12%, rgba(124, 156, 255, 0.16), transparent 28%),
-    radial-gradient(circle at 90% 8%, rgba(103, 232, 249, 0.12), transparent 24%),
-    radial-gradient(circle at 50% 100%, rgba(124, 58, 237, 0.10), transparent 30%),
-    linear-gradient(180deg, #09090b 0%, #0d0d11 100%);
+  background-image: var(--page-bg-image);
   background-attachment: fixed;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 * {
@@ -66,7 +115,7 @@ body {
 
 ::selection {
   background: rgba(124, 156, 255, 0.32);
-  color: #ffffff;
+  color: var(--foreground);
 }
 
 @keyframes fade-up {
@@ -153,67 +202,36 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  /* background: linear-gradient(180deg, rgba(20, 20, 24, 0.94), rgba(12, 12, 16, 0.94)); */
-  /* box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 24px 70px rgba(0, 0, 0, 0.42); */
+  border: 1px solid var(--border-soft);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-card);
   backdrop-filter: blur(20px);
 }
 
-.dashboard-card-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background:
-    radial-gradient(circle at top right, rgba(124, 156, 255, 0.22), transparent 42%),
-    radial-gradient(circle at right, rgba(87, 215, 255, 0.12), transparent 62%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.05), transparent 45%);
-
-  pointer-events: none;
+/* Chips/painéis da sidebar do dashboard (nav items, perfil, sair, integração) -
+   antes eram utilitários Tailwind fixos em branco (border-white/8, bg-white/4),
+   que ficavam invisíveis no tema claro. Centralizados aqui pra reagir ao tema
+   sem duplicar marcação entre dark/light. */
+.dash-chip {
+  border-color: var(--border-soft);
+  background: var(--surface-glass);
+  color: var(--foreground);
+  transition: border-color 200ms ease, background 200ms ease;
 }
 
-.bg-dashboard {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background:
-    radial-gradient(circle at 15% 20%, rgba(124, 156, 255, 0.12), transparent 28%),
-    radial-gradient(circle at 85% 15%, rgba(103, 232, 249, 0.08), transparent 30%),
-    linear-gradient(180deg, rgba(19, 19, 23, 0.96), rgba(12, 12, 16, 0.96));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 20px 60px rgba(0, 0, 0, 0.36);
-  backdrop-filter: blur(18px);
+.dash-chip:hover {
+  border-color: var(--border-soft-hover);
+  background: var(--surface-glass-hover);
 }
 
-.bg-dashboard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      rgba(255, 255, 255, 0.02) 18%,
-      transparent 45%);
-  opacity: .9;
+.dash-panel {
+  border-color: var(--border-soft);
+  background: var(--surface-glass-strong);
+  backdrop-filter: blur(20px);
 }
 
-.bg-dashboard::after {
-  content: "";
-  position: absolute;
-  width: 220px;
-  height: 220px;
-  top: -120px;
-  right: -80px;
-  border-radius: 9999px;
-  filter: blur(72px);
-  pointer-events: none;
-  background: rgba(124, 156, 255, 0.16);
+.dash-divider {
+  background: var(--border-soft-hover);
 }
 
 .shadow-custom {
@@ -224,27 +242,19 @@ body {
   background: linear-gradient(135deg, #7c9cff 0%, #57d7ff 100%);
 }
 
-.teste {
-  background: linear-gradient(135deg, rgba(20, 20, 24, 0.96) 0%, rgba(14, 14, 18, 0.96) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
-}
-
 .premium-surface {
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(18, 18, 22, 0.96), rgba(14, 14, 18, 0.96));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 24px 80px rgba(0, 0, 0, 0.38);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-card);
   backdrop-filter: blur(20px);
 }
 
 .premium-surface-soft {
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(22, 22, 28, 0.9), rgba(15, 15, 20, 0.9));
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.26);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-panel-soft);
+  box-shadow: var(--shadow-soft);
 }
 
 .premium-button {
@@ -304,8 +314,8 @@ body {
   justify-content: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-glass);
   color: var(--foreground);
   backdrop-filter: blur(12px);
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
@@ -320,8 +330,8 @@ body {
 .premium-input {
   width: 100%;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-glass);
   color: var(--foreground);
   padding: 0.8rem 0.95rem;
   outline: none;
@@ -333,19 +343,19 @@ body {
 }
 
 .premium-input::placeholder {
-  color: rgba(163, 163, 179, 0.72);
+  color: var(--muted);
 }
 
 .premium-input:focus {
   border-color: rgba(124, 156, 255, 0.55);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--surface-glass-strong);
   box-shadow: 0 0 0 4px rgba(124, 156, 255, 0.16);
 }
 
 .premium-tab {
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-glass);
   color: var(--muted);
   transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
@@ -357,16 +367,16 @@ body {
 
 .premium-tab[data-active="true"] {
   background: rgba(124, 156, 255, 0.16);
-  color: #ffffff;
+  color: var(--foreground);
   border-color: rgba(124, 156, 255, 0.35);
 }
 
 .premium-label {
-  color: rgba(229, 231, 235, 0.88);
+  color: var(--text-label);
 }
 
 .premium-kicker {
-  color: rgba(163, 163, 179, 0.88);
+  color: var(--text-kicker);
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }

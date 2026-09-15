@@ -39,6 +39,10 @@ let PostsController = class PostsController {
         const userId = this.getUserIdFromRequest(req);
         return this.postsService.getPostsOverviewByDate(userId, date);
     }
+    getPostAnalytics(req, id) {
+        const userId = this.getUserIdFromRequest(req);
+        return this.postsService.getPostAnalyticsHistory(userId, id);
+    }
     importYoutubeUrl(req, body) {
         const userId = this.getUserIdFromRequest(req);
         return this.postsService.createPostFromYoutubeUrl({
@@ -72,6 +76,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "getOverview", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
+    (0, common_1.Get)(':id/analytics'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], PostsController.prototype, "getPostAnalytics", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
     (0, common_1.Post)('import-youtube-url'),

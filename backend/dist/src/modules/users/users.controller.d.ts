@@ -6,20 +6,20 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto): Promise<Omit<{
+        id: string;
         email: string;
         name: string | null;
-        password: string | null;
-        id: string;
         googleId: string | null;
+        password: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     }, "password">>;
     findAll(): import("@prisma/client").Prisma.PrismaPromise<{
+        id: string;
         email: string;
         name: string | null;
-        id: string;
         role: import("@prisma/client").$Enums.Role;
         createdAt: Date;
     }[]>;
@@ -27,22 +27,22 @@ export declare class UsersController {
         email: string;
     }[]>;
     findUserByEmail(email: string): Promise<{
+        id: string;
         email: string;
         name: string | null;
-        password: string | null;
-        id: string;
         googleId: string | null;
+        password: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
         updatedAt: Date;
     } | null>;
     findOne(id: string): Promise<{
+        id: string;
         email: string;
         name: string | null;
-        password: string | null;
-        id: string;
         googleId: string | null;
+        password: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;
@@ -60,11 +60,11 @@ export declare class UsersController {
         message: string;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
+        id: string;
         email: string;
         name: string | null;
-        password: string | null;
-        id: string;
         googleId: string | null;
+        password: string | null;
         role: import("@prisma/client").$Enums.Role;
         refreshToken: string | null;
         createdAt: Date;

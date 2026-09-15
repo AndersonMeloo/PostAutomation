@@ -27,13 +27,13 @@ export default function YoutubeConnectCallbackClient({
           </div>
           <div>
             <p className="premium-kicker text-xs">Integração YouTube</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-4xl">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
               {success ? "Canal conectado" : "Não foi possível conectar"}
             </h1>
           </div>
         </div>
 
-        <p className="mt-4 text-sm leading-6 text-slate-300 md:text-base">
+        <p className="mt-4 text-sm leading-6 text-muted md:text-base">
           {success
             ? "Seu canal do YouTube foi conectado com sucesso. Redirecionando..."
             : "Não foi possível concluir a conexão com o YouTube. Redirecionando..."}

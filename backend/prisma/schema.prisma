@@ -70,6 +70,8 @@ model PostAnalytics {
 
   postId      String
   post        Post     @relation(fields: [postId], references: [id])
+
+  @@index([postId, collectedAt])
 }
 
 enum Platform {

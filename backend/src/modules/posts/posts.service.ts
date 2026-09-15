@@ -371,6 +371,30 @@ export class PostsService {
     };
   }
 
+  async getPostAnalyticsHistory(userId: string, postId: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { id: postId, userId },
+      select: { id: true, title: true, platform: true, status: true },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post nao encontrado');
+    }
+
+    const history = await this.prisma.postAnalytics.findMany({
+      where: { postId },
+      orderBy: { collectedAt: 'asc' },
+      select: {
+        views: true,
+        likes: true,
+        comments: true,
+        collectedAt: true,
+      },
+    });
+
+    return { post, history };
+  }
+
   async createPostFromYoutubeUrl(data: ImportYoutubePostDto) {
     const [user, niche, youtubeAccount] = await Promise.all([
       this.prisma.user.findUnique({

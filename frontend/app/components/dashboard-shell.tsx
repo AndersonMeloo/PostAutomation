@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { clearSession, getSession } from "../lib/auth-client";
+import { useTheme } from "../lib/theme-context";
 import {
     disconnectYoutubeConnection,
     getYoutubeConnectionStatus,
@@ -17,9 +18,11 @@ import {
     LayoutDashboard,
     LogOut,
     Menu,
+    Moon,
     PlayCircle,
     Shapes,
     ShieldCheck,
+    Sun,
     User,
     X,
 } from "lucide-react";
@@ -30,7 +33,7 @@ const navItems = [
     { href: "/auth", label: "Rotas", icon: ShieldCheck },
     { href: "/niches", label: "Nichos", icon: Shapes },
     { href: "/posts", label: "Postagens", icon: FolderTree },
-    { href: "#", label: "Métricas", icon: ChartNoAxesCombined },
+    { href: "/metrics", label: "Métricas", icon: ChartNoAxesCombined },
 ];
 
 type DashboardShellProps = {
@@ -40,6 +43,7 @@ type DashboardShellProps = {
 export function DashboardShell({ children }: DashboardShellProps) {
     const pathname = usePathname();
     const router = useRouter();
+    const { theme, toggleTheme } = useTheme();
     // A Home pública ("/"), login/cadastro e o callback do login com Google têm
     // layout próprio, sem a sidebar do dashboard.
     const isAuthPage =
@@ -165,12 +169,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                         className={`group flex w-full items-center rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-500 ease-in-out hover:-translate-y-0.5 gap-2 ${collapsed ? "justify-center gap-0" : "gap-3"
                                             } ${isActive
                                                 ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                                : "border-white/8 bg-white/4 text-slate-200 hover:border-white/12 hover:bg-white/7"
+                                                : "dash-chip"
                                             }`}
                                     >
                                         <Icon
                                             size={20}
-                                            className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                                            className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
                                                 }`}
                                         />
                                         <span
@@ -210,10 +214,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
                         </nav>
 
                         <div className="mt-auto space-y-3 pt-4">
-                            <div className="rounded-3xl border border-white/8 bg-white/5 p-3 backdrop-blur-xl">
-                                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">Integração</p>
+                            <div className="dash-panel rounded-3xl border p-3">
+                                <p className="text-[11px] uppercase tracking-[0.22em] text-muted">Integração</p>
                                 <p
-                                    className={`mt-2 overflow-hidden text-sm text-slate-300 transition-all duration-500 ease-in-out ${collapsed ? "max-h-0 opacity-0 translate-y-1" : "max-h-24 opacity-100 translate-y-0"
+                                    className={`mt-2 overflow-hidden text-sm text-muted transition-all duration-500 ease-in-out ${collapsed ? "max-h-0 opacity-0 translate-y-1" : "max-h-24 opacity-100 translate-y-0"
                                         }`}
                                 >
                                     Status do YouTube e atalho para conectar ou desconectar a conta.
@@ -265,12 +269,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                             href="/users"
                                             className={`group flex items-center justify-center rounded-2xl border px-3 py-2.5 transition duration-200 hover:-translate-y-0.5 ${isProfileActive
                                                 ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                                : "border-white/8 bg-white/4 text-slate-200 hover:border-white/12 hover:bg-white/7"
+                                                : "dash-chip"
                                                 }`}
                                         >
                                             <User
                                                 size={20}
-                                                className={`transition-colors ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                                                className={`transition-colors ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
                                                     }`}
                                             />
                                         </Link>
@@ -291,12 +295,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                     href="/users"
                                     className={`group flex items-center gap-3 rounded-2xl border px-3 py-2.5 transition-all duration-500 ease-in-out hover:-translate-y-0.5 ${isProfileActive
                                         ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                        : "border-white/8 bg-white/4 text-slate-200 hover:border-white/12 hover:bg-white/7"
+                                        : "dash-chip"
                                         }`}
                                 >
                                     <User
                                         size={20}
-                                        className={`transition-colors duration-300 ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                                        className={`transition-colors duration-300 ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
                                             }`}
                                     />
                                     <span
@@ -313,10 +317,56 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                     <Tooltip.Trigger asChild>
                                         <button
                                             type="button"
-                                            onClick={handleLogout}
-                                            className="group flex w-full items-center justify-center rounded-2xl border border-white/8 bg-white/4 px-3 py-2.5 text-sm text-slate-200 transition duration-200 hover:-translate-y-0.5 hover:border-white/12 hover:bg-white/7"
+                                            onClick={toggleTheme}
+                                            className="dash-chip group flex w-full items-center justify-center rounded-2xl border px-3 py-2.5 text-sm transition duration-200 hover:-translate-y-0.5"
                                         >
-                                            <LogOut size={20} className="transition-colors text-slate-400 group-hover:text-white" />
+                                            {theme === "dark" ? (
+                                                <Sun size={20} className="transition-colors text-slate-400 group-hover:text-foreground" />
+                                            ) : (
+                                                <Moon size={20} className="transition-colors text-slate-400 group-hover:text-foreground" />
+                                            )}
+                                        </button>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Portal>
+                                        <Tooltip.Content
+                                            side="right"
+                                            sideOffset={-8}
+                                            className="z-[9999] rounded-2xl border border-white/10 bg-[#111113] px-3 py-2 text-sm text-white shadow-2xl shadow-black/40 backdrop-blur-xl animate-fade-up"
+                                        >
+                                            {theme === "dark" ? "Tema claro" : "Tema escuro"}
+                                            <Tooltip.Arrow className="fill-[#111113]" />
+                                        </Tooltip.Content>
+                                    </Tooltip.Portal>
+                                </Tooltip.Root>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={toggleTheme}
+                                    className="dash-chip group flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm transition-all duration-500 ease-in-out hover:-translate-y-0.5"
+                                >
+                                    {theme === "dark" ? (
+                                        <Sun size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
+                                    ) : (
+                                        <Moon size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
+                                    )}
+                                    <span
+                                        className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out ${collapsed ? "max-w-0 opacity-0 translate-x-2" : "max-w-[120px] opacity-100 translate-x-0"
+                                            }`}
+                                    >
+                                        {theme === "dark" ? "Tema claro" : "Tema escuro"}
+                                    </span>
+                                </button>
+                            )}
+
+                            {collapsed ? (
+                                <Tooltip.Root>
+                                    <Tooltip.Trigger asChild>
+                                        <button
+                                            type="button"
+                                            onClick={handleLogout}
+                                            className="dash-chip group flex w-full items-center justify-center rounded-2xl border px-3 py-2.5 text-sm transition duration-200 hover:-translate-y-0.5"
+                                        >
+                                            <LogOut size={20} className="transition-colors text-slate-400 group-hover:text-foreground" />
                                         </button>
                                     </Tooltip.Trigger>
                                     <Tooltip.Portal>
@@ -334,9 +384,9 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                 <button
                                     type="button"
                                     onClick={handleLogout}
-                                    className="group flex w-full items-center gap-3 rounded-2xl border border-white/8 bg-white/4 px-3 py-2.5 text-sm text-slate-200 transition-all duration-500 ease-in-out hover:-translate-y-0.5 hover:border-white/12 hover:bg-white/7"
+                                    className="dash-chip group flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm transition-all duration-500 ease-in-out hover:-translate-y-0.5"
                                 >
-                                    <LogOut size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-white" />
+                                    <LogOut size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
                                     <span
                                         className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out ${collapsed ? "max-w-0 opacity-0 translate-x-2" : "max-w-[120px] opacity-100 translate-x-0"
                                             }`}
@@ -372,7 +422,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                 }
                             `}
                         >
-                            <div className="dashboard-card flex flex-col gap-2 p-4 border border-white/8 bg-white/5 backdrop-blur-xl">
+                            <div className="dashboard-card flex flex-col gap-2 p-4">
                                 {navItems.map((item) => {
                                     const Icon = item.icon;
                                     const isActive = pathname === item.href;
@@ -384,12 +434,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                             onClick={handleMobileNavClick}
                                             className={`group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${isActive
                                                 ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                                : "border-white/8 bg-white/4 text-slate-200 hover:border-white/12 hover:bg-white/7"
+                                                : "dash-chip"
                                                 }`}
                                         >
                                             <Icon
                                                 size={20}
-                                                className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                                                className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
                                                     }`}
                                             />
                                             <span>{item.label}</span>
@@ -397,19 +447,19 @@ export function DashboardShell({ children }: DashboardShellProps) {
                                     );
                                 })}
 
-                                <div className="my-2 h-px bg-white/10" />
+                                <div className="my-2 h-px dash-divider" />
 
                                 <Link
                                     href="/users"
                                     onClick={handleMobileNavClick}
                                     className={`group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${isProfileActive
                                         ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                        : "border-white/8 bg-white/4 text-slate-200 hover:border-white/12 hover:bg-white/7"
+                                        : "dash-chip"
                                         }`}
                                 >
                                     <User
                                         size={20}
-                                        className={`transition-colors duration-300 ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                                        className={`transition-colors duration-300 ${isProfileActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
                                             }`}
                                     />
                                     <span>Perfil</span>
@@ -417,16 +467,29 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                                 <button
                                     type="button"
-                                    onClick={handleLogout}
-                                    className="group flex items-center gap-3 rounded-2xl border border-white/8 bg-white/4 px-3 py-2.5 text-sm font-medium text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/12 hover:bg-white/7"
+                                    onClick={toggleTheme}
+                                    className="dash-chip group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5"
                                 >
-                                    <LogOut size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-white" />
+                                    {theme === "dark" ? (
+                                        <Sun size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
+                                    ) : (
+                                        <Moon size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
+                                    )}
+                                    <span>{theme === "dark" ? "Tema claro" : "Tema escuro"}</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={handleLogout}
+                                    className="dash-chip group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5"
+                                >
+                                    <LogOut size={20} className="transition-colors duration-300 text-slate-400 group-hover:text-foreground" />
                                     <span>Sair</span>
                                 </button>
 
                                 {/* Integração YouTube no mobile */}
-                                <div className="mt-2 rounded-3xl border border-white/8 bg-white/5 p-3 backdrop-blur-xl">
-                                    <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">Integração</p>
+                                <div className="dash-panel mt-2 rounded-3xl border p-3">
+                                    <p className="text-[11px] uppercase tracking-[0.22em] text-muted">Integração</p>
                                     <div className="mt-2 space-y-2">
                                         {youtubeConnected ? (
                                             <button
@@ -463,12 +526,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
                         </div>
 
                         {!youtubeLoading && !youtubeConnected ? (
-                            <section className="mb-5 rounded-3xl border border-amber-400/20 bg-gradient-to-r from-amber-500/10 via-white/5 to-cyan-500/10 p-5 text-white shadow-lg shadow-black/20">
+                            <section className="mb-5 rounded-3xl border border-amber-400/20 bg-gradient-to-r from-amber-500/10 via-white/5 to-cyan-500/10 p-5 text-foreground shadow-lg shadow-black/20">
                                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                     <div className="max-w-2xl">
-                                        <p className="text-xs uppercase tracking-[0.24em] text-amber-200/90">Integração pendente</p>
+                                        <p className="text-xs uppercase tracking-[0.24em] text-amber-200/90 light:text-amber-700">Integração pendente</p>
                                         <h2 className="mt-2 text-xl font-semibold">Conexão com YouTube não concluída</h2>
-                                        <p className="mt-2 text-sm leading-6 text-slate-300">
+                                        <p className="mt-2 text-sm leading-6 text-muted">
                                             Você pode navegar normalmente. Conecte o YouTube para habilitar recursos dependentes da conta da plataforma.
                                         </p>
                                     </div>

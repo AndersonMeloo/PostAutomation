@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -48,6 +49,16 @@ export class PostsController {
   ) {
     const userId = this.getUserIdFromRequest(req);
     return this.postsService.getPostsOverviewByDate(userId, date);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/analytics')
+  getPostAnalytics(
+    @Req() req: { user?: { sub?: string } },
+    @Param('id') id: string,
+  ) {
+    const userId = this.getUserIdFromRequest(req);
+    return this.postsService.getPostAnalyticsHistory(userId, id);
   }
 
   @UseGuards(AuthGuard)
