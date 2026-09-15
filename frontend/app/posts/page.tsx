@@ -126,61 +126,43 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       <section className="dashboard-card p-5 md:p-6">
         <h3 className="text-lg font-semibold text-foreground">Vídeos com atividade no dia</h3>
 
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[1100px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-(--border-soft-hover) text-left text-muted">
-                <th className="px-3 py-3 font-medium">Título</th>
-                <th className="hidden px-3 py-3 font-medium md:table-cell">Plataforma</th>
-                <th className="px-3 py-3 font-medium">Status</th>
-                <th className="px-3 py-3 font-medium">Postado em</th>
-                <th className="hidden px-3 py-3 font-medium lg:table-cell">Agendado em</th>
-                <th className="px-3 py-3 font-medium">Link</th>
-                <th className="px-3 py-3 font-medium">Views</th>
-                <th className="hidden px-3 py-3 font-medium md:table-cell">Curtidas</th>
-                <th className="hidden px-3 py-3 font-medium md:table-cell">Comentários</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(overview?.postedToday ?? []).length === 0 ? (
-                <tr>
-                  <td className="px-3 py-5 text-muted" colSpan={9}>
-                    Nenhum vídeo com atividade na data selecionada.
-                  </td>
-                </tr>
-              ) : (
-                (overview?.postedToday ?? []).map((post) => (
-                  <tr key={post.id} className="border-b border-(--border-soft) last:border-none">
-                    <td className="px-3 py-3 font-medium text-foreground">{post.title}</td>
-                    <td className="hidden px-3 py-3 text-muted md:table-cell">{post.platform}</td>
-                    <td className="px-3 py-3 text-muted">{post.status}</td>
-                    <td className="px-3 py-3 text-muted">{formatDate(post.postedAt)}</td>
-                    <td className="hidden px-3 py-3 text-muted lg:table-cell">{formatDate(post.scheduledAt)}</td>
-                    <td className="px-3 py-3 text-muted">
-                      {post.status === "POSTED" && isYouTubeLink(post.videoUrl) ? (
-                        <a
-                          href={post.videoUrl ?? "#"}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-medium text-cyan-200 underline decoration-cyan-300/40 underline-offset-4 transition hover:text-cyan-100 light:text-cyan-700 light:hover:text-cyan-800"
-                        >
-                          Ver no YouTube
-                        </a>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="px-3 py-3 text-muted">{post.latestAnalytics?.views ?? 0}</td>
-                    <td className="hidden px-3 py-3 text-muted md:table-cell">{post.latestAnalytics?.likes ?? 0}</td>
-                    <td className="hidden px-3 py-3 text-muted md:table-cell">
-                      {post.latestAnalytics?.comments ?? 0}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        {(overview?.postedToday ?? []).length === 0 ? (
+          <p className="dash-chip mt-4 rounded-2xl border p-6 text-center text-sm text-muted">
+            Nenhum vídeo com atividade na data selecionada.
+          </p>
+        ) : (
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {(overview?.postedToday ?? []).map((post) => (
+              <li key={post.id} className="dash-chip rounded-2xl border p-4">
+                <p className="font-medium text-foreground">{post.title}</p>
+                <p className="mt-1 text-xs text-muted">
+                  {post.platform} · {post.status}
+                </p>
+                <p className="mt-1 text-xs text-muted">Postado em: {formatDate(post.postedAt)}</p>
+                {post.scheduledAt ? (
+                  <p className="mt-1 text-xs text-muted">
+                    Agendado em: {formatDate(post.scheduledAt)}
+                  </p>
+                ) : null}
+                <p className="mt-2 text-xs text-muted">
+                  Views: {post.latestAnalytics?.views ?? 0} · Curtidas:{" "}
+                  {post.latestAnalytics?.likes ?? 0} · Comentários:{" "}
+                  {post.latestAnalytics?.comments ?? 0}
+                </p>
+                {post.status === "POSTED" && isYouTubeLink(post.videoUrl) ? (
+                  <a
+                    href={post.videoUrl ?? "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-flex text-xs font-medium text-cyan-200 underline decoration-cyan-300/40 underline-offset-4 transition hover:text-cyan-100 light:text-cyan-700 light:hover:text-cyan-800"
+                  >
+                    Ver no YouTube
+                  </a>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="dashboard-card p-5 md:p-6">
@@ -188,7 +170,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         <p className="mt-1 text-sm text-muted">
           Seus ultimos {posts.length} registros retornados por GET /posts.
         </p>
-        <ul className="mt-4 grid gap-3">
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <li key={post.id} className="dash-chip rounded-2xl border p-4">
               <p className="font-medium text-foreground">{post.title}</p>
