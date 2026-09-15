@@ -14,12 +14,13 @@ const prisma_module_1 = require("../../database/prisma.module");
 const publish_scheduler_1 = require("./schedulers/publish.scheduler");
 const posts_scheduler_1 = require("./schedulers/posts.scheduler");
 const auth_module_1 = require("../auth/auth.module");
+const video_storage_module_1 = require("../storage/video-storage.module");
 let PostsModule = class PostsModule {
 };
 exports.PostsModule = PostsModule;
 exports.PostsModule = PostsModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule],
+        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule, video_storage_module_1.VideoStorageModule],
         providers: [posts_service_1.PostsService, posts_scheduler_1.PostsScheduler, publish_scheduler_1.PublishScheduler],
         controllers: [posts_controller_1.PostsController],
     })

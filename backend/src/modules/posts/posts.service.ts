@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +9,11 @@ import { PrismaService } from 'src/database/prisma.service';
 import { Post } from '@prisma/client';
 import { ImportYoutubePostDto } from './dto/import-youtube-post.dto';
 import { UploadVideoPostDto } from './dto/upload-video-post.dto';
+import { CreateDraftDto } from './dto/create-draft.dto';
+import { EditDraftDto } from './dto/edit-draft.dto';
+import { FinalizeDraftDto } from './dto/finalize-draft.dto';
+import { VIDEO_STORAGE } from '../storage/video-storage.interface';
+import type { VideoStorageAdapter } from '../storage/video-storage.interface';
 import { mkdir, readdir, rename, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { basename, resolve, extname } from 'path';
@@ -75,6 +81,7 @@ export class PostsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
+    @Inject(VIDEO_STORAGE) private readonly videoStorage: VideoStorageAdapter,
   ) {}
 
   private getLocalDateKey(date: Date): string {
@@ -85,7 +92,7 @@ export class PostsService {
     return `${year}-${month}-${day}`;
   }
 
-  private isUploadVideoFile(file: unknown): file is UploadVideoFile {
+  private isMulterFile(file: unknown): file is UploadVideoFile {
     if (!file || typeof file !== 'object') {
       return false;
     }
@@ -369,6 +376,180 @@ export class PostsService {
       dailySeries,
       postedToday,
     };
+  }
+
+  async getPostAnalyticsHistory(userId: string, postId: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { id: postId, userId },
+      select: { id: true, title: true, platform: true, status: true },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post nao encontrado');
+    }
+
+    const history = await this.prisma.postAnalytics.findMany({
+      where: { postId },
+      orderBy: { collectedAt: 'asc' },
+      select: {
+        views: true,
+        likes: true,
+        comments: true,
+        collectedAt: true,
+      },
+    });
+
+    return { post, history };
+  }
+
+  async listDrafts(userId: string) {
+    return this.prisma.post.findMany({
+      where: { userId, status: 'DRAFT' },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getDraftById(userId: string, postId: string) {
+    const draft = await this.prisma.post.findFirst({
+      where: { id: postId, userId, status: 'DRAFT' },
+    });
+
+    if (!draft) {
+      throw new NotFoundException('Rascunho nao encontrado');
+    }
+
+    return draft;
+  }
+
+  async getDraftAssetSource(
+    userId: string,
+    postId: string,
+    kind: 'video' | 'thumbnail',
+  ): Promise<string> {
+    const post = await this.prisma.post.findFirst({
+      where: { id: postId, userId },
+      select: { videoUrl: true, thumbnailUrl: true },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post nao encontrado');
+    }
+
+    const source = kind === 'video' ? post.videoUrl : post.thumbnailUrl;
+
+    if (!source) {
+      throw new NotFoundException(
+        kind === 'video' ? 'Video ainda nao enviado' : 'Thumbnail ainda nao enviada',
+      );
+    }
+
+    return source;
+  }
+
+  async createDraft(userId: string, file: unknown, data: CreateDraftDto) {
+    if (!this.isMulterFile(file)) {
+      throw new BadRequestException('Conteudo do arquivo de vídeo invalido');
+    }
+
+    const validExtensions = ['.mp4', '.mov', '.webm', '.mkv'];
+    const fileExtension = extname(file.originalname).toLowerCase();
+
+    if (!validExtensions.includes(fileExtension)) {
+      throw new BadRequestException(
+        `Extensão invalida. Aceitos: ${validExtensions.join(', ')}`,
+      );
+    }
+
+    const stored = await this.videoStorage.uploadVideo(
+      { buffer: file.buffer, originalName: file.originalname },
+      userId,
+    );
+
+    return this.prisma.post.create({
+      data: {
+        title: data.title?.trim() || 'Rascunho sem titulo',
+        platform: 'YOUTUBE',
+        status: 'DRAFT',
+        videoUrl: stored.url,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+  }
+
+  async editDraft(userId: string, postId: string, data: EditDraftDto) {
+    const draft = await this.getDraftById(userId, postId);
+
+    return this.prisma.post.update({
+      where: { id: draft.id },
+      data: {
+        title: data.title?.trim() || undefined,
+        description: data.description,
+        format: data.format,
+        trimStart: data.trimStart,
+        trimEnd: data.trimEnd,
+      },
+    });
+  }
+
+  async uploadDraftThumbnail(userId: string, postId: string, file: unknown) {
+    const draft = await this.getDraftById(userId, postId);
+
+    if (!this.isMulterFile(file)) {
+      throw new BadRequestException('Conteudo do arquivo de thumbnail invalido');
+    }
+
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+    const fileExtension = extname(file.originalname).toLowerCase();
+
+    if (!validExtensions.includes(fileExtension)) {
+      throw new BadRequestException(
+        `Extensão invalida. Aceitos: ${validExtensions.join(', ')}`,
+      );
+    }
+
+    const stored = await this.videoStorage.uploadThumbnail(
+      { buffer: file.buffer, originalName: file.originalname },
+      userId,
+    );
+
+    return this.prisma.post.update({
+      where: { id: draft.id },
+      data: { thumbnailUrl: stored.url },
+    });
+  }
+
+  async finalizeDraft(userId: string, postId: string, data: FinalizeDraftDto) {
+    const draft = await this.getDraftById(userId, postId);
+
+    const niche = await this.prisma.niche.findUnique({
+      where: { id: data.nicheId },
+      select: { id: true, active: true },
+    });
+
+    if (!niche || !niche.active) {
+      throw new BadRequestException('Nicho nao encontrado ou inativo');
+    }
+
+    const scheduledAt = new Date(data.scheduledAt);
+
+    if (Number.isNaN(scheduledAt.getTime())) {
+      throw new BadRequestException('scheduledAt invalido');
+    }
+
+    return this.prisma.post.update({
+      where: { id: draft.id },
+      data: {
+        status: 'PENDING',
+        scheduledAt,
+        title: data.title?.trim() || draft.title,
+        description: data.description ?? draft.description,
+        niche: {
+          connect: { id: data.nicheId },
+        },
+      },
+    });
   }
 
   async createPostFromYoutubeUrl(data: ImportYoutubePostDto) {
@@ -777,7 +958,7 @@ export class PostsService {
       );
     }
 
-    if (!this.isUploadVideoFile(file)) {
+    if (!this.isMulterFile(file)) {
       throw new BadRequestException('Conteudo do arquivo de vídeo invalido');
     }
 

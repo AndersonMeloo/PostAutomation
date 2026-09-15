@@ -87,43 +87,43 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="premium-kicker text-xs">Upload</p>
-          <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">Enviar e agendar vídeo</h3>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
+          <h3 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">Enviar e agendar vídeo</h3>
+          <p className="mt-2 text-sm leading-6 text-muted">
             Envie o arquivo e defina título, descrição e horário diretamente por aqui.
           </p>
         </div>
       </div>
 
       {activeNiches.length === 0 ? (
-        <p className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-3 text-sm text-amber-200">
+        <p className="mt-4 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-3 text-sm text-amber-200 light:text-amber-800">
           Nenhum nicho ativo encontrado. Ative ou crie um nicho antes de enviar videos.
         </p>
       ) : null}
 
       {message ? (
-        <p className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        <p className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-200 light:text-emerald-700">
           {message}
         </p>
       ) : null}
 
       {error ? (
-        <p className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <p className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-sm text-rose-200 light:text-rose-700">
           {error}
         </p>
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-4 grid gap-3">
-        <label className="grid gap-1 text-sm text-slate-300">
+        <label className="grid gap-1 text-sm text-muted">
           Arquivo de video
           <input
             type="file"
             accept="video/mp4,video/quicktime,video/webm,video/x-matroska,.mp4,.mov,.webm,.mkv"
             onChange={(event) => setVideoFile(event.target.files?.[0] ?? null)}
-            className="premium-input px-0 py-2 file:mr-4 file:rounded-full file:border-0 file:bg-white/8 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-white/12"
+            className="premium-input px-0 py-2 file:mr-4 file:rounded-full file:border-0 file:bg-(--border-soft-hover) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-foreground hover:file:bg-(--surface-glass-strong)"
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-300">
+        <label className="grid gap-1 text-sm text-muted">
           Titulo
           <input
             type="text"
@@ -135,7 +135,7 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-300">
+        <label className="grid gap-1 text-sm text-muted">
           Descricao
           <textarea
             value={description}
@@ -146,7 +146,7 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
           />
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-300">
+        <label className="grid gap-1 text-sm text-muted">
           Nicho
           <select
             value={nicheId}
@@ -161,7 +161,7 @@ export function VideoUploadForm({ token, niches }: VideoUploadFormProps) {
           </select>
         </label>
 
-        <label className="grid gap-1 text-sm text-slate-300">
+        <label className="grid gap-1 text-sm text-muted">
           Agendar para
           <input
             type="datetime-local"
