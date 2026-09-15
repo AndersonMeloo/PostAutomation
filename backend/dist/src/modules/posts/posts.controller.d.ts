@@ -12,28 +12,28 @@ export declare class PostsController {
         };
     }): Promise<({
         niche: {
-            id: string;
             name: string;
+            id: string;
         };
         analytics: {
+            comments: number;
             id: string;
+            collectedAt: Date;
             views: number;
             likes: number;
-            comments: number;
-            collectedAt: Date;
             postId: string;
         }[];
     } & {
         id: string;
-        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
-        title: string;
-        videoUrl: string | null;
-        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
+        title: string;
+        description: string | null;
+        videoUrl: string | null;
+        postedAt: Date | null;
     })[]>;
     getOverview(req: {
         user?: {
@@ -81,15 +81,15 @@ export declare class PostsController {
         };
     }, body: ImportYoutubePostDto): Promise<{
         id: string;
-        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
-        title: string;
-        videoUrl: string | null;
-        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
+        title: string;
+        description: string | null;
+        videoUrl: string | null;
+        postedAt: Date | null;
     }>;
     uploadVideo(req: {
         user?: {
@@ -98,14 +98,14 @@ export declare class PostsController {
     }, file: Multer.File, data: UploadVideoPostDto): Promise<{
         message: string;
         id: string;
-        description: string | null;
         platform: import("@prisma/client").$Enums.Platform;
         userId: string;
-        title: string;
-        videoUrl: string | null;
-        postedAt: Date | null;
         status: import("@prisma/client").$Enums.PostStatus;
         nicheId: string;
         scheduledAt: Date | null;
+        title: string;
+        description: string | null;
+        videoUrl: string | null;
+        postedAt: Date | null;
     }>;
 }

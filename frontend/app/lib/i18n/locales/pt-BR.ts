@@ -53,7 +53,7 @@ export const ptBR: Dictionary = {
     primaryCta: "Criar conta",
     secondaryCta: "Ver como funciona",
     comingSoon: "Em breve",
-    badgesCenterLabel: "Seu canal, no piloto automático",
+    badgesCenterLabel: "Sua rede, no piloto automático",
     badges: [
       { id: "youtube", label: "YouTube", comingSoon: false },
       { id: "instagram", label: "Instagram", comingSoon: true },
