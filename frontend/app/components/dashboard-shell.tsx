@@ -28,6 +28,7 @@ import {
     X,
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import type { LucideIcon } from "lucide-react";
 
 const navItems = [
     { href: "/dashboard", label: "Início", icon: LayoutDashboard },
@@ -37,6 +38,50 @@ const navItems = [
     { href: "/videos", label: "Vídeos", icon: Clapperboard },
     { href: "/metrics", label: "Métricas", icon: ChartNoAxesCombined },
 ];
+
+// Reaproveitado pela sidebar desktop (com suporte a collapsed) e pelo menu
+// mobile (sempre collapsed={false}) - elimina a duplicação de markup entre os dois.
+function NavItem({
+    href,
+    label,
+    icon: Icon,
+    isActive,
+    collapsed,
+    onClick,
+}: {
+    href: string;
+    label: string;
+    icon: LucideIcon;
+    isActive: boolean;
+    collapsed: boolean;
+    onClick?: () => void;
+}) {
+    return (
+        <Link
+            href={href}
+            onClick={onClick}
+            className={`group flex w-full items-center rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-500 ease-in-out hover:-translate-y-0.5 gap-2 ${collapsed ? "justify-center gap-0" : "gap-3"
+                } ${isActive
+                    ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
+                    : "dash-chip"
+                }`}
+        >
+            <Icon
+                size={20}
+                className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
+                    }`}
+            />
+            <span
+                className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out ${collapsed
+                    ? "max-w-0 opacity-0 translate-x-2"
+                    : "max-w-[160px] opacity-100 translate-x-0"
+                    }`}
+            >
+                {label}
+            </span>
+        </Link>
+    );
+}
 
 type DashboardShellProps = {
     children: ReactNode;
@@ -59,6 +104,15 @@ export function DashboardShell({ children }: DashboardShellProps) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const isProfileActive = pathname.startsWith("/users");
+
+    // Em telas de tablet a sidebar expandida sobra pouco espaço pro conteúdo -
+    // começa colapsada por padrão (o botão manual continua funcionando normalmente).
+    useEffect(() => {
+        const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches;
+        if (isTablet) {
+            setCollapsed(true);
+        }
+    }, []);
 
     useEffect(() => {
         async function loadYoutubeStatus() {
@@ -162,36 +216,17 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                         <nav className="grid grid-cols-1 gap-2">
                             {navItems.map((item) => {
-                                const Icon = item.icon;
                                 const isActive = pathname === item.href;
 
                                 const link = (
-                                    <Link
+                                    <NavItem
                                         key={item.href}
                                         href={item.href}
-                                        className={`group flex w-full items-center rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-500 ease-in-out hover:-translate-y-0.5 gap-2 ${collapsed ? "justify-center gap-0" : "gap-3"
-                                            } ${isActive
-                                                ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                                : "dash-chip"
-                                            }`}
-                                    >
-                                        <Icon
-                                            size={20}
-                                            className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
-                                                }`}
-                                        />
-                                        <span
-                                            className={`
-                                                        overflow-hidden whitespace-nowrap transition-all duration-500 ease-in-out
-                                                ${collapsed
-                                                    ? "max-w-0 opacity-0 translate-x-2"
-                                                    : "max-w-[160px] opacity-100 translate-x-0"
-                                                }
-                                            `}
-                                        >
-                                            {item.label}
-                                        </span>
-                                    </Link>
+                                        label={item.label}
+                                        icon={item.icon}
+                                        isActive={isActive}
+                                        collapsed={collapsed}
+                                    />
                                 );
 
                                 if (!collapsed) {
@@ -218,9 +253,14 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
                         <div className="mt-auto space-y-3 pt-4">
                             <div className="dash-panel rounded-3xl border p-3">
-                                <p className="text-[11px] uppercase tracking-[0.22em] text-muted">Integração</p>
                                 <p
-                                    className={`mt-2 overflow-hidden text-sm text-muted transition-all duration-500 ease-in-out ${collapsed ? "max-h-0 opacity-0 translate-y-1" : "max-h-24 opacity-100 translate-y-0"
+                                    className={`overflow-hidden text-[11px] uppercase tracking-[0.22em] text-muted transition-all duration-500 ease-in-out ${collapsed ? "max-h-0 opacity-0" : "max-h-6 opacity-100"
+                                        }`}
+                                >
+                                    Integração
+                                </p>
+                                <p
+                                    className={`overflow-hidden text-sm text-muted transition-all duration-500 ease-in-out ${collapsed ? "max-h-0 opacity-0 translate-y-1" : "mt-2 max-h-24 opacity-100 translate-y-0"
                                         }`}
                                 >
                                     Status do YouTube e atalho para conectar ou desconectar a conta.
@@ -426,29 +466,17 @@ export function DashboardShell({ children }: DashboardShellProps) {
                             `}
                         >
                             <div className="dashboard-card flex flex-col gap-2 p-4">
-                                {navItems.map((item) => {
-                                    const Icon = item.icon;
-                                    const isActive = pathname === item.href;
-
-                                    return (
-                                        <Link
-                                            key={item.href}
-                                            href={item.href}
-                                            onClick={handleMobileNavClick}
-                                            className={`group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${isActive
-                                                ? "card-gradient card-gradient-overlay border-transparent shadow-lg shadow-cyan-500/20"
-                                                : "dash-chip"
-                                                }`}
-                                        >
-                                            <Icon
-                                                size={20}
-                                                className={`transition-colors duration-300 ${isActive ? "text-white" : "text-slate-400 group-hover:text-foreground"
-                                                    }`}
-                                            />
-                                            <span>{item.label}</span>
-                                        </Link>
-                                    );
-                                })}
+                                {navItems.map((item) => (
+                                    <NavItem
+                                        key={item.href}
+                                        href={item.href}
+                                        label={item.label}
+                                        icon={item.icon}
+                                        isActive={pathname === item.href}
+                                        collapsed={false}
+                                        onClick={handleMobileNavClick}
+                                    />
+                                ))}
 
                                 <div className="my-2 h-px dash-divider" />
 
