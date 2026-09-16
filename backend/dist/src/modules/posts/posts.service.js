@@ -373,6 +373,17 @@ let PostsService = class PostsService {
             },
         });
     }
+    async deleteDraft(userId, postId) {
+        const draft = await this.getDraftById(userId, postId);
+        if (draft.videoUrl) {
+            await this.videoStorage.delete(draft.videoUrl).catch(() => undefined);
+        }
+        if (draft.thumbnailUrl) {
+            await this.videoStorage.delete(draft.thumbnailUrl).catch(() => undefined);
+        }
+        await this.prisma.post.delete({ where: { id: draft.id } });
+        return { message: 'Rascunho removido' };
+    }
     async createPostFromYoutubeUrl(data) {
         const [user, niche, youtubeAccount] = await Promise.all([
             this.prisma.user.findUnique({

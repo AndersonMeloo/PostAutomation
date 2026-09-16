@@ -20,7 +20,7 @@ let LocalVideoStorageAdapter = class LocalVideoStorageAdapter {
         const fileName = `${ownerId.slice(0, 8)}_${(0, crypto_1.randomUUID)()}${extension}`;
         const filePath = (0, path_1.resolve)(dir, fileName);
         await (0, promises_1.writeFile)(filePath, file.buffer);
-        return { url: filePath, path: filePath };
+        return { url: filePath };
     }
     uploadVideo(file, ownerId) {
         return this.store('videos', file, ownerId);
@@ -28,9 +28,9 @@ let LocalVideoStorageAdapter = class LocalVideoStorageAdapter {
     uploadThumbnail(file, ownerId) {
         return this.store('thumbnails', file, ownerId);
     }
-    async delete(path) {
-        if ((0, fs_1.existsSync)(path)) {
-            await (0, promises_1.unlink)(path);
+    async delete(url) {
+        if ((0, fs_1.existsSync)(url)) {
+            await (0, promises_1.unlink)(url);
         }
     }
 };

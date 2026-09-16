@@ -70,7 +70,7 @@ export class SupabaseVideoStorageAdapter implements VideoStorageAdapter {
       .storage.from(this.getBucket())
       .getPublicUrl(objectPath);
 
-    return { url: data.publicUrl, path: objectPath };
+    return { url: data.publicUrl };
   }
 
   uploadVideo(file: StorableFile, ownerId: string): Promise<StoredFile> {
@@ -81,7 +81,17 @@ export class SupabaseVideoStorageAdapter implements VideoStorageAdapter {
     return this.store('thumbnails', file, ownerId);
   }
 
-  async delete(path: string): Promise<void> {
-    await this.getClient().storage.from(this.getBucket()).remove([path]);
+  async delete(url: string): Promise<void> {
+    // Só temos a URL pública salva no Post - extrai de volta o path relativo
+    // ao bucket (o que .remove() espera) a partir dela.
+    const marker = `/object/public/${this.getBucket()}/`;
+    const markerIndex = url.indexOf(marker);
+
+    if (markerIndex === -1) {
+      return;
+    }
+
+    const objectPath = decodeURIComponent(url.slice(markerIndex + marker.length));
+    await this.getClient().storage.from(this.getBucket()).remove([objectPath]);
   }
 }

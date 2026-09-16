@@ -552,6 +552,23 @@ export class PostsService {
     });
   }
 
+  async deleteDraft(userId: string, postId: string): Promise<{ message: string }> {
+    const draft = await this.getDraftById(userId, postId);
+
+    // Apaga os arquivos no storage antes do registro no banco - se algum já
+    // não existir mais (ex: removido manualmente), ignora e segue o delete.
+    if (draft.videoUrl) {
+      await this.videoStorage.delete(draft.videoUrl).catch(() => undefined);
+    }
+    if (draft.thumbnailUrl) {
+      await this.videoStorage.delete(draft.thumbnailUrl).catch(() => undefined);
+    }
+
+    await this.prisma.post.delete({ where: { id: draft.id } });
+
+    return { message: 'Rascunho removido' };
+  }
+
   async createPostFromYoutubeUrl(data: ImportYoutubePostDto) {
     const [user, niche, youtubeAccount] = await Promise.all([
       this.prisma.user.findUnique({

@@ -239,6 +239,13 @@ export declare class PostsController {
         trimEnd: number | null;
         userId: string;
     }>;
+    deleteDraft(req: {
+        user?: {
+            sub?: string;
+        };
+    }, id: string): Promise<{
+        message: string;
+    }>;
     importYoutubeUrl(req: {
         user?: {
             sub?: string;

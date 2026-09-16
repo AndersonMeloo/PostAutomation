@@ -98,6 +98,27 @@ export class ApiError extends Error {
   }
 }
 
+// Mesma lógica de content-type do request() abaixo, mas reutilizável por
+// chamadas multipart/form-data que não passam pelo request() (upload de
+// arquivo não pode ir como JSON.stringify no body).
+async function parseErrorMessage(response: Response, fallback: string): Promise<string> {
+  if (response.headers.get("content-type")?.includes("application/json")) {
+    try {
+      const data = (await response.json()) as { message?: string | string[] };
+      if (Array.isArray(data.message)) {
+        return data.message.join(", ");
+      }
+      if (typeof data.message === "string") {
+        return data.message;
+      }
+    } catch {
+      // corpo não era um JSON válido - mantém a mensagem genérica
+    }
+  }
+
+  return fallback;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     cache: "no-store",
@@ -210,8 +231,7 @@ export async function uploadVideoPost(
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || 'Falha ao enviar video');
+    throw new ApiError(response.status, await parseErrorMessage(response, 'Falha ao enviar video'));
   }
 
   return response.json();
@@ -270,7 +290,7 @@ export async function createDraft(
   });
 
   if (!response.ok) {
-    throw new ApiError(response.status, "Falha ao criar rascunho");
+    throw new ApiError(response.status, await parseErrorMessage(response, "Falha ao criar rascunho"));
   }
 
   return (await response.json()) as DraftPost;
@@ -296,6 +316,15 @@ export async function editDraft(
   });
 }
 
+export async function deleteDraft(token: string, postId: string) {
+  return request<{ message: string }>(`/posts/${postId}/draft`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 export async function uploadDraftThumbnail(
   token: string,
   postId: string,
@@ -314,7 +343,7 @@ export async function uploadDraftThumbnail(
   });
 
   if (!response.ok) {
-    throw new ApiError(response.status, "Falha ao enviar thumbnail");
+    throw new ApiError(response.status, await parseErrorMessage(response, "Falha ao enviar thumbnail"));
   }
 
   return (await response.json()) as DraftPost;

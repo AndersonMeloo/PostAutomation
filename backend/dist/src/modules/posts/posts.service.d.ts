@@ -212,6 +212,9 @@ export declare class PostsService {
         trimEnd: number | null;
         userId: string;
     }>;
+    deleteDraft(userId: string, postId: string): Promise<{
+        message: string;
+    }>;
     createPostFromYoutubeUrl(data: ImportYoutubePostDto): Promise<{
         id: string;
         platform: import("@prisma/client").$Enums.Platform;

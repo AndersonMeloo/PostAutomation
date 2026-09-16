@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -180,6 +181,16 @@ export class PostsController {
   ) {
     const userId = this.getUserIdFromRequest(req);
     return this.postsService.finalizeDraft(userId, id, data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id/draft')
+  deleteDraft(
+    @Req() req: { user?: { sub?: string } },
+    @Param('id') id: string,
+  ) {
+    const userId = this.getUserIdFromRequest(req);
+    return this.postsService.deleteDraft(userId, id);
   }
 
   @UseGuards(AuthGuard)

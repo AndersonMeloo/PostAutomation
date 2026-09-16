@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  deleteDraft,
   editDraft,
   fetchDraftAssetBlobUrl,
   finalizeDraft,
@@ -165,6 +166,24 @@ export function VideoEditor({ accessToken, draft, niches }: VideoEditorProps) {
     }
   }
 
+  async function handleDelete() {
+    const confirmed = window.confirm(
+      "Tem certeza que deseja excluir este rascunho? O vídeo e a thumbnail enviados serão apagados e essa ação não pode ser desfeita.",
+    );
+    if (!confirmed) return;
+
+    setSaving(true);
+    setError("");
+
+    try {
+      await deleteDraft(accessToken, draft.id);
+      router.push("/videos");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Falha ao excluir rascunho");
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       {error ? (
@@ -262,6 +281,7 @@ export function VideoEditor({ accessToken, draft, niches }: VideoEditorProps) {
         onSaveAndContinue={handleSaveAndContinue}
         onSaveAndExit={handleSaveAndExit}
         onFinalize={handleFinalize}
+        onDelete={handleDelete}
       />
     </div>
   );
