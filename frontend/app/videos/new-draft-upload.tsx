@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createDraft } from "../lib/api";
+import { StatusBanner } from "../components/dashboard/status-banner";
 
 export function NewDraftUpload({ accessToken }: { accessToken: string }) {
   const router = useRouter();
@@ -35,20 +36,16 @@ export function NewDraftUpload({ accessToken }: { accessToken: string }) {
   }
 
   return (
-    <section className="dashboard-card p-5 md:p-6">
-      <p className="premium-kicker text-xs">Novo vídeo</p>
-      <h3 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
-        Enviar vídeo para editar
-      </h3>
-      <p className="mt-2 text-sm leading-6 text-muted">
+    <div>
+      <p className="text-sm leading-6 text-muted">
         Envie o arquivo, defina o corte, a thumbnail e o formato antes de agendar a
         publicação.
       </p>
 
       {error ? (
-        <p className="mt-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-sm text-rose-200 light:text-rose-700">
+        <StatusBanner variant="error" className="mt-4">
           {error}
-        </p>
+        </StatusBanner>
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -82,6 +79,6 @@ export function NewDraftUpload({ accessToken }: { accessToken: string }) {
           {isSubmitting ? "Enviando..." : "Enviar e editar"}
         </button>
       </form>
-    </section>
+    </div>
   );
 }

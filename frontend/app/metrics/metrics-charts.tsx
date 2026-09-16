@@ -1,23 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { getPostAnalytics, type PostAnalyticsHistory, type PostsOverview } from "../lib/api";
-
-const SERIES_COLORS = {
-  views: "#22d3ee",
-  likes: "#34d399",
-  comments: "#fbbf24",
-};
+import { VideoAnalyticsChart } from "../components/dashboard/video-analytics-chart";
 
 type PostOption = { id: string; title: string };
 
@@ -55,47 +40,8 @@ export function MetricsCharts({ accessToken, overview, posts }: MetricsChartsPro
         </p>
 
         {dailySeries.length > 0 ? (
-          <div className="mt-6 h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dailySeries}>
-                <CartesianGrid stroke="var(--border-soft)" vertical={false} />
-                <XAxis dataKey="date" stroke="var(--muted)" fontSize={12} tickLine={false} />
-                <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--panel-strong)",
-                    border: "1px solid var(--border-soft-hover)",
-                    borderRadius: 12,
-                    color: "var(--foreground)",
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12, color: "var(--muted)" }} />
-                <Line
-                  type="monotone"
-                  dataKey="views"
-                  name="Visualizações"
-                  stroke={SERIES_COLORS.views}
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="likes"
-                  name="Curtidas"
-                  stroke={SERIES_COLORS.likes}
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="comments"
-                  name="Comentários"
-                  stroke={SERIES_COLORS.comments}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="mt-6">
+            <VideoAnalyticsChart data={dailySeries} height={288} showDots={false} />
           </div>
         ) : (
           <p className="dash-chip mt-6 rounded-2xl border p-6 text-center text-sm text-muted">
@@ -196,44 +142,8 @@ function PostAnalyticsSection({
           Ainda não há snapshots de analytics para este vídeo.
         </p>
       ) : chartData.length > 0 ? (
-        <div className="mt-6 h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid stroke="var(--border-soft)" vertical={false} />
-              <XAxis dataKey="date" stroke="var(--muted)" fontSize={12} tickLine={false} />
-              <YAxis stroke="var(--muted)" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--panel-strong)",
-                  border: "1px solid var(--border-soft-hover)",
-                  borderRadius: 12,
-                  color: "var(--foreground)",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 12, color: "var(--muted)" }} />
-              <Line
-                type="monotone"
-                dataKey="views"
-                name="Visualizações"
-                stroke={SERIES_COLORS.views}
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="likes"
-                name="Curtidas"
-                stroke={SERIES_COLORS.likes}
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="comments"
-                name="Comentários"
-                stroke={SERIES_COLORS.comments}
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="mt-6">
+          <VideoAnalyticsChart data={chartData} height={256} />
         </div>
       ) : (
         <p className="dash-chip mt-6 rounded-2xl border p-6 text-center text-sm text-muted">

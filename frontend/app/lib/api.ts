@@ -7,6 +7,9 @@ export type PostListItem = {
   platform: string;
   status: string;
   videoUrl: string | null;
+  thumbnailUrl: string | null;
+  format: VideoFormat | null;
+  createdAt: string;
   postedAt: string | null;
   scheduledAt: string | null;
   niche: {
