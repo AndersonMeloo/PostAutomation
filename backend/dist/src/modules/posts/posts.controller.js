@@ -91,6 +91,10 @@ let PostsController = class PostsController {
         const userId = this.getUserIdFromRequest(req);
         return this.postsService.finalizeDraft(userId, id, data);
     }
+    deleteDraft(req, id) {
+        const userId = this.getUserIdFromRequest(req);
+        return this.postsService.deleteDraft(userId, id);
+    }
     importYoutubeUrl(req, body) {
         const userId = this.getUserIdFromRequest(req);
         return this.postsService.createPostFromYoutubeUrl({
@@ -212,6 +216,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, finalize_draft_dto_1.FinalizeDraftDto]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "finalizeDraft", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
+    (0, common_1.Delete)(':id/draft'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], PostsController.prototype, "deleteDraft", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guards_1.AuthGuard),
     (0, common_1.Post)('import-youtube-url'),

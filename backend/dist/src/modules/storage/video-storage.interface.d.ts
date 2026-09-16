@@ -5,10 +5,9 @@ export type StorableFile = {
 };
 export type StoredFile = {
     url: string;
-    path: string;
 };
 export interface VideoStorageAdapter {
     uploadVideo(file: StorableFile, ownerId: string): Promise<StoredFile>;
     uploadThumbnail(file: StorableFile, ownerId: string): Promise<StoredFile>;
-    delete(path: string): Promise<void>;
+    delete(url: string): Promise<void>;
 }

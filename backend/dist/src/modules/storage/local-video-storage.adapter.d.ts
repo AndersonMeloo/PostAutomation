@@ -3,5 +3,5 @@ export declare class LocalVideoStorageAdapter implements VideoStorageAdapter {
     private store;
     uploadVideo(file: StorableFile, ownerId: string): Promise<StoredFile>;
     uploadThumbnail(file: StorableFile, ownerId: string): Promise<StoredFile>;
-    delete(path: string): Promise<void>;
+    delete(url: string): Promise<void>;
 }

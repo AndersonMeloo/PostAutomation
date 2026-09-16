@@ -47,7 +47,7 @@ let SupabaseVideoStorageAdapter = class SupabaseVideoStorageAdapter {
         const { data } = this.getClient()
             .storage.from(this.getBucket())
             .getPublicUrl(objectPath);
-        return { url: data.publicUrl, path: objectPath };
+        return { url: data.publicUrl };
     }
     uploadVideo(file, ownerId) {
         return this.store('videos', file, ownerId);
@@ -55,8 +55,14 @@ let SupabaseVideoStorageAdapter = class SupabaseVideoStorageAdapter {
     uploadThumbnail(file, ownerId) {
         return this.store('thumbnails', file, ownerId);
     }
-    async delete(path) {
-        await this.getClient().storage.from(this.getBucket()).remove([path]);
+    async delete(url) {
+        const marker = `/object/public/${this.getBucket()}/`;
+        const markerIndex = url.indexOf(marker);
+        if (markerIndex === -1) {
+            return;
+        }
+        const objectPath = decodeURIComponent(url.slice(markerIndex + marker.length));
+        await this.getClient().storage.from(this.getBucket()).remove([objectPath]);
     }
 };
 exports.SupabaseVideoStorageAdapter = SupabaseVideoStorageAdapter;

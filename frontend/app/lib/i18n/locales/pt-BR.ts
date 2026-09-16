@@ -183,7 +183,7 @@ export const ptBR: Dictionary = {
         title: "Métricas e análise",
         description:
           "Compare o desempenho entre vídeos e formatos, com visão diária, semanal, mensal ou por período.",
-        bullets: ["Views, curtidas e comentários", "Comparação Shorts x vídeos longos", "Períodos personalizados"],
+        bullets: ["Views, curtidas e comentários", "Comparação Shorts e vídeos longos", "Períodos personalizados"],
       },
     ],
   },

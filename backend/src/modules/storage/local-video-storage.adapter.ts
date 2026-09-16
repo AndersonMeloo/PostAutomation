@@ -32,7 +32,7 @@ export class LocalVideoStorageAdapter implements VideoStorageAdapter {
 
     await writeFile(filePath, file.buffer);
 
-    return { url: filePath, path: filePath };
+    return { url: filePath };
   }
 
   uploadVideo(file: StorableFile, ownerId: string): Promise<StoredFile> {
@@ -43,9 +43,9 @@ export class LocalVideoStorageAdapter implements VideoStorageAdapter {
     return this.store('thumbnails', file, ownerId);
   }
 
-  async delete(path: string): Promise<void> {
-    if (existsSync(path)) {
-      await unlink(path);
+  async delete(url: string): Promise<void> {
+    if (existsSync(url)) {
+      await unlink(url);
     }
   }
 }

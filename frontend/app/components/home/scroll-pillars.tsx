@@ -1,64 +1,40 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
+  AnimatePresence,
+  animate,
   motion,
-  type MotionValue,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
 } from "framer-motion";
 import {
-  Calendar,
-  Clock,
-  Scissors,
-  TrendingUp,
-  Zap,
-  Users,
-  Eye,
-  CheckCircle2,
   BarChart3,
+  CalendarDays,
+  Check,
+  Clock3,
+  Eye,
+  Scissors,
   Sparkles,
+  TrendingUp,
+  Users,
+  Zap,
 } from "lucide-react";
+import { Manrope, Sora } from "next/font/google";
 import { useTranslations } from "../../lib/i18n/locale-context";
-import { YouTubeIcon, InstagramIcon, TikTokIcon } from "./icons";
+import { FEATURE_STYLES } from "./feature-colors";
 
-// Cores e Gradientes Originais
-const CORNER_COLORS = ["bg-violet-500", "bg-blue-500", "bg-amber-500", "bg-emerald-500"];
-const BULLET_COLORS = ["bg-violet-500", "bg-blue-500", "bg-amber-500", "bg-emerald-500"];
-const PILLAR_BACKGROUNDS = [
-  "bg-gradient-to-br from-violet-300 via-sky-300 to-blue-200",
-  "bg-gradient-to-br from-blue-300 via-sky-300 to-cyan-200",
-  "bg-gradient-to-br from-amber-200 via-orange-200 to-rose-200",
-  "bg-gradient-to-br from-emerald-300 via-teal-300 to-cyan-200",
-];
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+});
 
-const INTRO_END = 0.1;
-
-function clamp01(value: number): number {
-  return Math.min(1, Math.max(0, value));
-}
-
-type PillarRange = [number, number, number, number];
-
-function getPillarRange(index: number, zoneWidth: number): PillarRange {
-  const zoneStart = INTRO_END + zoneWidth * index;
-  const zoneEnd = zoneStart + zoneWidth;
-  const fade = zoneWidth * 0.25;
-
-  return [
-    clamp01(zoneStart),
-    clamp01(zoneStart + fade),
-    clamp01(zoneEnd - fade),
-    clamp01(zoneEnd),
-  ];
-}
-
-function useSyncedValue(motionValue: MotionValue<number>, initial: number): number {
-  const [value, setValue] = useState(initial);
-  useMotionValueEvent(motionValue, "change", (latest) => setValue(latest));
-  return value;
-}
+const sora = Sora({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 type Pillar = {
   number: string;
@@ -67,554 +43,668 @@ type Pillar = {
   bullets: string[];
 };
 
+const ACCENTS = [
+  {
+    hex: "#8B5CF6",
+    dot: "bg-violet-500",
+    text: "text-violet-600",
+    soft: "bg-violet-50",
+    border: "border-violet-100",
+    glow: "bg-violet-300/30",
+  },
+  {
+    hex: "#3B82F6",
+    dot: "bg-blue-500",
+    text: "text-blue-600",
+    soft: "bg-blue-50",
+    border: "border-blue-100",
+    glow: "bg-blue-300/30",
+  },
+  {
+    hex: "#F59E0B",
+    dot: "bg-amber-500",
+    text: "text-amber-600",
+    soft: "bg-amber-50",
+    border: "border-amber-100",
+    glow: "bg-amber-300/30",
+  },
+  {
+    hex: "#10B981",
+    dot: "bg-emerald-500",
+    text: "text-emerald-600",
+    soft: "bg-emerald-50",
+    border: "border-emerald-100",
+    glow: "bg-emerald-300/30",
+  },
+] as const;
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export function ScrollPillars() {
   const t = useTranslations();
   const items: Pillar[] = t.pillars.items;
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const zoneWidth = (1 - INTRO_END) / items.length;
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (!items.length) return;
+
+    const safeProgress = Math.min(Math.max(latest, 0), 0.999999);
+    const next = Math.min(
+      items.length - 1,
+      Math.floor(safeProgress * items.length),
+    );
+
+    setActiveIndex((current) => (current === next ? current : next));
+  });
+
+  if (!items.length) return null;
+
+  const activeItem = items[activeIndex];
+  const accent = ACCENTS[activeIndex % ACCENTS.length];
+  const timelineProgress =
+    items.length <= 1 ? 0 : (activeIndex / (items.length - 1)) * 100;
 
   return (
-    <div className="bg-slate-950 font-sans antialiased text-slate-900">
-      <section ref={sectionRef} className="relative h-[450vh]">
-        {/* Container ocupando a tela inteira */}
-        <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden p-3 sm:p-6 md:p-8">
-          
-          {/* Timeline / Passos estilo OneFin (Lado Esquerdo) */}
-          <div className="absolute left-6 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-3 lg:flex">
-            <div className="relative flex flex-col items-center gap-6">
-              <div className="absolute top-3 bottom-3 w-[2px] bg-slate-800" />
-              {items.map((item, idx) => (
-                <StepDot
-                  key={item.number}
-                  index={idx}
-                  progress={scrollYProgress}
-                  range={getPillarRange(idx, zoneWidth)}
-                />
-              ))}
+    <section
+      ref={sectionRef}
+      className={`${manrope.className} relative h-[420vh] bg-white text-slate-950`}
+    >
+      <div className="sticky top-0 h-screen overflow-hidden bg-white">
+        {/* Linhas discretas para dar profundidade sem tirar o foco do conteúdo */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-slate-200/80"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-slate-200/80"
+        />
+
+        <div className="relative mx-auto flex h-full w-full max-w-[1380px] items-center px-5 sm:px-8 lg:px-14 xl:px-20">
+          <MinimalStepper
+            items={items}
+            activeIndex={activeIndex}
+            progress={timelineProgress}
+          />
+
+          <div className="grid w-full items-center gap-12 pl-11 md:pl-14 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16 lg:pl-16 xl:gap-24">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={`copy-${activeIndex}`}
+                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -18, filter: "blur(8px)" }}
+                transition={{ duration: 0.5, ease: EASE }}
+                className="relative z-20 max-w-[620px]"
+              >
+                <div className="mb-6 flex items-center gap-3">
+                  <span
+                    className={`inline-flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[11px] font-extrabold tracking-[0.08em] text-white ${accent.dot}`}
+                  >
+                    {activeItem.number}
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                    Recurso principal
+                  </span>
+                </div>
+
+                <h2
+                  className={`${sora.className} max-w-[590px] text-[clamp(2.55rem,5vw,5rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-slate-950`}
+                >
+                  {activeItem.title}
+                </h2>
+
+                <p className="mt-7 max-w-[560px] text-base font-medium leading-7 text-slate-500 sm:text-lg sm:leading-8">
+                  {activeItem.description}
+                </p>
+
+                <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                  {activeItem.bullets.map((bullet, bulletIndex) => (
+                    <motion.li
+                      key={bullet}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.38,
+                        delay: 0.12 + bulletIndex * 0.07,
+                        ease: EASE,
+                      }}
+                      className="flex items-center gap-3 text-sm font-semibold text-slate-700"
+                    >
+                      <span
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${accent.soft} ${accent.text}`}
+                      >
+                        <Check className="h-3 w-3" strokeWidth={3} />
+                      </span>
+                      {bullet}
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="relative hidden min-h-[560px] items-center justify-center lg:flex">
+              <div
+                aria-hidden="true"
+                className={`absolute left-1/2 top-1/2 h-[430px] w-[430px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px] ${accent.glow}`}
+              />
+              <DotField accent={accent.hex} />
+
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={`visual-${activeIndex}`}
+                  initial={{ opacity: 0, x: 36, scale: 0.96 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -28, scale: 0.98 }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                  className="relative z-10 w-full max-w-[600px]"
+                >
+                  <PillarVisual index={activeIndex} />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 
-          {/* Frame Principal Estilo OneFin com As Cores Originais */}
-          <div className="relative flex h-full max-h-[850px] w-full max-w-7xl items-center justify-between overflow-hidden rounded-[2.5rem] border border-white/50 shadow-[0_24px_60px_-20px_rgba(15,23,42,0.3)] backdrop-blur-2xl p-6 sm:p-12 lg:p-16">
-            
-            {/* Backgrounds coloridos da primeira versão */}
-            {items.map((_, index) => (
-              <PillarBackground
-                key={index}
-                index={index}
-                progress={scrollYProgress}
-                range={
-                  index === 0
-                    ? [0, 0, clamp01(INTRO_END + zoneWidth - zoneWidth * 0.25), clamp01(INTRO_END + zoneWidth)]
-                    : getPillarRange(index, zoneWidth)
-                }
-              />
-            ))}
-
-            <div className="home-shimmer pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-
-            {/* Título de Introdução */}
-            <IntroTitle
-              progress={scrollYProgress}
-              title={t.pillars.centerLabel}
-              introEnd={INTRO_END}
-            />
-
-            {/* Conteúdo dos Pilares (Textos e Animações) */}
-            {items.map((item, index) => (
-              <PillarContent
-                key={item.number}
-                index={index}
-                item={item}
-                progress={scrollYProgress}
-                range={getPillarRange(index, zoneWidth)}
-              />
-            ))}
+          {/* versão mobile das métricas */}
+          <div className="pointer-events-none absolute inset-x-5 bottom-8 lg:hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={`mobile-metric-${activeIndex}`}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4, ease: EASE }}
+                className="ml-11 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,.3)]"
+              >
+                <MobileMetric index={activeIndex} />
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 
-{/* Bolinhas Indicadoras Numéricas */}
-function StepDot({
-  index,
+function MinimalStepper({
+  items,
+  activeIndex,
   progress,
-  range,
 }: {
-  index: number;
-  progress: MotionValue<number>;
-  range: PillarRange;
+  items: Pillar[];
+  activeIndex: number;
+  progress: number;
 }) {
-  const opacityMv = useTransform(progress, range, [0.3, 1, 1, 0.3]);
-  const scaleMv = useTransform(progress, range, [0.9, 1.2, 1.2, 0.9]);
-  const opacity = useSyncedValue(opacityMv, 0.3);
-  const scale = useSyncedValue(scaleMv, 0.9);
-  const isActive = opacity > 0.6;
+  const active = ACCENTS[activeIndex % ACCENTS.length];
 
   return (
-    <div
-      style={{ opacity, transform: `scale(${scale})` }}
-      className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
-        isActive
-          ? `${CORNER_COLORS[index % CORNER_COLORS.length]} text-white shadow-lg shadow-black/20`
-          : "bg-slate-800 text-slate-400"
-      }`}
-    >
-      {index + 1}
-    </div>
+    <aside className="absolute left-4 top-1/2 z-30 -translate-y-1/2 sm:left-7 lg:left-8 xl:left-10">
+      <div className="relative flex flex-col items-center gap-6">
+        <div className="absolute bottom-3 top-3 w-px bg-slate-200" />
+        <motion.div
+          className="absolute left-1/2 top-3 w-px -translate-x-1/2 origin-top"
+          animate={{
+            height: `calc(${progress}% - ${(progress / 100) * 24}px)`,
+            backgroundColor: active.hex,
+          }}
+          transition={{ duration: 0.4, ease: EASE }}
+        />
+
+        {items.map((item, index) => {
+          const itemAccent = ACCENTS[index % ACCENTS.length];
+          const isActive = index === activeIndex;
+          const isPast = index < activeIndex;
+
+          return (
+            <motion.div
+              key={item.number}
+              animate={{ scale: isActive ? 1 : 0.92 }}
+              transition={{ type: "spring", stiffness: 320, damping: 24 }}
+              className={`relative z-10 flex h-7 w-7 items-center justify-center rounded-full border text-[10px] font-extrabold transition-colors duration-300 ${
+                isActive
+                  ? `${itemAccent.dot} border-transparent text-white shadow-[0_7px_18px_-8px_rgba(15,23,42,.55)]`
+                  : isPast
+                    ? "border-slate-300 bg-white text-slate-700"
+                    : "border-slate-200 bg-white text-slate-400"
+              }`}
+            >
+              {index + 1}
+            </motion.div>
+          );
+        })}
+      </div>
+    </aside>
   );
 }
 
-{/* Transição Suave do Fundo Colorido */}
-function PillarBackground({
-  index,
-  progress,
-  range,
-}: {
-  index: number;
-  progress: MotionValue<number>;
-  range: PillarRange;
-}) {
-  const opacityMv = useTransform(progress, range, [0, 1, 1, 0]);
-  const opacity = useSyncedValue(opacityMv, index === 0 ? 1 : 0);
-
+function DotField({ accent }: { accent: string }) {
   return (
     <div
-      style={{ opacity }}
       aria-hidden="true"
-      className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-        PILLAR_BACKGROUNDS[index % PILLAR_BACKGROUNDS.length]
-      }`}
+      className="pointer-events-none absolute inset-8 overflow-hidden rounded-[2rem] opacity-50"
+      style={{
+        backgroundImage: `radial-gradient(${accent}22 1px, transparent 1px)`,
+        backgroundSize: "22px 22px",
+        WebkitMaskImage:
+          "radial-gradient(circle at center, black 0%, black 30%, transparent 72%)",
+        maskImage:
+          "radial-gradient(circle at center, black 0%, black 30%, transparent 72%)",
+      }}
     />
   );
 }
 
-{/* Conteúdo com Animação Suave nos Textos */}
-function PillarContent({
-  index,
-  item,
-  progress,
-  range,
-}: {
-  index: number;
-  item: Pillar;
-  progress: MotionValue<number>;
-  range: PillarRange;
-}) {
-  const opacityMv = useTransform(progress, range, [0, 1, 1, 0]);
-  const yMv = useTransform(progress, range, [30, 0, 0, -30]);
-  const scaleMv = useTransform(progress, range, [0.96, 1, 1, 0.96]);
-
-  const opacity = useSyncedValue(opacityMv, 0);
-  const y = useSyncedValue(yMv, 30);
-  const scale = useSyncedValue(scaleMv, 0.96);
-
-  const isVisible = opacity > 0.05;
-
-  return (
-    <div
-      style={{
-        opacity,
-        transform: `translateY(${y}px) scale(${scale})`,
-        transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out",
-      }}
-      className={`pointer-events-none absolute inset-6 flex items-center justify-between gap-12 sm:inset-12 lg:inset-16 ${
-        !isVisible && "hidden"
-      }`}
-    >
-      {/* Coluna da Esquerda (Textos Animados) */}
-      <div className="z-10 max-w-xl text-left">
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-bold text-white shadow-sm ${
-            CORNER_COLORS[index % CORNER_COLORS.length]
-          }`}
-        >
-          {item.number}
-        </span>
-
-        <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl leading-[1.1]">
-          {item.title}
-        </h2>
-
-        <p className="mt-4 text-base font-normal leading-relaxed text-slate-700 sm:text-xl">
-          {item.description}
-        </p>
-
-        <ul className="mt-6 space-y-3">
-          {item.bullets.map((bullet) => (
-            <li key={bullet} className="flex items-center gap-3 text-sm font-semibold text-slate-800 sm:text-base">
-              <span
-                className={`h-2 w-2 rounded-full ${
-                  BULLET_COLORS[index % BULLET_COLORS.length]
-                }`}
-              />
-              {bullet}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Coluna da Direita (Visuais Animados com Métricas ao Fundo) */}
-      <div className="relative z-10 hidden w-full max-w-lg items-center justify-center lg:flex">
-        <PillarVisual index={index} isVisible={isVisible} />
-      </div>
-    </div>
-  );
-}
-
-{/* Visuais Animados */}
-function PillarVisual({ index, isVisible }: { index: number; isVisible: boolean }) {
+function PillarVisual({ index }: { index: number }) {
   switch (index % 4) {
     case 0:
-      return <MultiPlatformVisual isVisible={isVisible} />;
+      return <MultiPlatformVisual />;
     case 1:
-      return <SchedulingVisual isVisible={isVisible} />;
+      return <SchedulingVisual />;
     case 2:
-      return <VideoCuttingVisual isVisible={isVisible} />;
+      return <VideoCuttingVisual />;
     default:
-      return <AnimatedChartVisual isVisible={isVisible} />;
+      return <AnalyticsVisual />;
   }
 }
 
-{/* Visual 1: Multi-plataforma + Métricas de Fundo estilo Foto 2 */}
-function MultiPlatformVisual({ isVisible }: { isVisible: boolean }) {
-  const cardGlass = "relative z-10 home-glass flex items-center gap-3 rounded-2xl p-4 shadow-xl backdrop-blur-md transition-all duration-300";
+function AnimatedCounter({
+  value,
+  decimals = 0,
+  prefix = "",
+  suffix = "",
+  duration = 1,
+}: {
+  value: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+}) {
+  const mv = useMotionValue(0);
+  const [current, setCurrent] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  useMotionValueEvent(mv, "change", (latest) => setCurrent(latest));
+
+  useEffect(() => {
+    mv.set(0);
+
+    if (reduceMotion) {
+      mv.set(value);
+      return;
+    }
+
+    const controls = animate(mv, value, {
+      duration,
+      ease: EASE,
+    });
+
+    return () => controls.stop();
+  }, [duration, mv, reduceMotion, value]);
+
+  const formatted = new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(current);
 
   return (
-    <div className="relative flex w-full max-w-md items-center justify-center py-6">
-      
-      {/* --- CARDS DE MÉTRICAS AO FUNDO (Estilo Imagem 2) --- */}
-      {/* Metric Background 1 - Canto Superior Esquerdo */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -30, y: -20, rotate: -6 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: -50, y: -45, rotate: -6 } : {}}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="absolute left-0 top-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Inscritos</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Users className="h-4 w-4 text-violet-600" />
-          <span className="text-sm font-extrabold text-slate-900">+1,240 /wk</span>
-        </div>
-      </motion.div>
-
-      {/* Metric Background 2 - Canto Inferior Direito */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: 30, y: 20, rotate: 5 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: 40, y: 40, rotate: 5 } : {}}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="absolute right-0 bottom-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Views</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Eye className="h-4 w-4 text-sky-600" />
-          <span className="text-sm font-extrabold text-slate-900">248.5K</span>
-        </div>
-      </motion.div>
-
-
-      {/* --- ELEMENTOS PRINCIPAIS NA FRENTE --- */}
-      <div className="relative flex w-80 flex-col gap-3">
-        <motion.div
-          initial={{ scale: 0.85, opacity: 0, y: 15 }}
-          animate={isVisible ? { scale: 1, opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className={cardGlass}
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FF0000] text-white shadow-md">
-            <YouTubeIcon className="h-5 w-5" />
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-800">YouTube</p>
-            <p className="text-xs text-slate-500">Publicação ativa</p>
-          </div>
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-        </motion.div>
-
-        <motion.div
-          initial={{ scale: 0.85, opacity: 0, y: 15 }}
-          animate={isVisible ? { scale: 1, opacity: 0.85, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className={`${cardGlass} ml-6`}
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#405de6_0%,#5b51d8_15%,#833ab4_30%,#c13584_45%,#e1306c_60%,#fd1d1d_70%,#f56040_80%,#f77737_90%,#fcaf45_100%)] text-white shadow-md">
-            <InstagramIcon className="h-5 w-5" />
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-800">Instagram</p>
-            <p className="text-xs text-slate-500">Em breve</p>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ scale: 0.85, opacity: 0, y: 15 }}
-          animate={isVisible ? { scale: 1, opacity: 0.7, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className={`${cardGlass} ml-12`}
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white shadow-md">
-            <TikTokIcon className="h-5 w-5" />
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-800">TikTok</p>
-            <p className="text-xs text-slate-500">Em breve</p>
-          </div>
-        </motion.div>
-      </div>
-    </div>
+    <>
+      {prefix}
+      {formatted}
+      {suffix}
+    </>
   );
 }
 
-{/* Visual 2: Agendamento + Métricas ao Fundo */}
-function SchedulingVisual({ isVisible }: { isVisible: boolean }) {
+function FloatingMetric({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <div className="relative flex w-full max-w-md items-center justify-center py-6">
-      
-      {/* --- CARDS DE MÉTRICAS AO FUNDO --- */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -35, y: -30, rotate: -5 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: -45, y: -40, rotate: -5 } : {}}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="absolute left-0 top-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status Fila</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <CheckCircle2 className="h-4 w-4 text-blue-600" />
-          <span className="text-sm font-extrabold text-slate-900">100% Sincro</span>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: 35, y: 25, rotate: 6 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: 45, y: 35, rotate: 6 } : {}}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="absolute right-0 bottom-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Melhor Horário</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Zap className="h-4 w-4 text-amber-500" />
-          <span className="text-sm font-extrabold text-slate-900">18:00 Peak</span>
-        </div>
-      </motion.div>
-
-      {/* --- CARD PRINCIPAL --- */}
-      <motion.div
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={isVisible ? { scale: 1, opacity: 1 } : {}}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 home-glass w-80 rounded-2xl p-6 shadow-xl backdrop-blur-md"
-      >
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white shadow-md shadow-blue-500/30">
-            <Calendar className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-slate-800">Publicação agendada</p>
-            <p className="text-xs text-slate-500">Short · Vídeo longo</p>
-          </div>
-        </div>
-
-        <div className="mt-5 space-y-2.5">
-          <motion.div
-            initial={{ x: -15, opacity: 0 }}
-            animate={isVisible ? { x: 0, opacity: 1 } : {}}
-            transition={{ delay: 0.2, duration: 0.4 }}
-            className="flex items-center gap-2 rounded-xl bg-blue-50/90 border border-blue-200/50 px-3.5 py-2.5 text-sm font-medium text-blue-700"
-          >
-            <Clock className="h-4 w-4" />
-            Amanhã às 09:00
-          </motion.div>
-
-          <motion.div
-            initial={{ x: -15, opacity: 0 }}
-            animate={isVisible ? { x: 0, opacity: 1 } : {}}
-            transition={{ delay: 0.35, duration: 0.4 }}
-            className="flex items-center gap-2 rounded-xl bg-white/60 px-3.5 py-2.5 text-sm text-slate-500"
-          >
-            <Clock className="h-4 w-4 text-slate-400" />
-            Sexta às 18:30
-          </motion.div>
-        </div>
-      </motion.div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 18, scale: 0.94 }}
+      animate={
+        reduceMotion
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 1, y: [0, -7, 0], scale: 1 }
+      }
+      transition={
+        reduceMotion
+          ? { duration: 0.45, delay, ease: EASE }
+          : {
+              opacity: { duration: 0.45, delay, ease: EASE },
+              scale: { duration: 0.45, delay, ease: EASE },
+              y: {
+                duration: 4.8,
+                delay: delay + 0.45,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }
+      }
+      className={`rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_18px_45px_-30px_rgba(15,23,42,.45)] backdrop-blur-sm ${className}`}
+    >
+      {children}
+    </motion.div>
   );
 }
 
-{/* Visual 3: Edição de Vídeo + Métricas ao Fundo */}
-function VideoCuttingVisual({ isVisible }: { isVisible: boolean }) {
+function MetricLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex w-full max-w-md items-center justify-center py-6">
-      
-      {/* --- CARDS DE MÉTRICAS AO FUNDO --- */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -30, y: -25, rotate: -7 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: -40, y: -35, rotate: -7 } : {}}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="absolute left-0 top-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tempo Salvo</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Sparkles className="h-4 w-4 text-amber-500" />
-          <span className="text-sm font-extrabold text-slate-900">4.2h /vídeo</span>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: 30, y: 20, rotate: 4 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: 40, y: 35, rotate: 4 } : {}}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="absolute right-0 bottom-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Corte Silêncio</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <Scissors className="h-4 w-4 text-rose-500" />
-          <span className="text-sm font-extrabold text-slate-900">AI Auto</span>
-        </div>
-      </motion.div>
-
-      {/* --- CARD PRINCIPAL --- */}
-      <motion.div
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={isVisible ? { scale: 1, opacity: 1 } : {}}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 home-glass w-80 rounded-2xl p-6 shadow-xl backdrop-blur-md"
-      >
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md shadow-amber-500/30">
-            <Scissors className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-slate-800">Corte do vídeo</p>
-            <p className="text-xs text-slate-500">00:08 – 00:42</p>
-          </div>
-        </div>
-
-        <div className="relative mt-6 h-9 overflow-hidden rounded-lg bg-slate-200/80 p-0.5">
-          <motion.div
-            initial={{ left: "0%", right: "0%" }}
-            animate={isVisible ? { left: "15%", right: "20%" } : {}}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-y-0 bg-amber-400 rounded-lg shadow-sm flex items-center justify-between"
-          >
-            <div className="h-full w-1 rounded-full bg-amber-600" />
-            <div className="h-full w-1 rounded-full bg-amber-600" />
-          </motion.div>
-        </div>
-        <p className="mt-3 text-xs text-slate-500">Prévia antes de publicar</p>
-      </motion.div>
-    </div>
+    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
+      {children}
+    </p>
   );
 }
 
-{/* Visual 4: Gráfico Animado + Métricas ao Fundo */}
-function AnimatedChartVisual({ isVisible }: { isVisible: boolean }) {
-  const barHeights = [40, 65, 50, 80, 60, 95];
-
+function MultiPlatformVisual() {
   return (
-    <div className="relative flex w-full max-w-md items-center justify-center py-6">
-      
-      {/* --- CARDS DE MÉTRICAS AO FUNDO --- */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -35, y: -25, rotate: -5 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: -45, y: -35, rotate: -5 } : {}}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="absolute left-0 top-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Est. Revenue</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <BarChart3 className="h-4 w-4 text-emerald-600" />
-          <span className="text-sm font-extrabold text-slate-900">$2,450.00</span>
+    <div className="relative mx-auto min-h-[500px] w-full max-w-[560px]">
+      <div className="absolute inset-x-12 top-1/2 -translate-y-1/2">
+        <MetricLabel>Alcance total</MetricLabel>
+        <div className={`${sora.className} mt-2 text-[clamp(4.3rem,7vw,7.4rem)] font-semibold leading-none tracking-[-0.075em] text-slate-950`}>
+          <AnimatedCounter value={248.5} decimals={1} suffix="K" />
         </div>
-      </motion.div>
+        <p className="mt-3 max-w-[300px] text-sm font-medium leading-6 text-slate-500">
+          visualizações processadas em um único fluxo de publicação.
+        </p>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: 35, y: 20, rotate: 6 }}
-        animate={isVisible ? { opacity: 0.75, scale: 1, x: 45, y: 35, rotate: 6 } : {}}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="absolute right-0 bottom-0 rounded-2xl bg-white/40 p-3.5 shadow-md backdrop-blur-md border border-white/60 text-slate-800"
-      >
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Engajamento</p>
-        <div className="mt-0.5 flex items-center gap-1.5">
-          <TrendingUp className="h-4 w-4 text-teal-600" />
-          <span className="text-sm font-extrabold text-slate-900">8.4% Avg</span>
-        </div>
-      </motion.div>
-
-      {/* --- CARD PRINCIPAL --- */}
-      <motion.div
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={isVisible ? { scale: 1, opacity: 1 } : {}}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 home-glass w-80 rounded-2xl p-6 shadow-xl backdrop-blur-md"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-white shadow-md shadow-emerald-500/30">
-              <TrendingUp className="h-5 w-5" />
-            </span>
-            <p className="text-sm font-semibold text-slate-800">Desempenho</p>
-          </div>
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={isVisible ? { scale: 1 } : {}}
-            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-            className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700"
-          >
-            +18%
-          </motion.span>
-        </div>
-
-        <div className="mt-6 flex h-20 items-end gap-2">
-          {barHeights.map((height, barIndex) => (
-            <div key={barIndex} className="flex-1 h-full flex items-end">
+        <div className="mt-9 flex items-center gap-3">
+          {[FEATURE_STYLES.youtube, FEATURE_STYLES.instagram, FEATURE_STYLES.tiktok].map(
+            (style, index) => (
               <motion.div
-                initial={{ height: "0%" }}
-                animate={isVisible ? { height: `${height}%` } : { height: "0%" }}
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.18 + index * 0.08, ease: EASE }}
+                className={`flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 shadow-sm ${style.iconBg}`}
+              >
+                <style.icon className={`h-5 w-5 ${style.iconColor}`} />
+              </motion.div>
+            ),
+          )}
+          <span className="ml-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+            3 canais
+          </span>
+        </div>
+      </div>
+
+      <FloatingMetric className="absolute right-2 top-10" delay={0.08}>
+        <MetricLabel>Inscritos / semana</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <Users className="h-4 w-4 text-violet-500" />
+          <strong className="text-lg font-extrabold tracking-tight text-slate-900">
+            +<AnimatedCounter value={1240} />
+          </strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-12 left-0" delay={0.18}>
+        <MetricLabel>Status</MetricLabel>
+        <div className="mt-1 flex items-center gap-2 text-sm font-bold text-slate-800">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+          Publicando
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-8 right-6" delay={0.28}>
+        <MetricLabel>Views em tempo real</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <Eye className="h-4 w-4 text-sky-500" />
+          <strong className="text-base font-extrabold text-slate-900">+2.8K</strong>
+        </div>
+      </FloatingMetric>
+    </div>
+  );
+}
+
+function SchedulingVisual() {
+  return (
+    <div className="relative mx-auto min-h-[500px] w-full max-w-[560px]">
+      <div className="absolute inset-x-12 top-1/2 -translate-y-1/2">
+        <MetricLabel>Fila sincronizada</MetricLabel>
+        <div className={`${sora.className} mt-2 text-[clamp(4.3rem,7vw,7.4rem)] font-semibold leading-none tracking-[-0.075em] text-slate-950`}>
+          <AnimatedCounter value={100} suffix="%" />
+        </div>
+        <p className="mt-3 max-w-[330px] text-sm font-medium leading-6 text-slate-500">
+          seus conteúdos entram na fila e são publicados no horário definido.
+        </p>
+
+        <div className="mt-9 max-w-[370px] border-l border-slate-200 pl-5">
+          <ScheduleRow active time="09:00" label="Amanhã" delay={0.12} />
+          <ScheduleRow time="18:30" label="Sexta-feira" delay={0.22} />
+        </div>
+      </div>
+
+      <FloatingMetric className="absolute right-0 top-8" delay={0.1}>
+        <MetricLabel>Próxima publicação</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 text-blue-500" />
+          <strong className="text-base font-extrabold text-slate-900">09:00</strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-7 right-5" delay={0.22}>
+        <MetricLabel>Melhor horário</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <Zap className="h-4 w-4 text-amber-500" />
+          <strong className="text-base font-extrabold text-slate-900">18:00</strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-0 left-0" delay={0.3}>
+        <MetricLabel>Retentativa</MetricLabel>
+        <div className="mt-1 flex items-center gap-2 text-sm font-bold text-slate-800">
+          <span className="h-2 w-2 rounded-full bg-blue-500" />
+          Automática
+        </div>
+      </FloatingMetric>
+    </div>
+  );
+}
+
+function ScheduleRow({
+  time,
+  label,
+  active = false,
+  delay,
+}: {
+  time: string;
+  label: string;
+  active?: boolean;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, delay, ease: EASE }}
+      className="relative flex items-center justify-between py-3"
+    >
+      <span
+        className={`absolute -left-[25px] h-2.5 w-2.5 rounded-full ring-4 ring-white ${
+          active ? "bg-blue-500" : "bg-slate-300"
+        }`}
+      />
+      <div className="flex items-center gap-3">
+        <Clock3 className={`h-4 w-4 ${active ? "text-blue-500" : "text-slate-400"}`} />
+        <span className={`text-sm font-bold ${active ? "text-slate-900" : "text-slate-500"}`}>
+          {label}
+        </span>
+      </div>
+      <span className={`${sora.className} text-base font-semibold text-slate-900`}>{time}</span>
+    </motion.div>
+  );
+}
+
+function VideoCuttingVisual() {
+  return (
+    <div className="relative mx-auto min-h-[500px] w-full max-w-[560px]">
+      <div className="absolute inset-x-12 top-1/2 -translate-y-1/2">
+        <MetricLabel>Tempo economizado</MetricLabel>
+        <div className={`${sora.className} mt-2 text-[clamp(4.3rem,7vw,7.4rem)] font-semibold leading-none tracking-[-0.075em] text-slate-950`}>
+          <AnimatedCounter value={4.2} decimals={1} suffix="h" />
+        </div>
+        <p className="mt-3 max-w-[330px] text-sm font-medium leading-6 text-slate-500">
+          por vídeo com corte rápido, prévia e ajustes antes da publicação.
+        </p>
+
+        <div className="mt-10 max-w-[390px]">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+            <span>00:00</span>
+            <span>00:42</span>
+          </div>
+          <div className="relative mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+            <motion.div
+              initial={{ left: "0%", right: "100%" }}
+              animate={{ left: "18%", right: "24%" }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
+              className="absolute inset-y-0 rounded-full bg-amber-400"
+            />
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs font-semibold text-slate-500">
+            <span>Corte selecionado</span>
+            <span>34s</span>
+          </div>
+        </div>
+      </div>
+
+      <FloatingMetric className="absolute right-2 top-8" delay={0.08}>
+        <MetricLabel>Prévia</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <Scissors className="h-4 w-4 text-amber-500" />
+          <strong className="text-base font-extrabold text-slate-900">00:08 → 00:42</strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-8 right-3" delay={0.2}>
+        <MetricLabel>Corte de silêncio</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-rose-500" />
+          <strong className="text-base font-extrabold text-slate-900">AI Auto</strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-6 left-0" delay={0.3}>
+        <MetricLabel>Thumbnail</MetricLabel>
+        <div className="mt-1 text-sm font-bold text-slate-800">Personalizada</div>
+      </FloatingMetric>
+    </div>
+  );
+}
+
+function AnalyticsVisual() {
+  const heights = [34, 52, 44, 72, 58, 86, 68, 100];
+
+  return (
+    <div className="relative mx-auto min-h-[500px] w-full max-w-[560px]">
+      <div className="absolute inset-x-12 top-1/2 -translate-y-1/2">
+        <MetricLabel>Crescimento no período</MetricLabel>
+        <div className={`${sora.className} mt-2 text-[clamp(4.3rem,7vw,7.4rem)] font-semibold leading-none tracking-[-0.075em] text-slate-950`}>
+          +<AnimatedCounter value={18} suffix="%" />
+        </div>
+        <p className="mt-3 max-w-[330px] text-sm font-medium leading-6 text-slate-500">
+          compare vídeos, formatos e períodos sem sair do mesmo painel.
+        </p>
+
+        <div className="mt-10 flex h-24 max-w-[390px] items-end gap-2 border-b border-slate-200 pb-1">
+          {heights.map((height, index) => (
+            <div key={index} className="flex h-full flex-1 items-end">
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: `${height}%`, opacity: 1 }}
                 transition={{
-                  duration: 0.6,
-                  delay: 0.08 * barIndex,
+                  duration: 0.55,
+                  delay: 0.08 + index * 0.045,
                   type: "spring",
                   stiffness: 110,
+                  damping: 18,
                 }}
-                className="w-full rounded-t-md bg-emerald-500"
+                className="w-full rounded-t-[5px] bg-emerald-500"
               />
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
+
+      <FloatingMetric className="absolute right-0 top-8" delay={0.08}>
+        <MetricLabel>Receita estimada</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <BarChart3 className="h-4 w-4 text-emerald-500" />
+          <strong className="text-base font-extrabold text-slate-900">
+            $<AnimatedCounter value={2450} />
+          </strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-10 right-4" delay={0.2}>
+        <MetricLabel>Engajamento médio</MetricLabel>
+        <div className="mt-1 flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-emerald-500" />
+          <strong className="text-base font-extrabold text-slate-900">
+            <AnimatedCounter value={8.4} decimals={1} suffix="%" />
+          </strong>
+        </div>
+      </FloatingMetric>
+
+      <FloatingMetric className="absolute bottom-16 left-0" delay={0.3}>
+        <MetricLabel>Período</MetricLabel>
+        <div className="mt-1 text-sm font-bold text-slate-800">Últimos 30 dias</div>
+      </FloatingMetric>
     </div>
   );
 }
 
-{/* Título de Introdução */}
-function IntroTitle({
-  progress,
-  title,
-  introEnd,
-}: {
-  progress: MotionValue<number>;
-  title: string;
-  introEnd: number;
-}) {
-  const opacityMv = useTransform(progress, [0, introEnd * 0.6, introEnd], [1, 1, 0]);
-  const opacity = useSyncedValue(opacityMv, 1);
+function MobileMetric({ index }: { index: number }) {
+  const accent = ACCENTS[index % ACCENTS.length];
 
-  if (opacity <= 0.05) return null;
+  const content = [
+    {
+      icon: <Eye className={`h-4 w-4 ${accent.text}`} />,
+      value: "248,5K",
+      label: "views processadas",
+    },
+    {
+      icon: <CalendarDays className={`h-4 w-4 ${accent.text}`} />,
+      value: "100%",
+      label: "fila sincronizada",
+    },
+    {
+      icon: <Scissors className={`h-4 w-4 ${accent.text}`} />,
+      value: "4,2h",
+      label: "economizadas por vídeo",
+    },
+    {
+      icon: <TrendingUp className={`h-4 w-4 ${accent.text}`} />,
+      value: "+18%",
+      label: "crescimento no período",
+    },
+  ][index % 4];
 
   return (
-    <p
-      style={{ opacity }}
-      className="pointer-events-none absolute inset-0 flex items-center justify-center px-10 text-center text-3xl font-extrabold text-slate-800 sm:text-6xl tracking-tight transition-opacity duration-300"
-    >
-      {title}
-    </p>
+    <div className="flex items-center gap-3">
+      <span className={`flex h-9 w-9 items-center justify-center rounded-full ${accent.soft}`}>
+        {content.icon}
+      </span>
+      <div>
+        <div className={`${sora.className} text-xl font-semibold tracking-tight text-slate-950`}>
+          {content.value}
+        </div>
+        <div className="text-xs font-medium text-slate-500">{content.label}</div>
+      </div>
+    </div>
   );
 }
