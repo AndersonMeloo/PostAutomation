@@ -4,13 +4,15 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 export function Faq() {
   const t = useTranslations();
   const [openQuestion, setOpenQuestion] = useState<string | null>(null);
 
   return (
-    <section id="faq" className="border-t border-slate-100 px-4 py-24 sm:px-6">
+    <section id="faq" className="relative overflow-hidden border-t border-slate-100 px-4 py-24 sm:px-6">
+      <SectionGlow blobs={[{ position: "right-1/4 bottom-0 h-64 w-64", color: "bg-violet-200/12" }]} />
       <div className="mx-auto max-w-4xl">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
           {t.faq.kicker}

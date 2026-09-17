@@ -4,12 +4,16 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 export function FinalCta() {
   const t = useTranslations();
 
   return (
-    <section className="px-4 py-24 sm:px-6">
+    <section className="relative overflow-hidden px-4 py-24 sm:px-6">
+      <SectionGlow
+        blobs={[{ position: "left-1/2 top-0 h-72 w-72 -translate-x-1/2", color: "bg-teal-200/15" }]}
+      />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

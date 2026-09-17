@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { CircleCheckBig, Clapperboard, ChevronUp, EyeOff, Play, Sparkles, TrendingUp } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 const SEGMENT_COLORS = ["#FF0000", "#3b82f6", "#10b981"];
 const SEGMENT_BADGE_POSITIONS = [
@@ -25,7 +26,13 @@ export function Benefits() {
     .join(", ");
 
   return (
-    <section className="px-4 py-24 sm:px-6">
+    <section className="relative overflow-hidden px-4 py-24 sm:px-6">
+      <SectionGlow
+        blobs={[
+          { position: "left-[8%] top-0 h-64 w-64", color: "bg-violet-200/25" },
+          { position: "right-[10%] bottom-0 h-72 w-72", color: "bg-rose-200/20" },
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
