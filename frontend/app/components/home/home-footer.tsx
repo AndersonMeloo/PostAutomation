@@ -22,8 +22,8 @@ export function HomeFooter() {
 
   const companyLinks: FooterLink[] = [
     { href: "/", label: t.footer.links.home },
+    { href: "/blog", label: t.footer.links.blog },
     { label: t.footer.links.about, comingSoon: true },
-    { label: t.footer.links.blog, comingSoon: true },
   ];
 
   const accountLinks = [

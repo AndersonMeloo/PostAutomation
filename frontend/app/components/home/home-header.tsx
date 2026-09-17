@@ -17,12 +17,11 @@ export function HomeHeader() {
   const { locale, setLocale } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navLinks = [
-    { href: "#recursos", label: t.header.navFeatures },
-    { href: "#como-funciona", label: t.header.navHowItWorks },
-    { href: "#plataformas", label: t.header.navPlatforms },
-    { href: "#precos", label: t.pricing.kicker },
-    { href: "#faq", label: t.header.navFaq },
+  const navLinks: ({ href: string; label: string } | { label: string; comingSoon: true })[] = [
+    { href: "/", label: t.header.navHome },
+    { label: t.footer.links.about, comingSoon: true },
+    { href: "/#precos", label: t.pricing.kicker },
+    { href: "/blog", label: t.header.navBlog },
   ];
 
   return (
@@ -33,15 +32,27 @@ export function HomeHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            "href" in link ? (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <span
+                key={link.label}
+                className="flex items-center gap-1.5 text-sm font-medium text-slate-400"
+              >
+                {link.label}
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
+                  {t.hero.comingSoon}
+                </span>
+              </span>
+            )
+          )}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -104,16 +115,28 @@ export function HomeHeader() {
                     className="fixed inset-x-0 top-16 z-40 border-t border-slate-100 bg-white px-4 py-4 shadow-[0_20px_40px_-20px_rgba(15,23,42,0.25)] md:hidden"
                   >
                     <nav className="flex flex-col gap-3">
-                      {navLinks.map((link) => (
-                        <a
-                          key={link.href}
-                          href={link.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="text-sm font-medium text-slate-700"
-                        >
-                          {link.label}
-                        </a>
-                      ))}
+                      {navLinks.map((link) =>
+                        "href" in link ? (
+                          <Link
+                            key={link.label}
+                            href={link.href}
+                            onClick={() => setMobileOpen(false)}
+                            className="text-sm font-medium text-slate-700"
+                          >
+                            {link.label}
+                          </Link>
+                        ) : (
+                          <span
+                            key={link.label}
+                            className="flex items-center gap-1.5 text-sm font-medium text-slate-400"
+                          >
+                            {link.label}
+                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
+                              {t.hero.comingSoon}
+                            </span>
+                          </span>
+                        )
+                      )}
                     </nav>
 
                     <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
