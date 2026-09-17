@@ -40,7 +40,9 @@ export const ptBR: Dictionary = {
     navFeatures: "Recursos",
     navHowItWorks: "Como funciona",
     navPlatforms: "Plataformas",
+    navHome: "Home",
     navFaq: "FAQ",
+    navBlog: "Blog",
     login: "Entrar",
     signup: "Criar conta",
   },
@@ -70,6 +72,17 @@ export const ptBR: Dictionary = {
       { name: "YouTube", status: "live" },
       { name: "Instagram", status: "soon" },
       { name: "TikTok", status: "soon" },
+    ],
+  },
+  contentShowcase: {
+    kicker: "Para todo tipo de conteúdo",
+    title: "Do podcast ao curso, cada vídeo pronto pra publicar",
+    categories: [
+      { label: "Podcast", handle: "@seupodcast" },
+      { label: "Curso", handle: "@seucanal" },
+      { label: "Notícias", handle: "@suamarca" },
+      { label: "Entrevista", handle: "@seuconteudo" },
+      { label: "Treino", handle: "@seuperfil" },
     ],
   },
   liveFeed: {
@@ -323,6 +336,58 @@ export const ptBR: Dictionary = {
       pricing: "Preços",
       about: "Sobre nós",
       blog: "Blog",
+    },
+  },
+  blog: {
+    pageTitle: "Blog do PostAutomation",
+    intro: [
+      "O PostAutomation automatiza o fluxo completo de publicação de vídeos nas suas redes sociais: envio, edição básica, agendamento inteligente e publicação automática, com coleta de métricas ao longo do tempo pra você acompanhar o que funciona.",
+      "Hoje a integração está disponível pro YouTube, com Instagram e TikTok chegando em breve. O objetivo é simples: tirar do seu caminho o trabalho repetitivo de publicar, pra você focar em criar.",
+      "Aqui no blog reunimos posts explicando como cada parte do produto funciona - desde o fluxo de agendamento até as métricas coletadas automaticamente. Use a lista ao lado pra navegar entre eles.",
+    ],
+    sidebarTitle: "Últimos posts",
+    backLabel: "Voltar",
+    posts: {
+      "automatize-publicacao-de-videos": {
+        title: "Como automatizar a publicação dos seus vídeos",
+        excerpt:
+          "Envie um vídeo uma vez e deixe o resto do trabalho com a gente: agendamento, publicação e coleta de métricas, sem precisar abrir o YouTube toda vez.",
+        content: [
+          "Manter uma rotina de postagens consistente é um dos maiores desafios de quem cria conteúdo. O PostAutomation nasceu justamente pra resolver essa fricção: você envia o vídeo, escolhe o nicho e o horário, e a plataforma cuida da publicação de verdade quando chegar a hora.",
+          "Por trás dos panos, um scheduler verifica periodicamente os vídeos agendados e os publica diretamente na sua conta do YouTube conectada, sem precisar de intervenção manual. Se alguma coisa der errado no meio do caminho, o status do post é atualizado pra você entender exatamente o que aconteceu.",
+          "O objetivo não é substituir sua criatividade, e sim tirar do seu caminho o trabalho repetitivo de subir arquivo, preencher formulário e escolher horário toda vez que um vídeo fica pronto.",
+        ],
+      },
+      "agendamento-inteligente": {
+        title: "Entendendo o agendamento inteligente",
+        excerpt:
+          "Cada vídeo enviado vira um rascunho que você pode revisar, editar e só publicar quando estiver realmente pronto - no seu tempo, não no da plataforma.",
+        content: [
+          "Nem todo vídeo enviado precisa ir direto para o ar. Por isso, o fluxo de envio do PostAutomation passa primeiro por um estado de rascunho: você pode ajustar título, formato (Shorts ou padrão), thumbnail e um corte básico antes de decidir quando ele deve ser publicado.",
+          "Quando você prepara a publicação, o vídeo entra numa fila com o nicho e o horário escolhidos. A partir daí, o mesmo mecanismo que cuida da publicação automática assume o restante do processo.",
+          "Essa separação entre 'enviar' e 'publicar' dá mais controle pra quem gerencia vários vídeos ao mesmo tempo, sem perder a automação no momento certo.",
+        ],
+      },
+      "metricas-que-importam": {
+        title: "Métricas que realmente importam",
+        excerpt:
+          "Visualizações, curtidas e comentários coletados automaticamente ao longo do tempo, pra você entender a evolução de cada vídeo sem precisar ficar atualizando manualmente.",
+        content: [
+          "De nada adianta automatizar a publicação se você não consegue acompanhar o resultado. Por isso, o PostAutomation coleta periodicamente as métricas de cada vídeo publicado diretamente da API do YouTube: views, curtidas e comentários.",
+          "Esses dados ficam disponíveis tanto numa visão agregada (o desempenho de todos os seus vídeos ao longo do tempo) quanto numa visão individual, mostrando a evolução de um vídeo específico desde a publicação.",
+          "A ideia é simples: menos tempo comparando planilhas, mais tempo entendendo o que está funcionando de verdade no seu canal.",
+        ],
+      },
+      "do-rascunho-a-publicacao": {
+        title: "Do rascunho à publicação: nosso fluxo de edição",
+        excerpt:
+          "Um editor modular pensado pra crescer aos poucos: hoje já dá pra ajustar corte, thumbnail e formato; o resto vem por etapas.",
+        content: [
+          "Construir um editor de vídeo completo do zero é um projeto enorme - e não é isso que resolve o problema real de quem só quer publicar mais rápido. Por isso, escolhemos começar pequeno e modular.",
+          "Hoje, o editor permite escolher o formato do vídeo (Shorts ou padrão), definir um corte básico por tempo de início e fim, e capturar ou enviar uma thumbnail personalizada. Cada uma dessas peças vive no seu próprio painel, o que facilita adicionar novas funcionalidades sem reescrever tudo.",
+          "Conforme o produto evolui, essa mesma estrutura vai ganhar novos recursos - sempre com o cuidado de não transformar uma ferramenta simples em algo complicado demais de usar.",
+        ],
+      },
     },
   },
 };

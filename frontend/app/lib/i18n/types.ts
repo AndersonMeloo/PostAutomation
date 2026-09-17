@@ -39,10 +39,12 @@ export type Dictionary = {
     };
   };
   header: {
+    navHome: string;
     navFeatures: string;
     navHowItWorks: string;
     navPlatforms: string;
     navFaq: string;
+    navBlog: string;
     login: string;
     signup: string;
   };
@@ -65,6 +67,11 @@ export type Dictionary = {
     kicker: string;
     title: string;
     items: { name: string; status: PlatformStatus }[];
+  };
+  contentShowcase: {
+    kicker: string;
+    title: string;
+    categories: { label: string; handle: string }[];
   };
   liveFeed: {
     kicker: string;
@@ -181,5 +188,12 @@ export type Dictionary = {
       about: string;
       blog: string;
     };
+  };
+  blog: {
+    pageTitle: string;
+    intro: string[];
+    sidebarTitle: string;
+    backLabel: string;
+    posts: Record<string, { title: string; excerpt: string; content: string[] }>;
   };
 };
