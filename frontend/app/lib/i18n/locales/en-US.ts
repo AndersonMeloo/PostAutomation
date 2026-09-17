@@ -338,20 +338,48 @@ export const enUS: Dictionary = {
     ],
     sidebarTitle: "Latest posts",
     backLabel: "Back",
+    tocTitle: "In this article",
     // One post per key, and the key MUST match the "slug" registered in
     // app/blog/posts-data.ts (that's how the page finds the right text).
     // To add a new post: copy a block below, swap the key for the new
-    // slug, and write title/excerpt/content (one array item per
-    // paragraph). Keep this in sync with pt-BR.ts.
+    // slug, and write title/excerpt/content (one section per item, with
+    // heading + paragraphs). Keep the same number of sections as
+    // pt-BR.ts.
     posts: {
       "automatize-publicacao-de-videos": {
         title: "How to automate publishing your videos",
         excerpt:
           "Upload a video once and let us handle the rest: scheduling, publishing and metrics collection, without having to open YouTube every time.",
         content: [
-          "Keeping a consistent posting routine is one of the biggest challenges for content creators. PostAutomation was built exactly to solve that friction: you upload the video, pick the niche and time slot, and the platform takes care of the actual publishing when the time comes.",
-          "Behind the scenes, a scheduler periodically checks scheduled videos and publishes them directly to your connected YouTube account, with no manual intervention needed. If anything goes wrong along the way, the post status is updated so you know exactly what happened.",
-          "The goal isn't to replace your creativity, but to take the repetitive work of uploading files, filling out forms and picking a time slot off your hands every time a video is ready.",
+          {
+            heading: "The problem with manual routines",
+            paragraphs: [
+              "Keeping a consistent posting routine is one of the biggest challenges for content creators. Every week it's the same sequence: export the right file, open YouTube Studio, fill in the title and description, pick a thumbnail and remember to publish at the time your audience is actually online.",
+              "On its own, each of these steps takes a few minutes. Multiplied by several videos a week, it turns into operational work that steals time from what you should be doing - filming and editing, not managing a scheduling spreadsheet.",
+              "PostAutomation was built exactly to solve that friction: you upload the video, pick the niche and time slot, and the platform takes care of the actual publishing when the time comes.",
+            ],
+          },
+          {
+            heading: "How it works behind the scenes",
+            paragraphs: [
+              "Behind the scenes, a scheduler periodically checks scheduled videos and publishes them directly to your connected YouTube account, with no manual intervention needed. The connection uses the official YouTube API, so the process is the same you'd do by hand - just automatic.",
+              "Every scheduled video carries its format (Shorts or standard), the trim set in the editor and the chosen thumbnail. When the time comes, all of it is sent at once, with no rework on your end.",
+            ],
+          },
+          {
+            heading: "What happens when something fails",
+            paragraphs: [
+              "No automation is foolproof, and being upfront about that matters more than pretending it never fails. If anything goes wrong along the way - an expired token, an API quota hit - the post status is updated so you know exactly what happened and can reschedule in a couple of clicks.",
+              "That visibility lives right in the dashboard, alongside the attempt history, so you never have to guess whether a video actually went live.",
+            ],
+          },
+          {
+            heading: "What doesn't change",
+            paragraphs: [
+              "The goal isn't to replace your creativity, but to take the repetitive work of uploading files, filling out forms and picking a time slot off your hands every time a video is ready.",
+              "The decision on what to publish, when and in what tone is still entirely yours. Automation starts exactly where that decision ends.",
+            ],
+          },
         ],
       },
       "agendamento-inteligente": {
@@ -359,9 +387,34 @@ export const enUS: Dictionary = {
         excerpt:
           "Every uploaded video becomes a draft you can review, edit and only publish once it's truly ready - on your schedule, not the platform's.",
         content: [
-          "Not every uploaded video needs to go live right away. That's why PostAutomation's upload flow first goes through a draft state: you can adjust the title, format (Shorts or standard), thumbnail and a basic trim before deciding when it should be published.",
-          "When you prepare the post, the video enters a queue with the chosen niche and time slot. From there, the same mechanism that handles automatic publishing takes over the rest of the process.",
-          "This separation between 'uploading' and 'publishing' gives more control to anyone managing several videos at once, without losing automation at the right moment.",
+          {
+            heading: "Why not everything should go live right away",
+            paragraphs: [
+              "Not every uploaded video needs to go live right away. Sometimes you want to test a title first, tweak the thumbnail after seeing how it looks, or simply wait for the right day of the week to publish.",
+              "That's why PostAutomation's upload flow first goes through a draft state, instead of forcing a publishing decision the moment you upload.",
+            ],
+          },
+          {
+            heading: "From upload to draft",
+            paragraphs: [
+              "As soon as the video is uploaded, it becomes a draft you can review at your own pace: adjust the title, choose the format (Shorts or standard), set the thumbnail and apply a basic trim before deciding when it should be published.",
+              "None of it is final until you confirm it. A draft can sit untouched for as long as needed, and you can even delete it if you decide not to publish - with the matching file automatically cleaned up from storage.",
+            ],
+          },
+          {
+            heading: "From the queue to automatic publishing",
+            paragraphs: [
+              "When you prepare the post, the video enters a queue with the chosen niche and time slot. From there, the same mechanism that handles automatic publishing takes over the rest of the process, with no need to reopen the dashboard at that exact time.",
+              "If you want to reschedule, just change the time before it's sent - the video stays in the queue, just with a new date.",
+            ],
+          },
+          {
+            heading: "Why this matters if you manage several videos",
+            paragraphs: [
+              "This separation between 'uploading' and 'publishing' gives more control to anyone managing several videos at once, without losing automation at the right moment.",
+              "In practice, you can spend an entire afternoon just uploading and organizing drafts, and let the actual publishing happen on its own, spread across whichever days and times make the most sense for your channel.",
+            ],
+          },
         ],
       },
       "metricas-que-importam": {
@@ -369,9 +422,34 @@ export const enUS: Dictionary = {
         excerpt:
           "Views, likes and comments collected automatically over time, so you can understand each video's evolution without manually refreshing anything.",
         content: [
-          "Automating publishing is worthless if you can't track the results. That's why PostAutomation periodically collects each published video's metrics directly from the YouTube API: views, likes and comments.",
-          "This data is available both in an aggregate view (the performance of all your videos over time) and in an individual view, showing a specific video's evolution since it was published.",
-          "The idea is simple: less time comparing spreadsheets, more time understanding what's actually working on your channel.",
+          {
+            heading: "Publishing without measuring is pointless",
+            paragraphs: [
+              "Automating publishing is worthless if you can't track the results. Without data, every decision about timing, format or topic turns into a guess - and guesses don't scale.",
+              "That's why PostAutomation periodically collects each published video's metrics directly from the YouTube API: views, likes, comments and subscribers gained.",
+            ],
+          },
+          {
+            heading: "What's collected and where it comes from",
+            paragraphs: [
+              "The numbers come straight from the source - the same API that powers YouTube Studio - so there's no estimating and no artificial delay: what you see on the dashboard reflects what's actually happening on your channel.",
+              "Collection happens in the background, at regular intervals, with no need to manually open a video just to refresh a number.",
+            ],
+          },
+          {
+            heading: "Aggregate view vs. individual view",
+            paragraphs: [
+              "This data is available both in an aggregate view (the performance of all your videos over time) and in an individual view, showing a specific video's evolution since it was published.",
+              "The aggregate view helps spot patterns - which day of the week, format or niche performs best. The individual one helps you understand a specific video's life cycle: when it takes off, when it settles.",
+            ],
+          },
+          {
+            heading: "Less spreadsheet, more decision",
+            paragraphs: [
+              "The idea is simple: less time comparing spreadsheets, more time understanding what's actually working on your channel.",
+              "With history organized automatically, it's easier to repeat what works and drop what doesn't faster, instead of only finding out months later.",
+            ],
+          },
         ],
       },
       "do-rascunho-a-publicacao": {
@@ -379,9 +457,32 @@ export const enUS: Dictionary = {
         excerpt:
           "A modular editor designed to grow step by step: today you can already adjust trim, thumbnail and format; the rest comes in stages.",
         content: [
-          "Building a full video editor from scratch is a massive project - and it isn't what actually solves the real problem of publishing faster. That's why we chose to start small and modular.",
-          "Today, the editor lets you choose the video format (Shorts or standard), set a basic trim by start and end time, and capture or upload a custom thumbnail. Each of these pieces lives in its own panel, which makes it easier to add new features without rewriting everything.",
-          "As the product evolves, this same structure will gain new capabilities - always being careful not to turn a simple tool into something overly complicated to use.",
+          {
+            heading: "Why we didn't build a full editor from scratch",
+            paragraphs: [
+              "Building a full video editor from scratch is a massive project - and it isn't what actually solves the real problem of publishing faster. That's why we chose to start small and modular, prioritizing the adjustments most videos actually need before going live.",
+            ],
+          },
+          {
+            heading: "What you can already do today",
+            paragraphs: [
+              "Today, the editor lets you choose the video format (Shorts or standard), set a basic trim by start and end time, and capture or upload a custom thumbnail right from the browser.",
+              "Every adjustment is applied on top of the draft, so you can change the trim or swap the thumbnail as many times as you want before confirming the publish - without generating a new file on every attempt.",
+            ],
+          },
+          {
+            heading: "Why each piece lives in its own panel",
+            paragraphs: [
+              "Each of these pieces lives in its own panel, which makes it easier to add new features without rewriting everything. Trim, thumbnail and format are independent modules that all talk to the same draft.",
+              "This separation is also what lets the product evolve in visible stages, instead of promising a complete editor all at once and taking months to ship anything.",
+            ],
+          },
+          {
+            heading: "What's next",
+            paragraphs: [
+              "As the product evolves, this same structure will gain new capabilities - like the AI-powered auto-clipping that already shows up as 'coming soon' in the dashboard - always being careful not to turn a simple tool into something overly complicated to use.",
+            ],
+          },
         ],
       },
     },

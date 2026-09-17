@@ -192,6 +192,14 @@ export type Dictionary = {
     intro: string[];
     sidebarTitle: string;
     backLabel: string;
-    posts: Record<string, { title: string; excerpt: string; content: string[] }>;
+    tocTitle: string;
+    posts: Record<
+      string,
+      {
+        title: string;
+        excerpt: string;
+        content: { heading: string; paragraphs: string[] }[];
+      }
+    >;
   };
 };
