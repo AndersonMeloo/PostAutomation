@@ -64,8 +64,6 @@ export type Dictionary = {
     }[];
   };
   platforms: {
-    kicker: string;
-    title: string;
     items: { name: string; status: PlatformStatus }[];
   };
   contentShowcase: {
