@@ -346,20 +346,48 @@ export const ptBR: Dictionary = {
     ],
     sidebarTitle: "Últimos posts",
     backLabel: "Voltar",
+    tocTitle: "Neste artigo",
     // Um post por chave, e a chave TEM que ser igual ao "slug" cadastrado em
     // app/blog/posts-data.ts (é assim que a página encontra o texto certo).
     // Pra criar um post novo: copie um bloco abaixo, troque a chave pelo
-    // slug novo e escreva title/excerpt/content (um item da lista por
-    // parágrafo). Depois faça o mesmo em en-US.ts.
+    // slug novo e escreva title/excerpt/content (uma seção por item, com
+    // heading + parágrafos). Depois faça o mesmo em en-US.ts, mantendo o
+    // mesmo número de seções nos dois idiomas.
     posts: {
       "automatize-publicacao-de-videos": {
         title: "Como automatizar a publicação dos seus vídeos",
         excerpt:
           "Envie um vídeo uma vez e deixe o resto do trabalho com a gente: agendamento, publicação e coleta de métricas, sem precisar abrir o YouTube toda vez.",
         content: [
-          "Manter uma rotina de postagens consistente é um dos maiores desafios de quem cria conteúdo. O PostAutomation nasceu justamente pra resolver essa fricção: você envia o vídeo, escolhe o nicho e o horário, e a plataforma cuida da publicação de verdade quando chegar a hora.",
-          "Por trás dos panos, um scheduler verifica periodicamente os vídeos agendados e os publica diretamente na sua conta do YouTube conectada, sem precisar de intervenção manual. Se alguma coisa der errado no meio do caminho, o status do post é atualizado pra você entender exatamente o que aconteceu.",
-          "O objetivo não é substituir sua criatividade, e sim tirar do seu caminho o trabalho repetitivo de subir arquivo, preencher formulário e escolher horário toda vez que um vídeo fica pronto.",
+          {
+            heading: "O problema da rotina manual",
+            paragraphs: [
+              "Manter uma rotina de postagens consistente é um dos maiores desafios de quem cria conteúdo. Toda semana é a mesma sequência: exportar o arquivo certo, abrir o YouTube Studio, preencher título e descrição, escolher a thumbnail e lembrar de publicar no horário em que o seu público está online.",
+              "Sozinha, cada uma dessas etapas leva poucos minutos. Multiplicada por vários vídeos por semana, ela vira um trabalho operacional que rouba tempo de quem deveria estar gravando e editando - não gerenciando planilha de agenda.",
+              "O PostAutomation nasceu justamente pra resolver essa fricção: você envia o vídeo, escolhe o nicho e o horário, e a plataforma cuida da publicação de verdade quando chegar a hora.",
+            ],
+          },
+          {
+            heading: "Como funciona por trás dos panos",
+            paragraphs: [
+              "Por trás dos panos, um scheduler verifica periodicamente os vídeos agendados e os publica diretamente na sua conta do YouTube conectada, sem precisar de intervenção manual. A conexão usa a API oficial do YouTube, então o processo é o mesmo que você faria manualmente - só que automático.",
+              "Cada vídeo agendado carrega consigo o formato (Shorts ou padrão), o corte definido no editor e a thumbnail escolhida. Quando o horário chega, tudo isso é enviado de uma vez só, sem retrabalho da sua parte.",
+            ],
+          },
+          {
+            heading: "O que acontece quando algo dá errado",
+            paragraphs: [
+              "Nenhuma automação é infalível, e ser transparente sobre isso importa mais do que fingir que nunca falha. Se alguma coisa der errado no meio do caminho - um token expirado, uma cota da API estourada -, o status do post é atualizado pra você entender exatamente o que aconteceu e reagendar em poucos cliques.",
+              "Essa visibilidade fica disponível direto no painel, junto com o histórico de tentativas, pra você nunca precisar adivinhar se um vídeo foi ao ar ou não.",
+            ],
+          },
+          {
+            heading: "O que não muda",
+            paragraphs: [
+              "O objetivo não é substituir sua criatividade, e sim tirar do seu caminho o trabalho repetitivo de subir arquivo, preencher formulário e escolher horário toda vez que um vídeo fica pronto.",
+              "A decisão sobre o que publicar, quando e em qual tom continua inteiramente sua. A automação começa exatamente no ponto em que essa decisão termina.",
+            ],
+          },
         ],
       },
       "agendamento-inteligente": {
@@ -367,9 +395,34 @@ export const ptBR: Dictionary = {
         excerpt:
           "Cada vídeo enviado vira um rascunho que você pode revisar, editar e só publicar quando estiver realmente pronto - no seu tempo, não no da plataforma.",
         content: [
-          "Nem todo vídeo enviado precisa ir direto para o ar. Por isso, o fluxo de envio do PostAutomation passa primeiro por um estado de rascunho: você pode ajustar título, formato (Shorts ou padrão), thumbnail e um corte básico antes de decidir quando ele deve ser publicado.",
-          "Quando você prepara a publicação, o vídeo entra numa fila com o nicho e o horário escolhidos. A partir daí, o mesmo mecanismo que cuida da publicação automática assume o restante do processo.",
-          "Essa separação entre 'enviar' e 'publicar' dá mais controle pra quem gerencia vários vídeos ao mesmo tempo, sem perder a automação no momento certo.",
+          {
+            heading: "Por que nem tudo deveria ir direto ao ar",
+            paragraphs: [
+              "Nem todo vídeo enviado precisa ir direto para o ar. Às vezes você quer testar um título antes, ajustar a thumbnail depois de ver como ficou, ou simplesmente esperar o dia certo da semana pra publicar.",
+              "Por isso, o fluxo de envio do PostAutomation passa primeiro por um estado de rascunho, em vez de forçar uma decisão de publicação no momento do upload.",
+            ],
+          },
+          {
+            heading: "Do envio ao rascunho",
+            paragraphs: [
+              "Assim que o vídeo é enviado, ele vira um rascunho que você pode revisar com calma: ajustar título, escolher o formato (Shorts ou padrão), definir a thumbnail e aplicar um corte básico antes de decidir quando ele deve ser publicado.",
+              "Nada disso é definitivo até você confirmar. O rascunho pode ficar parado o tempo que for preciso, e você pode até excluí-lo se decidir não publicar - com a limpeza do arquivo correspondente no armazenamento feita automaticamente.",
+            ],
+          },
+          {
+            heading: "Da fila à publicação automática",
+            paragraphs: [
+              "Quando você prepara a publicação, o vídeo entra numa fila com o nicho e o horário escolhidos. A partir daí, o mesmo mecanismo que cuida da publicação automática assume o restante do processo, sem exigir que você volte a abrir o painel naquele exato horário.",
+              "Se quiser reagendar, basta alterar o horário antes do envio acontecer - o vídeo continua na fila, só que com a nova data.",
+            ],
+          },
+          {
+            heading: "Por que isso importa pra quem gerencia vários vídeos",
+            paragraphs: [
+              "Essa separação entre 'enviar' e 'publicar' dá mais controle pra quem gerencia vários vídeos ao mesmo tempo, sem perder a automação no momento certo.",
+              "Na prática, você pode passar uma tarde inteira só enviando e organizando rascunhos, e deixar que a publicação em si aconteça sozinha, espalhada pelos dias e horários que fizerem mais sentido pro seu canal.",
+            ],
+          },
         ],
       },
       "metricas-que-importam": {
@@ -377,9 +430,34 @@ export const ptBR: Dictionary = {
         excerpt:
           "Visualizações, curtidas e comentários coletados automaticamente ao longo do tempo, pra você entender a evolução de cada vídeo sem precisar ficar atualizando manualmente.",
         content: [
-          "De nada adianta automatizar a publicação se você não consegue acompanhar o resultado. Por isso, o PostAutomation coleta periodicamente as métricas de cada vídeo publicado diretamente da API do YouTube: views, curtidas e comentários.",
-          "Esses dados ficam disponíveis tanto numa visão agregada (o desempenho de todos os seus vídeos ao longo do tempo) quanto numa visão individual, mostrando a evolução de um vídeo específico desde a publicação.",
-          "A ideia é simples: menos tempo comparando planilhas, mais tempo entendendo o que está funcionando de verdade no seu canal.",
+          {
+            heading: "De nada adianta publicar sem medir",
+            paragraphs: [
+              "De nada adianta automatizar a publicação se você não consegue acompanhar o resultado. Sem dados, cada decisão sobre horário, formato ou tema vira palpite - e palpite não escala.",
+              "Por isso, o PostAutomation coleta periodicamente as métricas de cada vídeo publicado diretamente da API do YouTube: visualizações, curtidas, comentários e inscritos ganhos.",
+            ],
+          },
+          {
+            heading: "O que é coletado e de onde vem",
+            paragraphs: [
+              "Os números vêm direto da fonte - a mesma API que alimenta o YouTube Studio -, então não há estimativa nem atraso artificial: o que você vê no painel reflete o que está acontecendo no seu canal.",
+              "A coleta acontece em segundo plano, em intervalos regulares, sem exigir que você abra o vídeo manualmente pra atualizar o número.",
+            ],
+          },
+          {
+            heading: "Visão agregada vs. visão individual",
+            paragraphs: [
+              "Esses dados ficam disponíveis tanto numa visão agregada (o desempenho de todos os seus vídeos ao longo do tempo) quanto numa visão individual, mostrando a evolução de um vídeo específico desde a publicação.",
+              "A visão agregada ajuda a identificar padrões - que dia da semana, formato ou nicho performa melhor. A individual ajuda a entender o ciclo de vida de um vídeo específico: quando ele decola, quando estabiliza.",
+            ],
+          },
+          {
+            heading: "Menos planilha, mais decisão",
+            paragraphs: [
+              "A ideia é simples: menos tempo comparando planilhas, mais tempo entendendo o que está funcionando de verdade no seu canal.",
+              "Com o histórico organizado automaticamente, fica mais fácil repetir o que dá certo e abandonar mais rápido o que não dá, em vez de descobrir isso só meses depois.",
+            ],
+          },
         ],
       },
       "do-rascunho-a-publicacao": {
@@ -387,9 +465,32 @@ export const ptBR: Dictionary = {
         excerpt:
           "Um editor modular pensado pra crescer aos poucos: hoje já dá pra ajustar corte, thumbnail e formato; o resto vem por etapas.",
         content: [
-          "Construir um editor de vídeo completo do zero é um projeto enorme - e não é isso que resolve o problema real de quem só quer publicar mais rápido. Por isso, escolhemos começar pequeno e modular.",
-          "Hoje, o editor permite escolher o formato do vídeo (Shorts ou padrão), definir um corte básico por tempo de início e fim, e capturar ou enviar uma thumbnail personalizada. Cada uma dessas peças vive no seu próprio painel, o que facilita adicionar novas funcionalidades sem reescrever tudo.",
-          "Conforme o produto evolui, essa mesma estrutura vai ganhar novos recursos - sempre com o cuidado de não transformar uma ferramenta simples em algo complicado demais de usar.",
+          {
+            heading: "Por que não construímos um editor completo do zero",
+            paragraphs: [
+              "Construir um editor de vídeo completo do zero é um projeto enorme - e não é isso que resolve o problema real de quem só quer publicar mais rápido. Por isso, escolhemos começar pequeno e modular, priorizando os ajustes que a maioria dos vídeos realmente precisa antes de ir ao ar.",
+            ],
+          },
+          {
+            heading: "O que já dá pra fazer hoje",
+            paragraphs: [
+              "Hoje, o editor permite escolher o formato do vídeo (Shorts ou padrão), definir um corte básico por tempo de início e fim, e capturar ou enviar uma thumbnail personalizada direto no navegador.",
+              "Cada ajuste é aplicado sobre o rascunho, então você pode alterar o corte ou trocar a thumbnail quantas vezes quiser antes de confirmar a publicação - sem gerar um arquivo novo a cada tentativa.",
+            ],
+          },
+          {
+            heading: "Por que cada peça vive no seu próprio painel",
+            paragraphs: [
+              "Cada uma dessas peças vive no seu próprio painel, o que facilita adicionar novas funcionalidades sem reescrever tudo. Corte, thumbnail e formato são módulos independentes que conversam com o mesmo rascunho.",
+              "Essa separação também é o que permite evoluir o produto em etapas visíveis, em vez de prometer um editor completo de uma vez e demorar meses pra entregar qualquer coisa.",
+            ],
+          },
+          {
+            heading: "O que vem a seguir",
+            paragraphs: [
+              "Conforme o produto evolui, essa mesma estrutura vai ganhar novos recursos - como o corte automático com inteligência artificial que já aparece como 'em breve' no painel - sempre com o cuidado de não transformar uma ferramenta simples em algo complicado demais de usar.",
+            ],
+          },
         ],
       },
     },

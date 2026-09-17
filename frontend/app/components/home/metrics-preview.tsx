@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Eye, Heart, MessageCircle, UserPlus } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 const STAT_GRADIENTS = [
   "bg-linear-to-br from-cyan-400 to-teal-600",
@@ -18,7 +19,13 @@ export function MetricsPreview() {
   const t = useTranslations();
 
   return (
-    <section className="px-4 py-24 sm:px-6">
+    <section className="relative overflow-hidden px-4 py-24 sm:px-6">
+      <SectionGlow
+        blobs={[
+          { position: "left-[12%] top-0 h-60 w-60", color: "bg-fuchsia-200/20" },
+          { position: "right-[10%] bottom-0 h-64 w-64", color: "bg-cyan-200/20" },
+        ]}
+      />
       <div className="mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">

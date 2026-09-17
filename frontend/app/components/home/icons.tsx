@@ -60,6 +60,30 @@ export function InstagramIcon({ className }: IconProps) {
   );
 }
 
+/** Versão com o gradiente oficial da marca, usada sobre fundos brancos/neutros. */
+export function InstagramColorIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="instagram-brand-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#405de6" />
+          <stop offset="15%" stopColor="#5b51d8" />
+          <stop offset="30%" stopColor="#833ab4" />
+          <stop offset="45%" stopColor="#c13584" />
+          <stop offset="60%" stopColor="#e1306c" />
+          <stop offset="70%" stopColor="#fd1d1d" />
+          <stop offset="80%" stopColor="#f56040" />
+          <stop offset="90%" stopColor="#f77737" />
+          <stop offset="100%" stopColor="#fcaf45" />
+        </linearGradient>
+      </defs>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#instagram-brand-gradient)" strokeWidth={1.8} />
+      <circle cx="12" cy="12" r="4.2" stroke="url(#instagram-brand-gradient)" strokeWidth={1.8} />
+      <circle cx="17.2" cy="6.8" r="1" fill="url(#instagram-brand-gradient)" />
+    </svg>
+  );
+}
+
 export function FacebookIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
 import { FEATURE_STYLES } from "./feature-colors";
+import { Orb } from "./orb";
 
 const BADGE_POSITIONS = [
   "left-[4%] top-[12%]",
@@ -20,10 +21,10 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden px-4 pb-28 pt-20 sm:px-6 sm:pt-28">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-blue-200/35 blur-3xl" />
-        <div className="absolute right-1/5 top-16 h-64 w-64 rounded-full bg-teal-200/35 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-emerald-100/40 blur-3xl" />
+      <div className="absolute inset-x-0 top-0 -z-10 flex justify-center">
+        <div className="h-95 w-95 -translate-y-16 sm:h-120 sm:w-120 lg:h-140 lg:w-140">
+          <Orb hue={0} hoverIntensity={0.15} rotateOnHover backgroundColor="#000000" />
+        </div>
       </div>
 
       <div className="relative mx-auto max-w-3xl text-center">

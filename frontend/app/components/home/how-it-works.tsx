@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Upload, Calendar, BarChart3 } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 const STEP_ICONS = [Upload, Calendar, BarChart3];
 const STEP_DURATION = 4500;
@@ -60,7 +61,13 @@ export function HowItWorks() {
   }, [steps.length]);
 
   return (
-    <section id="como-funciona" className="px-4 py-24 sm:px-6">
+    <section id="como-funciona" className="relative overflow-hidden px-4 py-24 sm:px-6">
+      <SectionGlow
+        blobs={[
+          { position: "right-[8%] top-0 h-64 w-64", color: "bg-blue-200/20" },
+          { position: "left-[10%] bottom-0 h-60 w-60", color: "bg-emerald-200/20" },
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
           {t.howItWorks.kicker}

@@ -4,12 +4,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { CircleCheckBig } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
+import { SectionGlow } from "./section-glow";
 
 export function Pricing() {
   const t = useTranslations();
 
   return (
-    <section id="precos" className="px-4 py-24 sm:px-6">
+    <section id="precos" className="relative overflow-hidden px-4 py-24 sm:px-6">
+      <SectionGlow
+        blobs={[
+          { position: "left-1/4 top-0 h-64 w-64", color: "bg-blue-200/20" },
+          { position: "right-[12%] bottom-0 h-56 w-56", color: "bg-indigo-200/15" },
+        ]}
+      />
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">
