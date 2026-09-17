@@ -3,7 +3,6 @@
 import { LocaleProvider } from "../../lib/i18n/locale-context";
 import { HomeHeader } from "./home-header";
 import { Hero } from "./hero";
-import { PlatformStrip } from "./platform-strip";
 import { ContentShowcase } from "./content-showcase";
 import { LiveFeed } from "./live-feed";
 import { HowItWorks } from "./how-it-works";
@@ -24,7 +23,6 @@ export function HomePage() {
         <main>
           <Hero />
           <Benefits />
-          <PlatformStrip />
           <ContentShowcase />
           {/* <LiveFeed /> */}
           <HowItWorks />

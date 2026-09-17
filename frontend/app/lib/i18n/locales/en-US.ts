@@ -66,8 +66,6 @@ export const enUS: Dictionary = {
     ],
   },
   platforms: {
-    kicker: "Publish on",
-    title: "One platform, every network",
     items: [
       { name: "YouTube", status: "live" },
       { name: "Instagram", status: "soon" },
@@ -75,8 +73,8 @@ export const enUS: Dictionary = {
     ],
   },
   contentShowcase: {
-    kicker: "For every kind of content",
-    title: "From podcasts to courses, every video ready to publish",
+    kicker: "Videos ready for social media, powered by AI",
+    title: "Turn long content into clips ready for every platform",
     categories: [
       { label: "Podcast", handle: "@yourpodcast" },
       { label: "Course", handle: "@yourchannel" },
@@ -332,6 +330,7 @@ export const enUS: Dictionary = {
   },
   blog: {
     pageTitle: "The PostAutomation blog",
+    // Fixed copy for the Blog index page (same for every post).
     intro: [
       "PostAutomation automates the entire video publishing flow for your social channels: upload, basic editing, smart scheduling and automatic publishing, with metrics collected over time so you can track what's working.",
       "Today the integration is available for YouTube, with Instagram and TikTok coming soon. The goal is simple: take the repetitive publishing work off your plate so you can focus on creating.",
@@ -339,6 +338,11 @@ export const enUS: Dictionary = {
     ],
     sidebarTitle: "Latest posts",
     backLabel: "Back",
+    // One post per key, and the key MUST match the "slug" registered in
+    // app/blog/posts-data.ts (that's how the page finds the right text).
+    // To add a new post: copy a block below, swap the key for the new
+    // slug, and write title/excerpt/content (one array item per
+    // paragraph). Keep this in sync with pt-BR.ts.
     posts: {
       "automatize-publicacao-de-videos": {
         title: "How to automate publishing your videos",

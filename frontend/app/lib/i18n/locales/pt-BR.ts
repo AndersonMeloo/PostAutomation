@@ -66,8 +66,6 @@ export const ptBR: Dictionary = {
     ],
   },
   platforms: {
-    kicker: "Publique em",
-    title: "Uma plataforma, todas as suas redes",
     items: [
       { name: "YouTube", status: "live" },
       { name: "Instagram", status: "soon" },
@@ -75,8 +73,8 @@ export const ptBR: Dictionary = {
     ],
   },
   contentShowcase: {
-    kicker: "Para todo tipo de conteúdo",
-    title: "Do podcast ao curso, cada vídeo pronto pra publicar",
+    kicker: "Vídeos prontos para redes sociais com inteligência artificial",
+    title: "Transforme conteúdo longo em clipes prontos pra cada plataforma",
     categories: [
       { label: "Podcast", handle: "@seupodcast" },
       { label: "Curso", handle: "@seucanal" },
@@ -340,6 +338,7 @@ export const ptBR: Dictionary = {
   },
   blog: {
     pageTitle: "Blog do PostAutomation",
+    // Textos fixos da página de índice do Blog (não mudam por post).
     intro: [
       "O PostAutomation automatiza o fluxo completo de publicação de vídeos nas suas redes sociais: envio, edição básica, agendamento inteligente e publicação automática, com coleta de métricas ao longo do tempo pra você acompanhar o que funciona.",
       "Hoje a integração está disponível pro YouTube, com Instagram e TikTok chegando em breve. O objetivo é simples: tirar do seu caminho o trabalho repetitivo de publicar, pra você focar em criar.",
@@ -347,6 +346,11 @@ export const ptBR: Dictionary = {
     ],
     sidebarTitle: "Últimos posts",
     backLabel: "Voltar",
+    // Um post por chave, e a chave TEM que ser igual ao "slug" cadastrado em
+    // app/blog/posts-data.ts (é assim que a página encontra o texto certo).
+    // Pra criar um post novo: copie um bloco abaixo, troque a chave pelo
+    // slug novo e escreva title/excerpt/content (um item da lista por
+    // parágrafo). Depois faça o mesmo em en-US.ts.
     posts: {
       "automatize-publicacao-de-videos": {
         title: "Como automatizar a publicação dos seus vídeos",
