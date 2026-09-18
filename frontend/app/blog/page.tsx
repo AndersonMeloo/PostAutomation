@@ -1,11 +1,30 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "../lib/i18n/locale-context";
 import { blogPosts } from "./posts-data";
 
 export default function BlogIndexPage() {
   const t = useTranslations();
+  const stickySentinelRef = useRef<HTMLDivElement>(null);
+  const [isStuck, setIsStuck] = useState(false);
+
+  useEffect(() => {
+    const sentinel = stickySentinelRef.current;
+    if (!sentinel) return;
+
+    // O sentinel marca a posição original do bloco antes de ele grudar no
+    // topo (lg:top-8 = 32px). Quando ele sai da viewport por cima, o bloco
+    // já está "colado" e ganha fundo branco; volta a ficar transparente
+    // assim que o sentinel reaparece (topo da página).
+    const observer = new IntersectionObserver(([entry]) => setIsStuck(!entry.isIntersecting), {
+      rootMargin: "-33px 0px 0px 0px",
+      threshold: 0,
+    });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -14,7 +33,15 @@ export default function BlogIndexPage() {
         <div>
           <div className="aspect-video w-full rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-500" />
 
-          <div className="mt-8 space-y-5">
+          {/* Sticky no desktop: título + intro acompanham o scroll junto com o aside de "Últimos posts". */}
+          <div ref={stickySentinelRef} className="h-0" />
+          <div
+            className={`mt-8 space-y-5 rounded-2xl border p-6 transition-all duration-300 lg:sticky lg:top-8 lg:z-10 ${
+              isStuck
+                ? "border-slate-200 bg-white shadow-[0_16px_40px_-16px_rgba(15,23,42,0.25)]"
+                : "border-transparent bg-transparent shadow-none"
+            }`}
+          >
             <h1 className="text-3xl font-bold text-slate-900 sm:text-4xl">{t.blog.pageTitle}</h1>
             {t.blog.intro.map((paragraph, index) => (
               <p
