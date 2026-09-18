@@ -34,7 +34,7 @@ export function Hero() {
           transition={{ duration: 0.5 }}
           className="home-glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
           {t.hero.kicker}
         </motion.p>
 
