@@ -84,6 +84,68 @@ export function InstagramColorIcon({ className }: IconProps) {
   );
 }
 
+/** Badges de método de pagamento - marcas simplificadas, só pra identificação visual. */
+export function VisaIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 40 26" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="39" height="25" rx="4" fill="#1A1F71" stroke="#E2E8F0" />
+      <text
+        x="20"
+        y="17.5"
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="11"
+        fontStyle="italic"
+        fontWeight="700"
+        fill="#FFFFFF"
+      >
+        VISA
+      </text>
+    </svg>
+  );
+}
+
+export function MastercardIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 40 26" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="39" height="25" rx="4" fill="#F4F4F5" stroke="#E2E8F0" />
+      <circle cx="16.5" cy="13" r="7" fill="#EB001B" />
+      <circle cx="23.5" cy="13" r="7" fill="#F79E1B" />
+      <path
+        d="M20 7.5a7 7 0 0 1 0 11 7 7 0 0 1 0-11Z"
+        fill="#FF5F00"
+      />
+    </svg>
+  );
+}
+
+export function PixIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 40 26" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="39" height="25" rx="4" fill="#FFFFFF" stroke="#E2E8F0" />
+      <g transform="translate(20 13) rotate(45)" fill="none" stroke="#32BCAD" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="-5" y="-5" width="10" height="10" rx="3" />
+      </g>
+      <circle cx="20" cy="13" r="2" fill="#32BCAD" />
+    </svg>
+  );
+}
+
+export function BoletoIcon({ className }: IconProps) {
+  const bars = [2, 1, 2, 3, 1, 2, 1, 3, 2, 1, 2, 1, 3, 1, 2];
+  let x = 5;
+  return (
+    <svg viewBox="0 0 40 26" className={className} aria-hidden="true">
+      <rect x="0.5" y="0.5" width="39" height="25" rx="4" fill="#FFFFFF" stroke="#E2E8F0" />
+      {bars.map((width, index) => {
+        const bar = <rect key={index} x={x} y="6" width={width} height="14" fill="#0F172A" />;
+        x += width + 1.3;
+        return bar;
+      })}
+    </svg>
+  );
+}
+
 export function FacebookIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">

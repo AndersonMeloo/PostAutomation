@@ -245,32 +245,202 @@ export const ptBR: Dictionary = {
     subtitle: "Comece pequeno e evolua conforme sua produção de conteúdo cresce.",
     popularBadge: "Mais popular",
     ctaPrefix: "Assinar",
-    includesLabel: "Este plano inclui:",
-    detailsSoon: "Detalhamento completo em breve",
     period: "/mês",
-    plans: [
-      {
-        id: "basico",
+    sectionLabels: {
+      forWho: "Pra quem é",
+      features: "Recursos",
+      limits: "Limites",
+      differentiators: "Diferenciais",
+      usage: "Cobrança e uso",
+      faq: "Perguntas sobre esse plano",
+    },
+    plans: {
+      basic: {
         name: "Básico",
-        price: "R$ 33,99",
-        description: "Para quem está começando a automatizar sua publicação.",
-        popular: false,
+        tagline: "Para quem está começando a automatizar sua publicação.",
+        forWho:
+          "Pra quem publica em um canal só e quer parar de fazer manualmente o upload, o preenchimento de título e o agendamento de cada vídeo.",
+        highlights: [
+          "1 canal do YouTube conectado",
+          "Até 15 vídeos agendados por mês",
+          "Edição básica: corte, thumbnail e formato",
+          "Métricas essenciais por vídeo",
+        ],
+        features: [
+          "Conecte 1 canal do YouTube com login Google",
+          "Envie o vídeo, escolha o formato (Shorts ou padrão) e agende o horário",
+          "Editor com corte por tempo de início/fim e thumbnail personalizada",
+          "Publicação automática no horário escolhido, sem precisar abrir o painel",
+          "Coleta automática de visualizações, curtidas, comentários e inscritos ganhos",
+          "Suporte por e-mail",
+        ],
+        limits: [
+          "1 canal conectado por vez",
+          "Até 15 vídeos agendados por mês",
+          "Histórico de métricas dos últimos 90 dias",
+        ],
+        differentiators: [
+          "Sem taxa de configuração - comece a agendar no mesmo dia",
+          "Cancele quando quiser, sem multa",
+        ],
+        usageNotes: [
+          "Cobrança mensal recorrente no cartão cadastrado, com nota fiscal emitida automaticamente.",
+          "Se você ultrapassar os 15 vídeos no mês, o excedente fica em rascunho até o próximo ciclo ou até você fazer upgrade.",
+        ],
+        faq: [
+          {
+            question: "Dá pra trocar de plano depois?",
+            answer:
+              "Sim. Você pode fazer upgrade pro Pro ou Premium a qualquer momento direto no painel, e a cobrança é ajustada proporcionalmente ao que já foi usado no ciclo.",
+          },
+          {
+            question: "Preciso conectar cartão pra testar?",
+            answer:
+              "A criação da conta é gratuita. O cartão só é pedido quando você decide assinar um dos planos pra liberar a publicação automática.",
+          },
+        ],
       },
-      {
-        id: "plus",
-        name: "Plus",
-        price: "R$ 49,99",
-        description: "Para criadores publicando com mais frequência.",
-        popular: true,
-      },
-      {
-        id: "pro",
+      pro: {
         name: "Pro",
-        price: "R$ 79,99",
-        description: "Para quem quer escalar a produção sem limites.",
-        popular: false,
+        tagline: "Para criadores publicando com mais frequência.",
+        forWho:
+          "Pra quem já gerencia mais de um canal ou nicho e precisa de volume maior de publicações sem perder a visão do que está funcionando.",
+        highlights: [
+          "Até 3 canais conectados",
+          "Vídeos agendados ilimitados",
+          "Métricas agregadas e por vídeo",
+          "Suporte prioritário",
+        ],
+        features: [
+          "Tudo do plano Básico",
+          "Conecte até 3 canais do YouTube na mesma conta",
+          "Agendamento de vídeos sem limite mensal",
+          "Painel de métricas agregadas: compare o desempenho entre canais e formatos",
+          "Histórico completo de métricas, sem limite de 90 dias",
+          "Acesso antecipado ao corte automático com IA assim que sair do beta",
+          "Suporte prioritário por e-mail e chat",
+        ],
+        limits: ["Até 3 canais conectados", "Sem limite de vídeos agendados por mês"],
+        differentiators: [
+          "Métricas agregadas entre canais, pra comparar o que performa melhor",
+          "Fila de suporte prioritária em relação ao plano Básico",
+        ],
+        usageNotes: [
+          "Cobrança mensal recorrente, com a opção de trocar de plano a qualquer momento.",
+          "Cada canal extra usa a mesma cota de vídeos ilimitados - não há cobrança por canal.",
+        ],
+        faq: [
+          {
+            question: "O que muda em relação ao Básico?",
+            answer:
+              "Principalmente o número de canais (até 3, em vez de 1), o limite de vídeos por mês (que deixa de existir) e o histórico completo de métricas, sem o corte de 90 dias.",
+          },
+          {
+            question: "Os 3 canais podem ser de nichos diferentes?",
+            answer:
+              "Sim. Você pode conectar canais de nichos completamente diferentes e acompanhar o desempenho de cada um separadamente no mesmo painel.",
+          },
+        ],
       },
-    ],
+      premium: {
+        name: "Premium",
+        tagline: "Para quem quer escalar a produção sem limites.",
+        forWho:
+          "Pra operações maiores - agências, times de conteúdo ou criadores com vários canais - que precisam de escala, exportação de dados e atendimento próximo.",
+        highlights: [
+          "Canais conectados ilimitados",
+          "Exportação de métricas",
+          "Onboarding assistido",
+          "Suporte prioritário com resposta rápida",
+        ],
+        features: [
+          "Tudo do plano Pro",
+          "Canais conectados ilimitados, sem custo por canal extra",
+          "Exportação de métricas em CSV pra usar em outras ferramentas",
+          "Onboarding assistido na configuração inicial dos canais e nichos",
+          "Acesso antecipado a todas as novidades (Instagram, TikTok, corte com IA) assim que saírem do beta",
+          "Suporte prioritário, com meta de primeira resposta em até 4 horas úteis",
+        ],
+        limits: ["Canais conectados ilimitados", "Sem limite de vídeos agendados por mês"],
+        differentiators: [
+          "Único plano com exportação de métricas e onboarding assistido",
+          "Prioridade máxima na fila de suporte e nos novos recursos em beta",
+        ],
+        usageNotes: [
+          "Cobrança mensal recorrente; times maiores podem pedir faturamento anual falando com o suporte.",
+          "O onboarding assistido acontece uma vez, na ativação do plano.",
+        ],
+        faq: [
+          {
+            question: "Como funciona o onboarding assistido?",
+            answer:
+              "Depois de assinar, nosso time entra em contato pra ajudar a conectar seus canais, organizar os nichos e configurar o primeiro lote de agendamentos.",
+          },
+          {
+            question: "Existe desconto pra pagamento anual?",
+            answer:
+              "Sim, pra contas Premium com faturamento anual. É só falar com o suporte depois de assinar o plano mensal pra fazer a migração.",
+          },
+        ],
+      },
+    },
+    paymentMethods: {
+      kicker: "Pagamento",
+      title: "Pague do seu jeito",
+      subtitle: "Cartão, boleto ou Pix - você escolhe como pagar, sem burocracia.",
+      methods: [
+        {
+          id: "visa",
+          label: "Visa",
+          description: "Cartão de crédito, cobrança recorrente mensal",
+        },
+        {
+          id: "mastercard",
+          label: "Mastercard",
+          description: "Cartão de crédito, cobrança recorrente mensal",
+        },
+        {
+          id: "pix",
+          label: "Pix",
+          description: "Confirmação em minutos, sem taxa extra",
+        },
+        {
+          id: "boleto",
+          label: "Boleto",
+          description: "Vencimento em até 3 dias úteis",
+        },
+      ],
+    },
+    faqSection: {
+      title: "Perguntas frequentes",
+      items: [
+        {
+          question: "Como funciona a cobrança?",
+          answer:
+            "A cobrança é mensal e recorrente, no cartão, boleto ou Pix cadastrado. Você pode acompanhar cada fatura no painel, com nota fiscal emitida automaticamente.",
+        },
+        {
+          question: "Emitem nota fiscal?",
+          answer:
+            "Sim, toda cobrança gera uma nota fiscal automaticamente, disponível pra download no painel logo depois do pagamento ser confirmado.",
+        },
+        {
+          question: "Posso cancelar quando quiser?",
+          answer:
+            "Sim, sem multa. O cancelamento pode ser feito a qualquer momento no painel, e seu acesso continua ativo até o fim do período já pago.",
+        },
+        {
+          question: "Há taxa de configuração ou mensalidade extra?",
+          answer:
+            "Não. Você paga só a mensalidade do plano escolhido - sem taxa de adesão, sem custo por canal extra nos planos Pro e Premium.",
+        },
+        {
+          question: "Vocês oferecem desconto pra pagamento anual?",
+          answer:
+            "Sim, pra contas Premium. Depois de assinar o plano mensal, é só falar com o suporte pra migrar pro faturamento anual com desconto.",
+        },
+      ],
+    },
   },
   cta: {
     title: "Comece a automatizar seus vídeos hoje",

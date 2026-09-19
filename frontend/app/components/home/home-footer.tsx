@@ -6,7 +6,9 @@ import { ArrowUp } from "lucide-react";
 import { useTranslations } from "../../lib/i18n/locale-context";
 import { FacebookIcon, InstagramIcon } from "./icons";
 
-type FooterLink = { label: string; href: string } | { label: string; comingSoon: true };
+type FooterLink =
+  | { label: string; href: string; target?: "_blank" }
+  | { label: string; comingSoon: true };
 
 export function HomeFooter() {
   const t = useTranslations();
@@ -17,7 +19,8 @@ export function HomeFooter() {
     { href: "#como-funciona", label: t.header.navHowItWorks },
     { href: "#plataformas", label: t.header.navPlatforms },
     { href: "#faq", label: t.header.navFaq },
-    { href: "#precos", label: t.footer.links.pricing },
+    { href: "/precos", label: t.footer.links.pricing },
+    { href: "/api-docs", label: "API", target: "_blank" },
   ];
 
   const companyLinks: FooterLink[] = [
@@ -71,7 +74,12 @@ export function HomeFooter() {
               {productLinks.map((link) =>
                 "href" in link ? (
                   <li key={link.label}>
-                    <a href={link.href} className="text-sm text-slate-600 hover:text-slate-900">
+                    <a
+                      href={link.href}
+                      target={link.target}
+                      rel={link.target === "_blank" ? "noopener noreferrer" : undefined}
+                      className="text-sm text-slate-600 hover:text-slate-900"
+                    >
                       {link.label}
                     </a>
                   </li>

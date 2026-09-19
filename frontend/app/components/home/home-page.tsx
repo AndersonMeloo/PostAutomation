@@ -9,7 +9,6 @@ import { HowItWorks } from "./how-it-works";
 import { ScrollPillars } from "./scroll-pillars";
 import { Benefits } from "./benefits";
 import { MetricsPreview } from "./metrics-preview";
-import { Pricing } from "./pricing";
 import { FinalCta } from "./final-cta";
 import { Faq } from "./faq";
 import { HomeFooter } from "./home-footer";
@@ -28,7 +27,6 @@ export function HomePage() {
           <HowItWorks />
           <ScrollPillars />
           <MetricsPreview />
-          <Pricing />
           <FinalCta />
           <Faq />
         </main>

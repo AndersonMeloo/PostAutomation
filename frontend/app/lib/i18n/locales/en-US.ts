@@ -239,32 +239,202 @@ export const enUS: Dictionary = {
     subtitle: "Start small and grow as your content production scales.",
     popularBadge: "Most popular",
     ctaPrefix: "Subscribe to",
-    includesLabel: "This plan includes:",
-    detailsSoon: "Full details coming soon",
     period: "/mo",
-    plans: [
-      {
-        id: "basic",
+    sectionLabels: {
+      forWho: "Who it's for",
+      features: "Features",
+      limits: "Limits",
+      differentiators: "What sets it apart",
+      usage: "Billing and usage",
+      faq: "Questions about this plan",
+    },
+    plans: {
+      basic: {
         name: "Basic",
-        price: "R$ 33,99",
-        description: "For creators just getting started with automation.",
-        popular: false,
+        tagline: "For creators just getting started with automation.",
+        forWho:
+          "For anyone publishing to a single channel who wants to stop manually uploading, filling in titles, and scheduling every video by hand.",
+        highlights: [
+          "1 connected YouTube channel",
+          "Up to 15 scheduled videos per month",
+          "Basic editing: trim, thumbnail and format",
+          "Essential metrics per video",
+        ],
+        features: [
+          "Connect 1 YouTube channel with Google login",
+          "Upload the video, pick the format (Shorts or standard) and schedule the time",
+          "Editor with start/end time trim and a custom thumbnail",
+          "Automatic publishing at the chosen time, no need to open the dashboard",
+          "Automatic collection of views, likes, comments and subscribers gained",
+          "Email support",
+        ],
+        limits: [
+          "1 connected channel at a time",
+          "Up to 15 scheduled videos per month",
+          "90-day metrics history",
+        ],
+        differentiators: [
+          "No setup fee - start scheduling the same day",
+          "Cancel anytime, no penalty",
+        ],
+        usageNotes: [
+          "Recurring monthly billing on the card on file, with an automatic invoice.",
+          "If you go over 15 videos in a month, the extra ones stay as drafts until the next cycle or until you upgrade.",
+        ],
+        faq: [
+          {
+            question: "Can I switch plans later?",
+            answer:
+              "Yes. You can upgrade to Pro or Premium at any time right from the dashboard, and billing is prorated for what's already been used in the cycle.",
+          },
+          {
+            question: "Do I need a card to try it out?",
+            answer:
+              "Creating an account is free. A card is only requested once you decide to subscribe to a plan to unlock automatic publishing.",
+          },
+        ],
       },
-      {
-        id: "plus",
-        name: "Plus",
-        price: "R$ 49.99",
-        description: "For creators publishing more frequently.",
-        popular: true,
-      },
-      {
-        id: "pro",
+      pro: {
         name: "Pro",
-        price: "R$ 79,99",
-        description: "For creators scaling production without limits.",
-        popular: false,
+        tagline: "For creators publishing more frequently.",
+        forWho:
+          "For anyone already managing more than one channel or niche who needs higher publishing volume without losing sight of what's working.",
+        highlights: [
+          "Up to 3 connected channels",
+          "Unlimited scheduled videos",
+          "Aggregate and per-video metrics",
+          "Priority support",
+        ],
+        features: [
+          "Everything in the Basic plan",
+          "Connect up to 3 YouTube channels on the same account",
+          "No monthly limit on scheduled videos",
+          "Aggregate metrics dashboard: compare performance across channels and formats",
+          "Full metrics history, no 90-day cap",
+          "Early access to AI-powered auto-clipping once it leaves beta",
+          "Priority support over email and chat",
+        ],
+        limits: ["Up to 3 connected channels", "No monthly limit on scheduled videos"],
+        differentiators: [
+          "Aggregate metrics across channels, to compare what performs best",
+          "Priority support queue over the Basic plan",
+        ],
+        usageNotes: [
+          "Recurring monthly billing, with the option to switch plans at any time.",
+          "Every extra channel shares the same unlimited video quota - there's no per-channel fee.",
+        ],
+        faq: [
+          {
+            question: "What changes compared to Basic?",
+            answer:
+              "Mainly the number of channels (up to 3, instead of 1), the monthly video limit (which goes away), and full metrics history instead of the 90-day cap.",
+          },
+          {
+            question: "Can the 3 channels be in different niches?",
+            answer:
+              "Yes. You can connect channels in completely different niches and track each one's performance separately in the same dashboard.",
+          },
+        ],
       },
-    ],
+      premium: {
+        name: "Premium",
+        tagline: "For creators scaling production without limits.",
+        forWho:
+          "For larger operations - agencies, content teams, or creators running several channels - that need scale, data export, and hands-on support.",
+        highlights: [
+          "Unlimited connected channels",
+          "Metrics export",
+          "Guided onboarding",
+          "Priority support with fast response",
+        ],
+        features: [
+          "Everything in the Pro plan",
+          "Unlimited connected channels, no per-channel fee",
+          "Export metrics to CSV to use in other tools",
+          "Guided onboarding to set up your channels and niches",
+          "Early access to every new capability (Instagram, TikTok, AI clipping) as soon as it leaves beta",
+          "Priority support, with a first-response target of 4 business hours",
+        ],
+        limits: ["Unlimited connected channels", "No monthly limit on scheduled videos"],
+        differentiators: [
+          "The only plan with metrics export and guided onboarding",
+          "Top priority in the support queue and for new beta features",
+        ],
+        usageNotes: [
+          "Recurring monthly billing; larger teams can request annual invoicing by contacting support.",
+          "Guided onboarding happens once, when the plan is activated.",
+        ],
+        faq: [
+          {
+            question: "How does guided onboarding work?",
+            answer:
+              "After you subscribe, our team reaches out to help connect your channels, organize your niches, and set up your first batch of scheduled posts.",
+          },
+          {
+            question: "Is there a discount for annual billing?",
+            answer:
+              "Yes, for Premium accounts on annual billing. Just contact support after subscribing to the monthly plan to migrate.",
+          },
+        ],
+      },
+    },
+    paymentMethods: {
+      kicker: "Payment",
+      title: "Pay your way",
+      subtitle: "Card, boleto or Pix - you choose how to pay, no hassle.",
+      methods: [
+        {
+          id: "visa",
+          label: "Visa",
+          description: "Credit card, recurring monthly billing",
+        },
+        {
+          id: "mastercard",
+          label: "Mastercard",
+          description: "Credit card, recurring monthly billing",
+        },
+        {
+          id: "pix",
+          label: "Pix",
+          description: "Confirmed within minutes, no extra fee",
+        },
+        {
+          id: "boleto",
+          label: "Boleto",
+          description: "Due within 3 business days",
+        },
+      ],
+    },
+    faqSection: {
+      title: "Frequently asked questions",
+      items: [
+        {
+          question: "How does billing work?",
+          answer:
+            "Billing is monthly and recurring, on the card, boleto or Pix on file. You can track every invoice in the dashboard, with an automatic invoice issued for each charge.",
+        },
+        {
+          question: "Do you issue an invoice?",
+          answer:
+            "Yes, every charge automatically generates an invoice, available to download from the dashboard right after payment is confirmed.",
+        },
+        {
+          question: "Can I cancel anytime?",
+          answer:
+            "Yes, no penalty. You can cancel at any time from the dashboard, and your access stays active until the end of the period you already paid for.",
+        },
+        {
+          question: "Is there a setup fee or extra monthly charge?",
+          answer:
+            "No. You only pay the monthly fee for the plan you choose - no setup fee, no extra cost per channel on the Pro and Premium plans.",
+        },
+        {
+          question: "Do you offer a discount for annual billing?",
+          answer:
+            "Yes, for Premium accounts. After subscribing to the monthly plan, just contact support to migrate to discounted annual billing.",
+        },
+      ],
+    },
   },
   cta: {
     title: "Start automating your videos today",

@@ -91,14 +91,17 @@ export function DashboardShell({ children }: DashboardShellProps) {
     const pathname = usePathname();
     const router = useRouter();
     const { theme, toggleTheme } = useTheme();
-    // A Home pública ("/"), login/cadastro, o callback do login com Google e
-    // o blog têm layout próprio, sem a sidebar do dashboard.
+    // A Home pública ("/"), login/cadastro, o callback do login com Google, o
+    // blog, a página de preços e a documentação da API têm layout próprio,
+    // sem a sidebar do dashboard.
     const isAuthPage =
         pathname === "/" ||
         pathname.startsWith("/login") ||
         pathname.startsWith("/cadastro") ||
         pathname.startsWith("/auth/google/callback") ||
-        pathname.startsWith("/blog");
+        pathname.startsWith("/blog") ||
+        pathname.startsWith("/precos") ||
+        pathname.startsWith("/api-docs");
     const [youtubeConnected, setYoutubeConnected] = useState(false);
     const [youtubeLoading, setYoutubeLoading] = useState(true);
     const [youtubeActionLoading, setYoutubeActionLoading] = useState(false);
