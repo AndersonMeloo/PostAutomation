@@ -17,11 +17,15 @@ export function HomeHeader() {
   const { locale, setLocale } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navLinks: ({ href: string; label: string } | { label: string; comingSoon: true })[] = [
+  const navLinks: (
+    | { href: string; label: string; target?: "_blank" }
+    | { label: string; comingSoon: true }
+  )[] = [
     { href: "/", label: t.header.navHome },
     { label: t.footer.links.about, comingSoon: true },
-    { href: "/#precos", label: t.pricing.kicker },
+    { href: "/precos", label: t.pricing.kicker },
     { href: "/blog", label: t.header.navBlog },
+    { href: "/api-docs", label: "API", target: "_blank" },
   ];
 
   return (
@@ -37,6 +41,8 @@ export function HomeHeader() {
               <Link
                 key={link.label}
                 href={link.href}
+                target={link.target}
+                rel={link.target === "_blank" ? "noopener noreferrer" : undefined}
                 className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
               >
                 {link.label}
@@ -120,6 +126,8 @@ export function HomeHeader() {
                           <Link
                             key={link.label}
                             href={link.href}
+                            target={link.target}
+                            rel={link.target === "_blank" ? "noopener noreferrer" : undefined}
                             onClick={() => setMobileOpen(false)}
                             className="text-sm font-medium text-slate-700"
                           >
