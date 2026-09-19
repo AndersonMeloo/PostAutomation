@@ -2,6 +2,10 @@ export type Locale = "pt-BR" | "en-US";
 
 export type PlatformStatus = "live" | "soon";
 
+export type PlanId = "basic" | "pro" | "premium";
+
+export type PaymentMethodId = "visa" | "mastercard" | "pix" | "boleto";
+
 export type Dictionary = {
   auth: {
     backToHome: string;
@@ -143,16 +147,39 @@ export type Dictionary = {
     subtitle: string;
     popularBadge: string;
     ctaPrefix: string;
-    includesLabel: string;
-    detailsSoon: string;
     period: string;
-    plans: {
-      id: string;
-      name: string;
-      price: string;
-      description: string;
-      popular: boolean;
-    }[];
+    sectionLabels: {
+      forWho: string;
+      features: string;
+      limits: string;
+      differentiators: string;
+      usage: string;
+      faq: string;
+    };
+    plans: Record<
+      PlanId,
+      {
+        name: string;
+        tagline: string;
+        forWho: string;
+        highlights: string[];
+        features: string[];
+        limits: string[];
+        differentiators: string[];
+        usageNotes: string[];
+        faq: { question: string; answer: string }[];
+      }
+    >;
+    paymentMethods: {
+      kicker: string;
+      title: string;
+      subtitle: string;
+      methods: { id: PaymentMethodId; label: string; description: string }[];
+    };
+    faqSection: {
+      title: string;
+      items: { question: string; answer: string }[];
+    };
   };
   cta: {
     title: string;
